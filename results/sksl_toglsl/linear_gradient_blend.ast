@@ -1,0 +1,87 @@
+Program kind=RuntimeShader elements=9 builtin_elements=omitted
+  ProgramElement GlobalVar [offset=0..20 line=1] : uniform shader image;
+    Statement VarDeclaration [offset=0..20 line=1] : uniform shader image;
+  ProgramElement GlobalVar [offset=22..49 line=2] : uniform shader preblurImage;
+    Statement VarDeclaration [offset=22..49 line=2] : uniform shader preblurImage;
+  ProgramElement GlobalVar [offset=51..77 line=3] : uniform float2 iResolution;
+    Statement VarDeclaration [offset=51..77 line=3] : uniform float2 iResolution;
+  ProgramElement GlobalVar [offset=79..104 line=4] : uniform float2 startPoint;
+    Statement VarDeclaration [offset=79..104 line=4] : uniform float2 startPoint;
+  ProgramElement GlobalVar [offset=106..129 line=5] : uniform float2 endPoint;
+    Statement VarDeclaration [offset=106..129 line=5] : uniform float2 endPoint;
+  ProgramElement GlobalVar [offset=131..153 line=6] : uniform float softness;
+    Statement VarDeclaration [offset=131..153 line=6] : uniform float softness;
+  ProgramElement GlobalVar [offset=155..175 line=7] : uniform float invert;
+    Statement VarDeclaration [offset=155..175 line=7] : uniform float invert;
+  ProgramElement GlobalVar [offset=177..198 line=8] : uniform float blurMix;
+    Statement VarDeclaration [offset=177..198 line=8] : uniform float blurMix;
+  ProgramElement Function [offset=230..485 line=11] : half4 main(float2 fragCoord) { float2 start_coord = startPoint * iResolution; float2 end_coord = endPoint * iResoluti...
+    Statement Block [offset=230..485 line=11] : { float2 start_coord = startPoint * iResolution; float2 end_coord = endPoint * iResolution; float2 axis = end_coord -...
+      Statement VarDeclaration [offset=236..281 line=12] : float2 start_coord = startPoint * iResolution;
+        Expression Binary type=float2 [offset=257..281 line=12] : startPoint * iResolution
+          Expression VariableReference type=float2 [offset=257..267 line=12] : startPoint
+          Expression VariableReference type=float2 [offset=270..281 line=12] : iResolution
+      Statement VarDeclaration [offset=287..328 line=13] : float2 end_coord = endPoint * iResolution;
+        Expression Binary type=float2 [offset=306..328 line=13] : endPoint * iResolution
+          Expression VariableReference type=float2 [offset=306..314 line=13] : endPoint
+          Expression VariableReference type=float2 [offset=317..328 line=13] : iResolution
+      Statement VarDeclaration [offset=334..371 line=14] : float2 axis = end_coord - start_coord;
+        Expression Binary type=float2 [offset=348..371 line=14] : end_coord - start_coord
+          Expression VariableReference type=float2 [offset=348..357 line=14] : end_coord
+          Expression VariableReference type=float2 [offset=360..371 line=14] : start_coord
+      Statement VarDeclaration [offset=377..431 line=15] : float axis_length_squared = max(dot(axis, axis), 1e-05);
+        Expression FunctionCall type=float [offset=405..431 line=15] : max(dot(axis, axis), 1e-05)
+          Expression FunctionCall type=float [offset=409..424 line=15] : dot(axis, axis)
+            Expression VariableReference type=float2 [offset=413..417 line=15] : axis
+            Expression VariableReference type=float2 [offset=419..423 line=15] : axis
+          Expression Literal type=float [offset=426..430 line=15] : 1e-05
+      Statement VarDeclaration [offset=437..511 line=16] : float projected = dot(fragCoord - start_coord, axis) / axis_length_squared;
+        Expression Binary type=float [offset=455..511 line=16] : dot(fragCoord - start_coord, axis) / axis_length_squared
+          Expression FunctionCall type=float [offset=455..489 line=16] : dot(fragCoord - start_coord, axis)
+            Expression Binary type=float2 [offset=459..482 line=16] : fragCoord - start_coord
+              Expression VariableReference type=float2 [offset=459..468 line=16] : fragCoord
+              Expression VariableReference type=float2 [offset=471..482 line=16] : start_coord
+            Expression VariableReference type=float2 [offset=484..488 line=16] : axis
+          Expression VariableReference type=float [offset=492..511 line=16] : axis_length_squared
+      Statement VarDeclaration [offset=518..546 line=18] : float edge0 = -softness;
+        Expression Prefix type=float [offset=532..546 line=18] : -softness
+          Expression VariableReference type=float [offset=532..546 line=18] : softness
+      Statement VarDeclaration [offset=552..580 line=19] : float edge1 = 1.0 + softness;
+        Expression Binary type=float [offset=566..580 line=19] : 1.0 + softness
+          Expression Literal type=float [offset=566..569 line=19] : 1.0
+          Expression VariableReference type=float [offset=572..580 line=19] : softness
+      Statement VarDeclaration [offset=586..638 line=20] : float gradient = smoothstep(edge0, edge1, projected);
+        Expression FunctionCall type=float [offset=603..638 line=20] : smoothstep(edge0, edge1, projected)
+          Expression VariableReference type=float [offset=614..619 line=20] : edge0
+          Expression VariableReference type=float [offset=621..626 line=20] : edge1
+          Expression VariableReference type=float [offset=628..637 line=20] : projected
+      Statement If [offset=644..710 line=21] : if (invert > 0.5) { gradient = 1.0 - gradient; }
+        Expression Binary type=bool [offset=648..660 line=21] : invert > 0.5
+          Expression VariableReference type=float [offset=648..654 line=21] : invert
+          Expression Literal type=float [offset=657..660 line=21] : 0.5
+        Statement Block [offset=662..704 line=21] : { gradient = 1.0 - gradient; }
+          Statement Expression [offset=672..697 line=22] : gradient = 1.0 - gradient;
+            Expression Binary type=float [offset=672..697 line=22] : gradient = 1.0 - gradient
+              Expression VariableReference type=float [offset=672..680 line=22] : gradient
+              Expression Binary type=float [offset=683..697 line=22] : 1.0 - gradient
+                Expression Literal type=float [offset=683..686 line=22] : 1.0
+                Expression VariableReference type=float [offset=689..697 line=22] : gradient
+      Statement VarDeclaration [offset=710..764 line=25] : float mix_amount = clamp(gradient * blurMix, 0.0, 1.0);
+        Expression FunctionCall type=float [offset=729..764 line=25] : clamp(gradient * blurMix, 0.0, 1.0)
+          Expression Binary type=float [offset=735..753 line=25] : gradient * blurMix
+            Expression VariableReference type=float [offset=735..743 line=25] : gradient
+            Expression VariableReference type=float [offset=746..753 line=25] : blurMix
+          Expression Literal type=float [offset=755..758 line=25] : 0.0
+          Expression Literal type=float [offset=760..763 line=25] : 1.0
+      Statement VarDeclaration [offset=770..812 line=26] : half4 source_color = image.eval(fragCoord);
+        Expression ChildCall type=half4 [offset=791..812 line=26] : image.eval(fragCoord)
+          Expression VariableReference type=float2 [offset=802..811 line=26] : fragCoord
+      Statement VarDeclaration [offset=818..865 line=27] : half4 blur_color = preblurImage.eval(fragCoord);
+        Expression ChildCall type=half4 [offset=837..865 line=27] : preblurImage.eval(fragCoord)
+          Expression VariableReference type=float2 [offset=855..864 line=27] : fragCoord
+      Statement Return [offset=871..926 line=28] : return mix(source_color, blur_color, half(mix_amount));
+        Expression FunctionCall type=half4 [offset=878..925 line=28] : mix(source_color, blur_color, half(mix_amount))
+          Expression VariableReference type=half4 [offset=882..894 line=28] : source_color
+          Expression VariableReference type=half4 [offset=896..906 line=28] : blur_color
+          Expression ConstructorScalarCast type=half [offset=908..924 line=28] : half(mix_amount)
+            Expression VariableReference type=float [offset=913..923 line=28] : mix_amount

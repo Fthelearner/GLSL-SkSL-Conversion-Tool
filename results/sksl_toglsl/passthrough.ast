@@ -1,0 +1,8 @@
+Program kind=RuntimeShader elements=2 builtin_elements=omitted
+  ProgramElement GlobalVar [offset=0..20 line=1] : uniform shader image;
+    Statement VarDeclaration [offset=0..20 line=1] : uniform shader image;
+  ProgramElement Function [offset=48..81 line=4] : half4 main(float2 coord) { return image.eval(coord); }
+    Statement Block [offset=48..81 line=4] : { return image.eval(coord); }
+      Statement Return [offset=54..79 line=5] : return image.eval(coord);
+        Expression ChildCall type=half4 [offset=61..78 line=5] : image.eval(coord)
+          Expression VariableReference type=float2 [offset=72..77 line=5] : coord

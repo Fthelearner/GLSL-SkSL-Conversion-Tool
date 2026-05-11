@@ -1,0 +1,223 @@
+Program kind=RuntimeShader elements=13 builtin_elements=omitted
+  ProgramElement GlobalVar [offset=0..20 line=1] : uniform shader image;
+    Statement VarDeclaration [offset=0..20 line=1] : uniform shader image;
+  ProgramElement GlobalVar [offset=22..48 line=2] : uniform float2 iResolution;
+    Statement VarDeclaration [offset=22..48 line=2] : uniform float2 iResolution;
+  ProgramElement GlobalVar [offset=50..72 line=3] : uniform float progress;
+    Statement VarDeclaration [offset=50..72 line=3] : uniform float progress;
+  ProgramElement GlobalVar [offset=74..97 line=4] : uniform float waveCount;
+    Statement VarDeclaration [offset=74..97 line=4] : uniform float waveCount;
+  ProgramElement GlobalVar [offset=99..126 line=5] : uniform float2 rippleCenter;
+    Statement VarDeclaration [offset=99..126 line=5] : uniform float2 rippleCenter;
+  ProgramElement GlobalVar [offset=129..158 line=7] : const float BASIC_SLOPE = 0.5;
+    Statement VarDeclaration [offset=129..158 line=7] : const float BASIC_SLOPE = 0.5;
+      Expression Literal type=float [offset=155..158 line=7] : 0.5
+  ProgramElement GlobalVar [offset=160..198 line=8] : const float AMPLITUDE_SUPPRESS = 0.012;
+    Statement VarDeclaration [offset=160..198 line=8] : const float AMPLITUDE_SUPPRESS = 0.012;
+      Expression Literal type=float [offset=193..198 line=8] : 0.012
+  ProgramElement GlobalVar [offset=200..233 line=9] : const float WAVE_FREQUENCY = 31.0;
+    Statement VarDeclaration [offset=200..233 line=9] : const float WAVE_FREQUENCY = 31.0;
+      Expression Literal type=float [offset=229..233 line=9] : 31.0
+  ProgramElement GlobalVar [offset=235..275 line=10] : const float WAVE_PROPAGATION_RATIO = 2.0;
+    Statement VarDeclaration [offset=235..275 line=10] : const float WAVE_PROPAGATION_RATIO = 2.0;
+      Expression Literal type=float [offset=272..275 line=10] : 2.0
+  ProgramElement GlobalVar [offset=277..319 line=11] : const float AMPLITUDE_SUPPRESS_AREA = 0.45;
+    Statement VarDeclaration [offset=277..319 line=11] : const float AMPLITUDE_SUPPRESS_AREA = 0.45;
+      Expression Literal type=float [offset=315..319 line=11] : 0.45
+  ProgramElement GlobalVar [offset=321..357 line=12] : const float DISTORT_INTENSITY = 0.15;
+    Statement VarDeclaration [offset=321..357 line=12] : const float DISTORT_INTENSITY = 0.15;
+      Expression Literal type=float [offset=353..357 line=12] : 0.15
+  ProgramElement Function [offset=400..655 line=15] : float calc_wave(float distance_to_wave) { float pre_wave = smoothstep(0.0, -0.3, distance_to_wave); float wave_form =...
+    Statement Block [offset=400..655 line=15] : { float pre_wave = smoothstep(0.0, -0.3, distance_to_wave); float wave_form = waveCount == 1.0 ? smoothstep(-0.4, -0....
+      Statement VarDeclaration [offset=406..462 line=16] : float pre_wave = smoothstep(0.0, -0.3, distance_to_wave);
+        Expression FunctionCall type=float [offset=423..462 line=16] : smoothstep(0.0, -0.3, distance_to_wave)
+          Expression Literal type=float [offset=434..437 line=16] : 0.0
+          Expression Literal type=float [offset=439..443 line=16] : -0.3
+          Expression VariableReference type=float [offset=445..461 line=16] : distance_to_wave
+      Statement VarDeclaration [offset=468..723 line=17] : float wave_form = waveCount == 1.0 ? smoothstep(-0.4, -0.2, distance_to_wave) * smoothstep(0.0, -0.2, distance_to_wav...
+        Expression Ternary type=float [offset=486..741 line=17] : waveCount == 1.0 ? smoothstep(-0.4, -0.2, distance_to_wave) * smoothstep(0.0, -0.2, distance_to_wave) : (waveCount ==...
+          Expression Binary type=bool [offset=486..504 line=17] : waveCount == 1.0
+            Expression VariableReference type=float [offset=487..496 line=17] : waveCount
+            Expression Literal type=float [offset=500..503 line=17] : 1.0
+          Expression Binary type=float [offset=515..597 line=18] : smoothstep(-0.4, -0.2, distance_to_wave) * smoothstep(0.0, -0.2, distance_to_wave)
+            Expression FunctionCall type=float [offset=515..555 line=18] : smoothstep(-0.4, -0.2, distance_to_wave)
+              Expression Literal type=float [offset=526..530 line=18] : -0.4
+              Expression Literal type=float [offset=532..536 line=18] : -0.2
+              Expression VariableReference type=float [offset=538..554 line=18] : distance_to_wave
+            Expression FunctionCall type=float [offset=558..597 line=18] : smoothstep(0.0, -0.2, distance_to_wave)
+              Expression Literal type=float [offset=569..572 line=18] : 0.0
+              Expression Literal type=float [offset=574..578 line=18] : -0.2
+              Expression VariableReference type=float [offset=580..596 line=18] : distance_to_wave
+          Expression Ternary type=float [offset=608..793 line=19] : waveCount == 2.0 ? smoothstep(-0.6, -0.3, distance_to_wave) * pre_wave : (smoothstep(-0.9, -0.6, distance_to_wave) * ...
+            Expression Binary type=bool [offset=608..626 line=19] : waveCount == 2.0
+              Expression VariableReference type=float [offset=609..618 line=19] : waveCount
+              Expression Literal type=float [offset=622..625 line=19] : 2.0
+            Expression Binary type=float [offset=637..688 line=20] : smoothstep(-0.6, -0.3, distance_to_wave) * pre_wave
+              Expression FunctionCall type=float [offset=637..677 line=20] : smoothstep(-0.6, -0.3, distance_to_wave)
+                Expression Literal type=float [offset=648..652 line=20] : -0.6
+                Expression Literal type=float [offset=654..658 line=20] : -0.3
+                Expression VariableReference type=float [offset=660..676 line=20] : distance_to_wave
+              Expression VariableReference type=float [offset=680..688 line=20] : pre_wave
+            Expression Binary type=float [offset=699..793 line=21] : (smoothstep(-0.9, -0.6, distance_to_wave) * step(abs(distance_to_wave + 0.45), 0.45)) * pre_wave
+              Expression Binary type=float [offset=699..782 line=21] : smoothstep(-0.9, -0.6, distance_to_wave) * step(abs(distance_to_wave + 0.45), 0.45)
+                Expression FunctionCall type=float [offset=699..739 line=21] : smoothstep(-0.9, -0.6, distance_to_wave)
+                  Expression Literal type=float [offset=710..714 line=21] : -0.9
+                  Expression Literal type=float [offset=716..720 line=21] : -0.6
+                  Expression VariableReference type=float [offset=722..738 line=21] : distance_to_wave
+                Expression FunctionCall type=float [offset=742..782 line=21] : step(abs(distance_to_wave + 0.45), 0.45)
+                  Expression FunctionCall type=float [offset=747..775 line=21] : abs(distance_to_wave + 0.45)
+                    Expression Binary type=float [offset=751..774 line=21] : distance_to_wave + 0.45
+                      Expression VariableReference type=float [offset=751..767 line=21] : distance_to_wave
+                      Expression Literal type=float [offset=770..774 line=21] : 0.45
+                  Expression Literal type=float [offset=777..781 line=21] : 0.45
+              Expression VariableReference type=float [offset=785..793 line=21] : pre_wave
+      Statement Return [offset=799..858 line=22] : return -sin(WAVE_FREQUENCY * distance_to_wave) * wave_form;
+        Expression Binary type=float [offset=806..857 line=22] : -sin(WAVE_FREQUENCY * distance_to_wave) * wave_form
+          Expression Prefix type=float [offset=806..845 line=22] : -sin(WAVE_FREQUENCY * distance_to_wave)
+            Expression FunctionCall type=float [offset=807..845 line=22] : sin(WAVE_FREQUENCY * distance_to_wave)
+              Expression Binary type=float [offset=811..844 line=22] : WAVE_FREQUENCY * distance_to_wave
+                Expression VariableReference type=float [offset=811..825 line=22] : WAVE_FREQUENCY
+                Expression VariableReference type=float [offset=828..844 line=22] : distance_to_wave
+          Expression VariableReference type=float [offset=848..857 line=22] : wave_form
+  ProgramElement Function [offset=1215..1470 line=35] : half4 main(float2 fragCoord) { float shortEdge = min(iResolution.x, iResolution.y); float2 uv = fragCoord / iResoluti...
+    Statement Block [offset=1215..1470 line=35] : { float shortEdge = min(iResolution.x, iResolution.y); float2 uv = fragCoord / iResolution; float2 uv_homogeneous = f...
+      Statement VarDeclaration [offset=1221..1272 line=36] : float shortEdge = min(iResolution.x, iResolution.y);
+        Expression FunctionCall type=float [offset=1239..1272 line=36] : min(iResolution.x, iResolution.y)
+          Expression Swizzle type=float [offset=1243..1256 line=36] : iResolution.x
+            Expression VariableReference type=float2 [offset=1243..1254 line=36] : iResolution
+          Expression Swizzle type=float [offset=1258..1271 line=36] : iResolution.y
+            Expression VariableReference type=float2 [offset=1258..1269 line=36] : iResolution
+      Statement VarDeclaration [offset=1278..1313 line=37] : float2 uv = fragCoord / iResolution;
+        Expression Binary type=float2 [offset=1290..1313 line=37] : fragCoord / iResolution
+          Expression VariableReference type=float2 [offset=1290..1299 line=37] : fragCoord
+          Expression VariableReference type=float2 [offset=1302..1313 line=37] : iResolution
+      Statement VarDeclaration [offset=1319..1364 line=38] : float2 uv_homogeneous = fragCoord / shortEdge;
+        Expression Binary type=float2 [offset=1343..1364 line=38] : fragCoord / shortEdge
+          Expression VariableReference type=float2 [offset=1343..1352 line=38] : fragCoord
+          Expression VariableReference type=float [offset=1355..1364 line=38] : shortEdge
+      Statement VarDeclaration [offset=1370..1419 line=39] : float2 resolution_ratio = iResolution / shortEdge;
+        Expression Binary type=float2 [offset=1396..1419 line=39] : iResolution / shortEdge
+          Expression VariableReference type=float2 [offset=1396..1407 line=39] : iResolution
+          Expression VariableReference type=float [offset=1410..1419 line=39] : shortEdge
+      Statement VarDeclaration [offset=1426..1478 line=41] : float progress_slope = BASIC_SLOPE + 0.1 * waveCount;
+        Expression Binary type=float [offset=1449..1478 line=41] : BASIC_SLOPE + 0.1 * waveCount
+          Expression VariableReference type=float [offset=1449..1460 line=41] : BASIC_SLOPE
+          Expression Binary type=float [offset=1463..1478 line=41] : 0.1 * waveCount
+            Expression Literal type=float [offset=1463..1466 line=41] : 0.1
+            Expression VariableReference type=float [offset=1469..1478 line=41] : waveCount
+      Statement VarDeclaration [offset=1484..1528 line=42] : float time_value = progress_slope * progress;
+        Expression Binary type=float [offset=1503..1528 line=42] : progress_slope * progress
+          Expression VariableReference type=float [offset=1503..1517 line=42] : progress_slope
+          Expression VariableReference type=float [offset=1520..1528 line=42] : progress
+      Statement VarDeclaration [offset=1535..1587 line=44] : float2 wave_center = rippleCenter * resolution_ratio;
+        Expression Binary type=float2 [offset=1556..1587 line=44] : rippleCenter * resolution_ratio
+          Expression VariableReference type=float2 [offset=1556..1568 line=44] : rippleCenter
+          Expression VariableReference type=float2 [offset=1571..1587 line=44] : resolution_ratio
+      Statement VarDeclaration [offset=1593..1658 line=45] : float propagated_distance = distance(uv_homogeneous, wave_center);
+        Expression FunctionCall type=float [offset=1621..1658 line=45] : distance(uv_homogeneous, wave_center)
+          Expression VariableReference type=float2 [offset=1630..1644 line=45] : uv_homogeneous
+          Expression VariableReference type=float2 [offset=1646..1657 line=45] : wave_center
+      Statement VarDeclaration [offset=1664..1713 line=46] : float2 wave_vector = uv_homogeneous - wave_center;
+        Expression Binary type=float2 [offset=1685..1713 line=46] : uv_homogeneous - wave_center
+          Expression VariableReference type=float2 [offset=1685..1699 line=46] : uv_homogeneous
+          Expression VariableReference type=float2 [offset=1702..1713 line=46] : wave_center
+      Statement VarDeclaration [offset=1719..1816 line=47] : float amplitude_decay = propagated_distance < 1.0 ? pow(1.0 - propagated_distance, 4.0) : 0.0;
+        Expression Ternary type=float [offset=1743..1816 line=47] : propagated_distance < 1.0 ? pow(1.0 - propagated_distance, 4.0) : 0.0
+          Expression Binary type=bool [offset=1743..1770 line=47] : propagated_distance < 1.0
+            Expression VariableReference type=float [offset=1744..1763 line=47] : propagated_distance
+            Expression Literal type=float [offset=1766..1769 line=47] : 1.0
+          Expression FunctionCall type=float [offset=1773..1810 line=47] : pow(1.0 - propagated_distance, 4.0)
+            Expression Binary type=float [offset=1777..1804 line=47] : 1.0 - propagated_distance
+              Expression Literal type=float [offset=1778..1781 line=47] : 1.0
+              Expression VariableReference type=float [offset=1784..1803 line=47] : propagated_distance
+            Expression Literal type=float [offset=1806..1809 line=47] : 4.0
+          Expression Literal type=float [offset=1813..1816 line=47] : 0.0
+      Statement VarDeclaration [offset=1822..1910 line=48] : float amplitude_suppress = smoothstep(0.0, AMPLITUDE_SUPPRESS_AREA, propagated_distance);
+        Expression FunctionCall type=float [offset=1849..1910 line=48] : smoothstep(0.0, AMPLITUDE_SUPPRESS_AREA, propagated_distance)
+          Expression Literal type=float [offset=1860..1863 line=48] : 0.0
+          Expression VariableReference type=float [offset=1865..1888 line=48] : AMPLITUDE_SUPPRESS_AREA
+          Expression VariableReference type=float [offset=1890..1909 line=48] : propagated_distance
+      Statement Block [offset=1934..1980 line=49] : float _0_distance_to_wave = propagated_distance - WAVE_PROPAGATION_RATIO * time_value; const float _1_delta = 0.001; ...
+        Statement VarDeclaration [offset=1934..1980 line=49] : float _0_distance_to_wave = propagated_distance - WAVE_PROPAGATION_RATIO * time_value;
+          Expression Binary type=float [offset=1934..1980 line=49] : propagated_distance - WAVE_PROPAGATION_RATIO * time_value
+            Expression VariableReference type=float [offset=1934..1980 line=49] : propagated_distance
+            Expression Binary type=float [offset=1934..1980 line=49] : WAVE_PROPAGATION_RATIO * time_value
+              Expression VariableReference type=float [offset=1934..1980 line=49] : WAVE_PROPAGATION_RATIO
+              Expression VariableReference type=float [offset=1934..1980 line=49] : time_value
+        Statement VarDeclaration [offset=1934..1980 line=49] : const float _1_delta = 0.001;
+          Expression Literal type=float [offset=1934..1980 line=49] : 0.001
+        Statement VarDeclaration [offset=1934..1980 line=49] : float _2_d1 = _0_distance_to_wave - _1_delta;
+          Expression Binary type=float [offset=1934..1980 line=49] : _0_distance_to_wave - _1_delta
+            Expression VariableReference type=float [offset=1934..1980 line=49] : _0_distance_to_wave
+            Expression VariableReference type=float [offset=1934..1980 line=49] : _1_delta
+        Statement VarDeclaration [offset=1934..1980 line=49] : float _3_d2 = _0_distance_to_wave + _1_delta;
+          Expression Binary type=float [offset=1934..1980 line=49] : _0_distance_to_wave + _1_delta
+            Expression VariableReference type=float [offset=1934..1980 line=49] : _0_distance_to_wave
+            Expression VariableReference type=float [offset=1934..1980 line=49] : _1_delta
+        Statement Nop : ;
+        Statement VarDeclaration [offset=1916..2048 line=49] : float intensity = ((((calc_wave(_3_d2) - calc_wave(_2_d1)) * 499.999969) * amplitude_decay) * amplitude_suppress) * A...
+          Expression Binary type=float [offset=1934..2048 line=49] : ((((calc_wave(_3_d2) - calc_wave(_2_d1)) * 499.999969) * amplitude_decay) * amplitude_suppress) * AMPLITUDE_SUPPRESS
+            Expression Binary type=float [offset=1934..2027 line=49] : (((calc_wave(_3_d2) - calc_wave(_2_d1)) * 499.999969) * amplitude_decay) * amplitude_suppress
+              Expression Binary type=float [offset=1934..2006 line=49] : ((calc_wave(_3_d2) - calc_wave(_2_d1)) * 499.999969) * amplitude_decay
+                Expression Binary type=float [offset=1934..1980 line=49] : (calc_wave(_3_d2) - calc_wave(_2_d1)) * 499.999969
+                  Expression Binary type=float [offset=1934..1980 line=49] : calc_wave(_3_d2) - calc_wave(_2_d1)
+                    Expression FunctionCall type=float [offset=1934..1980 line=49] : calc_wave(_3_d2)
+                      Expression VariableReference type=float [offset=1934..1980 line=49] : _3_d2
+                    Expression FunctionCall type=float [offset=1934..1980 line=49] : calc_wave(_2_d1)
+                      Expression VariableReference type=float [offset=1934..1980 line=49] : _2_d1
+                  Expression Literal type=float [offset=1934..1980 line=49] : 499.999969
+                Expression VariableReference type=float [offset=1991..2006 line=50] : amplitude_decay
+              Expression VariableReference type=float [offset=2009..2027 line=50] : amplitude_suppress
+            Expression VariableReference type=float [offset=2030..2048 line=50] : AMPLITUDE_SUPPRESS
+      Statement VarDeclaration [offset=2055..2152 line=52] : float2 normalized_wave_vector = length(wave_vector) > 1e-05 ? normalize(wave_vector) : float2(0.0);
+        Expression Ternary type=float2 [offset=2087..2152 line=52] : length(wave_vector) > 1e-05 ? normalize(wave_vector) : float2(0.0)
+          Expression Binary type=bool [offset=2087..2113 line=52] : length(wave_vector) > 1e-05
+            Expression FunctionCall type=float [offset=2087..2106 line=52] : length(wave_vector)
+              Expression VariableReference type=float2 [offset=2094..2105 line=52] : wave_vector
+            Expression Literal type=float [offset=2109..2113 line=52] : 1e-05
+          Expression FunctionCall type=float2 [offset=2116..2138 line=52] : normalize(wave_vector)
+            Expression VariableReference type=float2 [offset=2126..2137 line=52] : wave_vector
+          Expression ConstructorSplat type=float2 [offset=2141..2152 line=52] : float2(0.0)
+            Expression Literal type=float [offset=2141..2152 line=52] : 0.0
+      Statement VarDeclaration [offset=2158..2209 line=53] : float2 circles = normalized_wave_vector * intensity;
+        Expression Binary type=float2 [offset=2175..2209 line=53] : normalized_wave_vector * intensity
+          Expression VariableReference type=float2 [offset=2175..2197 line=53] : normalized_wave_vector
+          Expression VariableReference type=float [offset=2200..2209 line=53] : intensity
+      Statement VarDeclaration [offset=2215..2257 line=54] : float3 normal = float3(circles, intensity);
+        Expression ConstructorCompound type=float3 [offset=2231..2257 line=54] : float3(circles, intensity)
+          Expression VariableReference type=float2 [offset=2231..2257 line=54] : circles
+          Expression VariableReference type=float [offset=2231..2257 line=54] : intensity
+      Statement VarDeclaration [offset=2263..2338 line=55] : float2 distorted_coord = (uv - DISTORT_INTENSITY * normal.xy) * iResolution;
+        Expression Binary type=float2 [offset=2288..2338 line=55] : (uv - DISTORT_INTENSITY * normal.xy) * iResolution
+          Expression Binary type=float2 [offset=2288..2324 line=55] : uv - DISTORT_INTENSITY * normal.xy
+            Expression VariableReference type=float2 [offset=2289..2291 line=55] : uv
+            Expression Binary type=float2 [offset=2294..2323 line=55] : DISTORT_INTENSITY * normal.xy
+              Expression VariableReference type=float [offset=2294..2311 line=55] : DISTORT_INTENSITY
+              Expression Swizzle type=float2 [offset=2314..2323 line=55] : normal.xy
+                Expression VariableReference type=float3 [offset=2314..2320 line=55] : normal
+          Expression VariableReference type=float2 [offset=2327..2338 line=55] : iResolution
+      Statement VarDeclaration [offset=2345..2390 line=57] : half3 color = image.eval(distorted_coord).xyz;
+        Expression Swizzle type=half3 [offset=2359..2390 line=57] : image.eval(distorted_coord).xyz
+          Expression ChildCall type=half4 [offset=2359..2386 line=57] : image.eval(distorted_coord)
+            Expression VariableReference type=float2 [offset=2370..2385 line=57] : distorted_coord
+      Statement Expression [offset=2396..2486 line=58] : color += half(150.0 * pow(clamp(dot(normal, float3(0.0, 0.992277861, -0.124034733)), 0.0, 1.0), 2.5));
+        Expression Binary type=half3 [offset=2396..2486 line=58] : color += half(150.0 * pow(clamp(dot(normal, float3(0.0, 0.992277861, -0.124034733)), 0.0, 1.0), 2.5))
+          Expression VariableReference type=half3 [offset=2396..2401 line=58] : color
+          Expression ConstructorScalarCast type=half [offset=2405..2486 line=58] : half(150.0 * pow(clamp(dot(normal, float3(0.0, 0.992277861, -0.124034733)), 0.0, 1.0), 2.5))
+            Expression Binary type=float [offset=2405..2486 line=58] : 150.0 * pow(clamp(dot(normal, float3(0.0, 0.992277861, -0.124034733)), 0.0, 1.0), 2.5)
+              Expression Literal type=float [offset=2405..2410 line=58] : 150.0
+              Expression FunctionCall type=float [offset=2413..2486 line=58] : pow(clamp(dot(normal, float3(0.0, 0.992277861, -0.124034733)), 0.0, 1.0), 2.5)
+                Expression FunctionCall type=float [offset=2417..2480 line=58] : clamp(dot(normal, float3(0.0, 0.992277861, -0.124034733)), 0.0, 1.0)
+                  Expression FunctionCall type=float [offset=2423..2469 line=58] : dot(normal, float3(0.0, 0.992277861, -0.124034733))
+                    Expression VariableReference type=float3 [offset=2427..2433 line=58] : normal
+                    Expression ConstructorCompound type=float3 [offset=2435..2468 line=58] : float3(0.0, 0.992277861, -0.124034733)
+                      Expression Literal type=float [offset=2445..2467 line=58] : 0.0
+                      Expression Literal type=float [offset=2445..2467 line=58] : 0.992277861
+                      Expression Literal type=float [offset=2445..2467 line=58] : -0.124034733
+                  Expression Literal type=float [offset=2471..2474 line=58] : 0.0
+                  Expression Literal type=float [offset=2476..2479 line=58] : 1.0
+                Expression Literal type=float [offset=2482..2485 line=58] : 2.5
+      Statement Return [offset=2492..2517 line=59] : return half4(color, 1.0);
+        Expression ConstructorCompound type=half4 [offset=2499..2516 line=59] : half4(color, 1.0)
+          Expression VariableReference type=half3 [offset=2499..2516 line=59] : color
+          Expression Literal type=half [offset=2499..2516 line=59] : 1.0

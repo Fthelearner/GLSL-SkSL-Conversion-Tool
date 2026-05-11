@@ -1,0 +1,57 @@
+Program kind=RuntimeShader elements=6 builtin_elements=omitted
+  ProgramElement GlobalVar [offset=0..20 line=1] : uniform shader image;
+    Statement VarDeclaration [offset=0..20 line=1] : uniform shader image;
+  ProgramElement GlobalVar [offset=22..52 line=2] : uniform shader displacementMap;
+    Statement VarDeclaration [offset=22..52 line=2] : uniform shader displacementMap;
+  ProgramElement GlobalVar [offset=54..80 line=3] : uniform float2 iResolution;
+    Statement VarDeclaration [offset=54..80 line=3] : uniform float2 iResolution;
+  ProgramElement GlobalVar [offset=82..103 line=4] : uniform float2 factor;
+    Statement VarDeclaration [offset=82..103 line=4] : uniform float2 factor;
+  ProgramElement GlobalVar [offset=105..127 line=5] : uniform float strength;
+    Statement VarDeclaration [offset=105..127 line=5] : uniform float strength;
+  ProgramElement Function [offset=159..414 line=8] : half4 main(float2 fragCoord) { float2 uv = fragCoord / iResolution; half4 displacement = displacementMap.eval(fragCoo...
+    Statement Block [offset=159..414 line=8] : { float2 uv = fragCoord / iResolution; half4 displacement = displacementMap.eval(fragCoord); if (displacement.w <= 0....
+      Statement VarDeclaration [offset=165..200 line=9] : float2 uv = fragCoord / iResolution;
+        Expression Binary type=float2 [offset=177..200 line=9] : fragCoord / iResolution
+          Expression VariableReference type=float2 [offset=177..186 line=9] : fragCoord
+          Expression VariableReference type=float2 [offset=189..200 line=9] : iResolution
+      Statement VarDeclaration [offset=206..258 line=10] : half4 displacement = displacementMap.eval(fragCoord);
+        Expression ChildCall type=half4 [offset=227..258 line=10] : displacementMap.eval(fragCoord)
+          Expression VariableReference type=float2 [offset=248..257 line=10] : fragCoord
+      Statement If [offset=264..342 line=11] : if (displacement.w <= 0.0) { return image.eval(fragCoord); }
+        Expression Binary type=bool [offset=268..289 line=11] : displacement.w <= 0.0
+          Expression Swizzle type=half [offset=268..282 line=11] : displacement.w
+            Expression VariableReference type=half4 [offset=268..280 line=11] : displacement
+          Expression Literal type=half [offset=286..289 line=11] : 0.0
+        Statement Block [offset=291..336 line=11] : { return image.eval(fragCoord); }
+          Statement Return [offset=301..330 line=12] : return image.eval(fragCoord);
+            Expression ChildCall type=half4 [offset=308..329 line=12] : image.eval(fragCoord)
+              Expression VariableReference type=float2 [offset=319..328 line=12] : fragCoord
+      Statement VarDeclaration [offset=342..390 line=15] : float2 direction = float2(2.0 * (displacement.xy - 0.5));
+        Expression ConstructorCompoundCast type=float2 [offset=361..390 line=15] : float2(2.0 * (displacement.xy - 0.5))
+          Expression Binary type=half2 [offset=361..390 line=15] : 2.0 * (displacement.xy - 0.5)
+            Expression Literal type=half [offset=361..364 line=15] : 2.0
+            Expression Binary type=half2 [offset=367..390 line=15] : displacement.xy - 0.5
+              Expression Swizzle type=half2 [offset=368..383 line=15] : displacement.xy
+                Expression VariableReference type=half4 [offset=368..380 line=15] : displacement
+              Expression Literal type=half [offset=386..389 line=15] : 0.5
+      Statement VarDeclaration [offset=396..441 line=16] : float2 normal = (direction * factor) * strength;
+        Expression Binary type=float2 [offset=412..441 line=16] : (direction * factor) * strength
+          Expression Binary type=float2 [offset=412..430 line=16] : direction * factor
+            Expression VariableReference type=float2 [offset=412..421 line=16] : direction
+            Expression VariableReference type=float2 [offset=424..430 line=16] : factor
+          Expression VariableReference type=float [offset=433..441 line=16] : strength
+      Statement VarDeclaration [offset=447..508 line=17] : float2 refracted_uv = clamp(uv - normal * 0.05, 0.001, 0.999);
+        Expression FunctionCall type=float2 [offset=469..508 line=17] : clamp(uv - normal * 0.05, 0.001, 0.999)
+          Expression Binary type=float2 [offset=475..493 line=17] : uv - normal * 0.05
+            Expression VariableReference type=float2 [offset=475..477 line=17] : uv
+            Expression Binary type=float2 [offset=480..493 line=17] : normal * 0.05
+              Expression VariableReference type=float2 [offset=480..486 line=17] : normal
+              Expression Literal type=float [offset=489..493 line=17] : 0.05
+          Expression Literal type=float [offset=495..500 line=17] : 0.001
+          Expression Literal type=float [offset=502..507 line=17] : 0.999
+      Statement Return [offset=514..560 line=18] : return image.eval(iResolution * refracted_uv);
+        Expression ChildCall type=half4 [offset=521..559 line=18] : image.eval(iResolution * refracted_uv)
+          Expression Binary type=float2 [offset=532..558 line=18] : iResolution * refracted_uv
+            Expression VariableReference type=float2 [offset=532..543 line=18] : iResolution
+            Expression VariableReference type=float2 [offset=546..558 line=18] : refracted_uv

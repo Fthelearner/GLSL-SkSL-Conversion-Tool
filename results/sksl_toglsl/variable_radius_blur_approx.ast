@@ -1,0 +1,185 @@
+Program kind=RuntimeShader elements=7 builtin_elements=omitted
+  ProgramElement GlobalVar [offset=0..20 line=1] : uniform shader image;
+    Statement VarDeclaration [offset=0..20 line=1] : uniform shader image;
+  ProgramElement GlobalVar [offset=22..45 line=2] : uniform shader blurMask;
+    Statement VarDeclaration [offset=22..45 line=2] : uniform shader blurMask;
+  ProgramElement GlobalVar [offset=47..73 line=3] : uniform float2 iResolution;
+    Statement VarDeclaration [offset=47..73 line=3] : uniform float2 iResolution;
+  ProgramElement GlobalVar [offset=75..98 line=4] : uniform float maxRadius;
+    Statement VarDeclaration [offset=75..98 line=4] : uniform float maxRadius;
+  ProgramElement GlobalVar [offset=100..122 line=5] : uniform float strength;
+    Statement VarDeclaration [offset=100..122 line=5] : uniform float strength;
+  ProgramElement Function [offset=228..438 line=8] : half4 sample_pair(float2 coord, float2 direction, float radius, float factor, inout float totalWeight) { float2 offse...
+    Statement Block [offset=228..438 line=8] : { float2 offset = (direction * radius) * factor; float weight = 1.0 - 0.18 * factor; totalWeight += 2.0 * weight; ret...
+      Statement VarDeclaration [offset=234..277 line=9] : float2 offset = (direction * radius) * factor;
+        Expression Binary type=float2 [offset=250..277 line=9] : (direction * radius) * factor
+          Expression Binary type=float2 [offset=250..268 line=9] : direction * radius
+            Expression VariableReference type=float2 [offset=250..259 line=9] : direction
+            Expression VariableReference type=float [offset=262..268 line=9] : radius
+          Expression VariableReference type=float [offset=271..277 line=9] : factor
+      Statement VarDeclaration [offset=283..317 line=10] : float weight = 1.0 - 0.18 * factor;
+        Expression Binary type=float [offset=298..317 line=10] : 1.0 - 0.18 * factor
+          Expression Literal type=float [offset=298..301 line=10] : 1.0
+          Expression Binary type=float [offset=304..317 line=10] : 0.18 * factor
+            Expression Literal type=float [offset=304..308 line=10] : 0.18
+            Expression VariableReference type=float [offset=311..317 line=10] : factor
+      Statement Expression [offset=323..350 line=11] : totalWeight += 2.0 * weight;
+        Expression Binary type=float [offset=323..350 line=11] : totalWeight += 2.0 * weight
+          Expression VariableReference type=float [offset=323..334 line=11] : totalWeight
+          Expression Binary type=float [offset=338..350 line=11] : 2.0 * weight
+            Expression Literal type=float [offset=338..341 line=11] : 2.0
+            Expression VariableReference type=float [offset=344..350 line=11] : weight
+      Statement Return [offset=356..436 line=12] : return (image.eval(coord + offset) + image.eval(coord - offset)) * half(weight);
+        Expression Binary type=half4 [offset=363..435 line=12] : (image.eval(coord + offset) + image.eval(coord - offset)) * half(weight)
+          Expression Binary type=half4 [offset=363..420 line=12] : image.eval(coord + offset) + image.eval(coord - offset)
+            Expression ChildCall type=half4 [offset=364..390 line=12] : image.eval(coord + offset)
+              Expression Binary type=float2 [offset=375..389 line=12] : coord + offset
+                Expression VariableReference type=float2 [offset=375..380 line=12] : coord
+                Expression VariableReference type=float2 [offset=383..389 line=12] : offset
+            Expression ChildCall type=half4 [offset=393..419 line=12] : image.eval(coord - offset)
+              Expression Binary type=float2 [offset=404..418 line=12] : coord - offset
+                Expression VariableReference type=float2 [offset=404..409 line=12] : coord
+                Expression VariableReference type=float2 [offset=412..418 line=12] : offset
+          Expression ConstructorScalarCast type=half [offset=423..435 line=12] : half(weight)
+            Expression VariableReference type=float [offset=428..434 line=12] : weight
+  ProgramElement Function [offset=465..720 line=16] : half4 main(float2 coord) { float maskAlpha = float(blurMask.eval(coord).w); float radius = clamp((maskAlpha * maxRadi...
+    Statement Block [offset=465..720 line=16] : { float maskAlpha = float(blurMask.eval(coord).w); float radius = clamp((maskAlpha * maxRadius) * strength, 0.0, maxR...
+      Statement VarDeclaration [offset=471..511 line=17] : float maskAlpha = float(blurMask.eval(coord).w);
+        Expression ConstructorScalarCast type=float [offset=489..511 line=17] : float(blurMask.eval(coord).w)
+          Expression Swizzle type=half [offset=489..511 line=17] : blurMask.eval(coord).w
+            Expression ChildCall type=half4 [offset=489..509 line=17] : blurMask.eval(coord)
+              Expression VariableReference type=float2 [offset=503..508 line=17] : coord
+      Statement VarDeclaration [offset=517..587 line=18] : float radius = clamp((maskAlpha * maxRadius) * strength, 0.0, maxRadius);
+        Expression FunctionCall type=float [offset=532..587 line=18] : clamp((maskAlpha * maxRadius) * strength, 0.0, maxRadius)
+          Expression Binary type=float [offset=538..570 line=18] : (maskAlpha * maxRadius) * strength
+            Expression Binary type=float [offset=538..559 line=18] : maskAlpha * maxRadius
+              Expression VariableReference type=float [offset=538..547 line=18] : maskAlpha
+              Expression VariableReference type=float [offset=550..559 line=18] : maxRadius
+            Expression VariableReference type=float [offset=562..570 line=18] : strength
+          Expression Literal type=float [offset=572..575 line=18] : 0.0
+          Expression VariableReference type=float [offset=577..586 line=18] : maxRadius
+      Statement If [offset=593..658 line=19] : if (radius < 0.5) { return image.eval(coord); }
+        Expression Binary type=bool [offset=597..609 line=19] : radius < 0.5
+          Expression VariableReference type=float [offset=597..603 line=19] : radius
+          Expression Literal type=float [offset=606..609 line=19] : 0.5
+        Statement Block [offset=611..652 line=19] : { return image.eval(coord); }
+          Statement Return [offset=621..646 line=20] : return image.eval(coord);
+            Expression ChildCall type=half4 [offset=628..645 line=20] : image.eval(coord)
+              Expression VariableReference type=float2 [offset=639..644 line=20] : coord
+      Statement VarDeclaration [offset=658..699 line=23] : half4 sum = image.eval(coord) * 1.4;
+        Expression Binary type=half4 [offset=670..699 line=23] : image.eval(coord) * 1.4
+          Expression ChildCall type=half4 [offset=670..687 line=23] : image.eval(coord)
+            Expression VariableReference type=float2 [offset=681..686 line=23] : coord
+          Expression Literal type=half [offset=690..699 line=23] : 1.4
+      Statement VarDeclaration [offset=705..728 line=24] : float totalWeight = 1.4;
+        Expression Literal type=float [offset=725..728 line=24] : 1.4
+      Statement VarDeclaration [offset=735..771 line=26] : float2 horizontal = float2(1.0, 0.0);
+        Expression ConstructorCompound type=float2 [offset=755..771 line=26] : float2(1.0, 0.0)
+          Expression Literal type=float [offset=755..771 line=26] : 1.0
+          Expression Literal type=float [offset=755..771 line=26] : 0.0
+      Statement VarDeclaration [offset=777..811 line=27] : float2 vertical = float2(0.0, 1.0);
+        Expression ConstructorCompound type=float2 [offset=795..811 line=27] : float2(0.0, 1.0)
+          Expression Literal type=float [offset=795..811 line=27] : 0.0
+          Expression Literal type=float [offset=795..811 line=27] : 1.0
+      Statement VarDeclaration [offset=817..863 line=28] : float2 diagonalA = float2(0.707106769);
+        Expression ConstructorSplat type=float2 [offset=836..863 line=28] : float2(0.707106769)
+          Expression Literal type=float [offset=846..862 line=28] : 0.707106769
+      Statement VarDeclaration [offset=869..916 line=29] : float2 diagonalB = float2(0.707106769, -0.707106769);
+        Expression ConstructorCompound type=float2 [offset=888..916 line=29] : float2(0.707106769, -0.707106769)
+          Expression Literal type=float [offset=898..915 line=29] : 0.707106769
+          Expression Literal type=float [offset=898..915 line=29] : -0.707106769
+      Statement Expression [offset=923..987 line=31] : sum += sample_pair(coord, horizontal, radius, 0.33, totalWeight);
+        Expression Binary type=half4 [offset=923..987 line=31] : sum += sample_pair(coord, horizontal, radius, 0.33, totalWeight)
+          Expression VariableReference type=half4 [offset=923..926 line=31] : sum
+          Expression FunctionCall type=half4 [offset=930..987 line=31] : sample_pair(coord, horizontal, radius, 0.33, totalWeight)
+            Expression VariableReference type=float2 [offset=942..947 line=31] : coord
+            Expression VariableReference type=float2 [offset=949..959 line=31] : horizontal
+            Expression VariableReference type=float [offset=961..967 line=31] : radius
+            Expression Literal type=float [offset=969..973 line=31] : 0.33
+            Expression VariableReference type=float [offset=975..986 line=31] : totalWeight
+      Statement Expression [offset=993..1057 line=32] : sum += sample_pair(coord, horizontal, radius, 0.66, totalWeight);
+        Expression Binary type=half4 [offset=993..1057 line=32] : sum += sample_pair(coord, horizontal, radius, 0.66, totalWeight)
+          Expression VariableReference type=half4 [offset=993..996 line=32] : sum
+          Expression FunctionCall type=half4 [offset=1000..1057 line=32] : sample_pair(coord, horizontal, radius, 0.66, totalWeight)
+            Expression VariableReference type=float2 [offset=1012..1017 line=32] : coord
+            Expression VariableReference type=float2 [offset=1019..1029 line=32] : horizontal
+            Expression VariableReference type=float [offset=1031..1037 line=32] : radius
+            Expression Literal type=float [offset=1039..1043 line=32] : 0.66
+            Expression VariableReference type=float [offset=1045..1056 line=32] : totalWeight
+      Statement Expression [offset=1063..1127 line=33] : sum += sample_pair(coord, horizontal, radius, 1.0, totalWeight);
+        Expression Binary type=half4 [offset=1063..1127 line=33] : sum += sample_pair(coord, horizontal, radius, 1.0, totalWeight)
+          Expression VariableReference type=half4 [offset=1063..1066 line=33] : sum
+          Expression FunctionCall type=half4 [offset=1070..1127 line=33] : sample_pair(coord, horizontal, radius, 1.0, totalWeight)
+            Expression VariableReference type=float2 [offset=1082..1087 line=33] : coord
+            Expression VariableReference type=float2 [offset=1089..1099 line=33] : horizontal
+            Expression VariableReference type=float [offset=1101..1107 line=33] : radius
+            Expression Literal type=float [offset=1109..1113 line=33] : 1.0
+            Expression VariableReference type=float [offset=1115..1126 line=33] : totalWeight
+      Statement Expression [offset=1134..1196 line=35] : sum += sample_pair(coord, vertical, radius, 0.33, totalWeight);
+        Expression Binary type=half4 [offset=1134..1196 line=35] : sum += sample_pair(coord, vertical, radius, 0.33, totalWeight)
+          Expression VariableReference type=half4 [offset=1134..1137 line=35] : sum
+          Expression FunctionCall type=half4 [offset=1141..1196 line=35] : sample_pair(coord, vertical, radius, 0.33, totalWeight)
+            Expression VariableReference type=float2 [offset=1153..1158 line=35] : coord
+            Expression VariableReference type=float2 [offset=1160..1168 line=35] : vertical
+            Expression VariableReference type=float [offset=1170..1176 line=35] : radius
+            Expression Literal type=float [offset=1178..1182 line=35] : 0.33
+            Expression VariableReference type=float [offset=1184..1195 line=35] : totalWeight
+      Statement Expression [offset=1202..1264 line=36] : sum += sample_pair(coord, vertical, radius, 0.66, totalWeight);
+        Expression Binary type=half4 [offset=1202..1264 line=36] : sum += sample_pair(coord, vertical, radius, 0.66, totalWeight)
+          Expression VariableReference type=half4 [offset=1202..1205 line=36] : sum
+          Expression FunctionCall type=half4 [offset=1209..1264 line=36] : sample_pair(coord, vertical, radius, 0.66, totalWeight)
+            Expression VariableReference type=float2 [offset=1221..1226 line=36] : coord
+            Expression VariableReference type=float2 [offset=1228..1236 line=36] : vertical
+            Expression VariableReference type=float [offset=1238..1244 line=36] : radius
+            Expression Literal type=float [offset=1246..1250 line=36] : 0.66
+            Expression VariableReference type=float [offset=1252..1263 line=36] : totalWeight
+      Statement Expression [offset=1270..1332 line=37] : sum += sample_pair(coord, vertical, radius, 1.0, totalWeight);
+        Expression Binary type=half4 [offset=1270..1332 line=37] : sum += sample_pair(coord, vertical, radius, 1.0, totalWeight)
+          Expression VariableReference type=half4 [offset=1270..1273 line=37] : sum
+          Expression FunctionCall type=half4 [offset=1277..1332 line=37] : sample_pair(coord, vertical, radius, 1.0, totalWeight)
+            Expression VariableReference type=float2 [offset=1289..1294 line=37] : coord
+            Expression VariableReference type=float2 [offset=1296..1304 line=37] : vertical
+            Expression VariableReference type=float [offset=1306..1312 line=37] : radius
+            Expression Literal type=float [offset=1314..1318 line=37] : 1.0
+            Expression VariableReference type=float [offset=1320..1331 line=37] : totalWeight
+      Statement Expression [offset=1339..1401 line=39] : sum += sample_pair(coord, diagonalA, radius, 0.5, totalWeight);
+        Expression Binary type=half4 [offset=1339..1401 line=39] : sum += sample_pair(coord, diagonalA, radius, 0.5, totalWeight)
+          Expression VariableReference type=half4 [offset=1339..1342 line=39] : sum
+          Expression FunctionCall type=half4 [offset=1346..1401 line=39] : sample_pair(coord, diagonalA, radius, 0.5, totalWeight)
+            Expression VariableReference type=float2 [offset=1358..1363 line=39] : coord
+            Expression VariableReference type=float2 [offset=1365..1374 line=39] : diagonalA
+            Expression VariableReference type=float [offset=1376..1382 line=39] : radius
+            Expression Literal type=float [offset=1384..1387 line=39] : 0.5
+            Expression VariableReference type=float [offset=1389..1400 line=39] : totalWeight
+      Statement Expression [offset=1407..1469 line=40] : sum += sample_pair(coord, diagonalA, radius, 0.9, totalWeight);
+        Expression Binary type=half4 [offset=1407..1469 line=40] : sum += sample_pair(coord, diagonalA, radius, 0.9, totalWeight)
+          Expression VariableReference type=half4 [offset=1407..1410 line=40] : sum
+          Expression FunctionCall type=half4 [offset=1414..1469 line=40] : sample_pair(coord, diagonalA, radius, 0.9, totalWeight)
+            Expression VariableReference type=float2 [offset=1426..1431 line=40] : coord
+            Expression VariableReference type=float2 [offset=1433..1442 line=40] : diagonalA
+            Expression VariableReference type=float [offset=1444..1450 line=40] : radius
+            Expression Literal type=float [offset=1452..1455 line=40] : 0.9
+            Expression VariableReference type=float [offset=1457..1468 line=40] : totalWeight
+      Statement Expression [offset=1475..1537 line=41] : sum += sample_pair(coord, diagonalB, radius, 0.5, totalWeight);
+        Expression Binary type=half4 [offset=1475..1537 line=41] : sum += sample_pair(coord, diagonalB, radius, 0.5, totalWeight)
+          Expression VariableReference type=half4 [offset=1475..1478 line=41] : sum
+          Expression FunctionCall type=half4 [offset=1482..1537 line=41] : sample_pair(coord, diagonalB, radius, 0.5, totalWeight)
+            Expression VariableReference type=float2 [offset=1494..1499 line=41] : coord
+            Expression VariableReference type=float2 [offset=1501..1510 line=41] : diagonalB
+            Expression VariableReference type=float [offset=1512..1518 line=41] : radius
+            Expression Literal type=float [offset=1520..1523 line=41] : 0.5
+            Expression VariableReference type=float [offset=1525..1536 line=41] : totalWeight
+      Statement Expression [offset=1543..1605 line=42] : sum += sample_pair(coord, diagonalB, radius, 0.9, totalWeight);
+        Expression Binary type=half4 [offset=1543..1605 line=42] : sum += sample_pair(coord, diagonalB, radius, 0.9, totalWeight)
+          Expression VariableReference type=half4 [offset=1543..1546 line=42] : sum
+          Expression FunctionCall type=half4 [offset=1550..1605 line=42] : sample_pair(coord, diagonalB, radius, 0.9, totalWeight)
+            Expression VariableReference type=float2 [offset=1562..1567 line=42] : coord
+            Expression VariableReference type=float2 [offset=1569..1578 line=42] : diagonalB
+            Expression VariableReference type=float [offset=1580..1586 line=42] : radius
+            Expression Literal type=float [offset=1588..1591 line=42] : 0.9
+            Expression VariableReference type=float [offset=1593..1604 line=42] : totalWeight
+      Statement Return [offset=1612..1643 line=44] : return sum / half(totalWeight);
+        Expression Binary type=half4 [offset=1619..1642 line=44] : sum / half(totalWeight)
+          Expression VariableReference type=half4 [offset=1619..1622 line=44] : sum
+          Expression ConstructorScalarCast type=half [offset=1625..1642 line=44] : half(totalWeight)
+            Expression VariableReference type=float [offset=1630..1641 line=44] : totalWeight

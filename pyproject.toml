@@ -1,0 +1,11 @@
+[project]
+name = "sksl-glsl-transpiler"
+version = "0.1.0"
+description = "Bidirectional SkSL ↔ GLSL transpiler with semantic preservation."
+requires-python = ">=3.11"
+dependencies = [
+    "skia-python",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,11 @@
+{
+  "mse": 3745.6435,
+  "psnr": 12.4,
+  "max_pixel_diff": 223,
+  "pixel_diff_percent": 36.27,
+  "total_pixels": 921600,
+  "different_pixels": 334238,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0
+}

@@ -1,0 +1,2 @@
+warning: `VIRTUAL_ENV=/usr` does not match the project environment path `skip_demo/.venv` and will be ignored; use `--active` to target the active environment instead
+Rendered -> /home/user/project/results/v1/to_sksl/passthrough.png

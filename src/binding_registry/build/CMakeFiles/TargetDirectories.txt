@@ -1,0 +1,3 @@
+/home/user/project/binding_registry/build/CMakeFiles/binding_registry.dir
+/home/user/project/binding_registry/build/CMakeFiles/edit_cache.dir
+/home/user/project/binding_registry/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,7 @@
+-xc++
+-std=c++20
+-I.
+-Isrc/binding_registry/include
+-Iskia
+-Iglslang
+-Iglslang/glslang

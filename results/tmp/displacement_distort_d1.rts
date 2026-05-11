@@ -1,0 +1,19 @@
+uniform shader image;
+uniform shader displacementMap;
+uniform float2 iResolution;
+uniform float2 factor;
+uniform float strength;
+
+half4 main(float2 fragCoord)
+{
+    float2 uv = fragCoord / iResolution;
+    half4 displacement = displacementMap.eval(fragCoord);
+    if (displacement.a <= 0.0) {
+        return image.eval(fragCoord);
+    }
+
+    float2 direction = 2.0 * (displacement.rg - 0.5);
+    float2 normal = direction * factor * strength;
+    float2 refracted_uv = clamp(uv - normal * 0.05, 0.001, 0.999);
+    return image.eval(iResolution * refracted_uv);
+}
