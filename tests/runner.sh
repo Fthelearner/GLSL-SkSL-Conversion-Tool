@@ -780,7 +780,7 @@ print_summary() {
 # Pipeline Mode — flexible single-direction conversion + render + animate
 # ============================================================================
 
-PIPELINE_OUTPUT_ROOT="$PROJECT_ROOT/results"
+PIPELINE_OUTPUT_ROOT="$PROJECT_ROOT/results/glsltosksl/v1"
 
 
 render_single_frame_glsl() {
@@ -820,7 +820,13 @@ for name, val in cfg.get('uniforms', {}).items():
         print(f'{name} {val}')
 ")
 
-    "${render_cmd[@]}" 2>&1 || return 1
+    local err_log="${out_path%.png}.errors.txt"
+    if "${render_cmd[@]}" > "$err_log" 2>&1; then
+        rm -f "$err_log"
+    else
+        echo "ERROR: GLSL render failed — see $err_log" >&2
+        return 1
+    fi
     convert "$out_ppm" "$out_path" 2>/dev/null || return 1
     rm -f "$out_ppm"
 }
@@ -869,7 +875,14 @@ for name, val in cfg.get('textures', {}).items():
         print(name)
 ")
 
-    "${cmd[@]}" 2>&1 || return 1
+    local err_log="${out_path%.png}.errors.txt"
+    if "${cmd[@]}" > "$err_log" 2>&1; then
+        rm -f "$err_log"
+    else
+        # Preserve error log for diagnosis
+        echo "ERROR: SKSL render failed — see $err_log" >&2
+        return 1
+    fi
 }
 
 convert_sksl_to_glsl() {
@@ -887,11 +900,44 @@ convert_glsl_to_sksl() {
     rm -rf "$tmp_in" "$tmp_out"
     mkdir -p "$tmp_in"
     local base; base=$(basename "${glsl%.*}")
+
     cp "$glsl" "$tmp_in/${base}.frag"
     local prov="${glsl}.provenance"
     [ -f "$prov" ] && cp "$prov" "$tmp_in/${base}.frag.provenance"
     "$GLSLANG_TO_SKSL" "$tmp_in" "$tmp_out" 2>&1 || return 1
     cp "$tmp_out/${base}.sksl" "$out_sksl" 2>/dev/null || return 1
+    cp "$tmp_out/${base}.sksl.provenance" "$(dirname "$out_sksl")/${base}.sksl.provenance" 2>/dev/null || true
+    # Dedup: glslang may produce both "type name;" and "type name = init;"
+    # for the same global. Remove the bare declaration if an initialized
+    # one follows within 3 lines.
+    python3 -c "
+import re
+with open('$out_sksl', 'r') as f:
+    lines = f.readlines()
+i = 0
+while i < len(lines):
+    m = re.match(r'^(\w[\w\d]*)\s+(\w[\w\d]*)\s*;\s*$', lines[i])
+    if m:
+        typ, name = m.group(1), m.group(2)
+        for j in range(i+1, min(i+4, len(lines))):
+            if re.match(rf'^{re.escape(typ)}\s+{re.escape(name)}\s*=', lines[j]):
+                lines[i] = ''  # remove bare decl
+                break
+    i += 1
+with open('$out_sksl', 'w') as f:
+    f.writelines([l for l in lines if l != ''])
+" 2>/dev/null || true
+    # Also dump glslang AST intermediate representation.
+    # Shadertoy shaders lack #version; prepend #version 330 for proper AST dump.
+    local out_ast="$(dirname "$out_sksl")/${base}.ast"
+    if head -1 "$glsl" | grep -q "#version"; then
+        "$GLSLANG" -i -S frag "$glsl" > "$out_ast" 2>&1 || true
+    else
+        local tmp_glsl="$TMP/${base}_with_version.frag"
+        { echo "#version 330"; cat "$glsl"; } > "$tmp_glsl"
+        "$GLSLANG" -i -S frag "$tmp_glsl" > "$out_ast" 2>&1 || true
+        rm -f "$tmp_glsl"
+    fi
     rm -rf "$tmp_in" "$tmp_out"
 }
 
@@ -1156,36 +1202,36 @@ run_pipeline_glsl_to_sksl() {
 
     echo "=== Pipeline: GLSL -> SKSL ($name) ==="
 
-    # before/: copy original and render
-    cp "$input" "$out_dir/before/${name}.glsl"
-    echo "  [before] copied $name.glsl"
+    # before/: pre-process GLSL (default inits + fwidth), save, and render
+    local preprocessed="$TMP/${name}.frag"
+    local mods_json="$out_dir/code/${name}.modifications.json"
+    python3 "$SCRIPT_DIR/preprocess_glsl.py" "$input" \
+        --output "$preprocessed" --mods "$mods_json" 2>&1 || cp "$input" "$preprocessed"
+    cp "$preprocessed" "$out_dir/before/${name}.glsl"
+    echo "  [before] pre-processed $name.glsl"
 
     if [ "$animated" = "True" ]; then
         local ascii_enabled ascii_fps
         ascii_enabled=$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['ascii']['enabled'])")
         ascii_fps=$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['ascii']['fps'])")
-
         if [ "$ascii_enabled" = "True" ] && [ -t 1 ]; then
             ASCII_PID=$(display_ascii_animation "$out_dir/before" "$ascii_fps")
             echo "  [ascii] started PID=$ASCII_PID"
         fi
-
-        render_glsl_animated "$input" "$out_dir/before" "$config_json"
+        render_glsl_animated "$preprocessed" "$out_dir/before" "$config_json"
         echo "  [before] animated render done"
-
         if [ -n "${ASCII_PID:-}" ]; then
-            kill "$ASCII_PID" 2>/dev/null || true
-            wait "$ASCII_PID" 2>/dev/null || true
+            kill "$ASCII_PID" 2>/dev/null || true; wait "$ASCII_PID" 2>/dev/null || true
         fi
         encode_mp4 "$out_dir/before" "$out_dir/before/${name}.mp4" \
             "$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['fps'])")" || true
     else
-        render_single_frame_glsl "$input" "$out_dir/before/${name}.png" "$width" "$height" "$config_json"
+        render_single_frame_glsl "$preprocessed" "$out_dir/before/${name}.png" "$width" "$height" "$config_json"
         echo "  [before] rendered $name.png"
     fi
 
-    # code/: convert GLSL->SKSL
-    convert_glsl_to_sksl "$input" "$out_dir/code/${name}.sksl" || {
+    # code/: convert GLSL->SKSL (uses pre-processed GLSL)
+    convert_glsl_to_sksl "$preprocessed" "$out_dir/code/${name}.sksl" || {
         echo "ERROR: GLSL->SKSL conversion failed"
         return 1
     }
@@ -1262,6 +1308,7 @@ run_pipeline() {
     local input="" config_file="" out_root="$PIPELINE_OUTPUT_ROOT"
     local override_width="" override_height="" override_fps="" override_duration=""
     local force_animate="" no_animate="" no_ascii="" direction="" force=""
+    mkdir -p "$TMP"
 
     # Parse pipeline args
     while [ $# -gt 0 ]; do

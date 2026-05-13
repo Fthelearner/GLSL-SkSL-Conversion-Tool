@@ -1,0 +1,1 @@
+{"dimensions":{"width":1280,"height":720},"textures":{"image":"assets/input.png","blurMask":"assets/blur_mask.png"},"uniforms":{"iResolution":[1280,720],"maxRadius":24.0,"strength":1.0},"direction":"glsl_to_sksl"}

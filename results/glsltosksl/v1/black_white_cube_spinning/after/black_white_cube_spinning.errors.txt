@@ -1,0 +1,44 @@
+ERROR: render failed — error: 26: missing init declaration
+    for (; i > 0.65; i *= 0.5) {
+         ^
+error: 46: symbol 'hit' was already defined
+bool hit = false;
+^^^^^^^^^^^^^^^^
+error: 74: unknown identifier 'i'
+        o *= i;
+             ^
+error: 77: unknown identifier 'i'
+    o *= i;
+         ^
+error: 79: unknown identifier 's'
+        p += D * s, o += (s = map(p));
+                 ^
+error: 79: unknown identifier 's'
+        p += D * s, o += (s = map(p));
+                          ^
+error: 78: expected loop index on left hand side of condition
+    for (float i = 0.0; i++ < 70.0; ) {
+                        ^^^^^^^^^^
+error: 83: unknown identifier 's'
+        p += r * 0.05, D = reflect(D, r), s = (i = 0.0);
+                                          ^
+error: 83: unknown identifier 'i'
+        p += r * 0.05, D = reflect(D, r), s = (i = 0.0);
+                                               ^
+error: 85: unknown identifier 's'
+            p += D * s, s = map(p) * 0.8, ref += s;
+                     ^
+error: 85: unknown identifier 's'
+            p += D * s, s = map(p) * 0.8, ref += s;
+                        ^
+error: 85: unknown identifier 's'
+            p += D * s, s = map(p) * 0.8, ref += s;
+                                                 ^
+error: 84: expected loop index on left hand side of condition
+        for (float i = 0.0; i++ < 30.0; ) {
+                            ^^^^^^^^^^
+error: 90: no match for tanh(float4)
+    o = tanh(o / 40.0);
+        ^^^^^^^^^^^^^^
+14 errors
+

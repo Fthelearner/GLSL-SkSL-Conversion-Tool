@@ -1,0 +1,60 @@
+uniform shader image;
+uniform float2 iResolution;
+uniform float progress;
+uniform float waveCount;
+uniform float2 rippleCenter;
+
+const float BASIC_SLOPE = 0.5;
+const float AMPLITUDE_SUPPRESS = 0.012;
+const float WAVE_FREQUENCY = 31.0;
+const float WAVE_PROPAGATION_RATIO = 2.0;
+const float AMPLITUDE_SUPPRESS_AREA = 0.45;
+const float DISTORT_INTENSITY = 0.15;
+
+float calc_wave(float distance_to_wave)
+{
+    float pre_wave = smoothstep(0.0, -0.3, distance_to_wave);
+    float wave_form = (waveCount == 1.0) ?
+        smoothstep(-0.4, -0.2, distance_to_wave) * smoothstep(0.0, -0.2, distance_to_wave) :
+        (waveCount == 2.0) ?
+        smoothstep(-0.6, -0.3, distance_to_wave) * pre_wave :
+        smoothstep(-0.9, -0.6, distance_to_wave) * step(abs(distance_to_wave + 0.45), 0.45) * pre_wave;
+    return -sin(WAVE_FREQUENCY * distance_to_wave) * wave_form;
+}
+
+float wave_gradient(float propagated_distance, float time_value)
+{
+    float distance_to_wave = propagated_distance - WAVE_PROPAGATION_RATIO * time_value;
+    float delta = 1e-3;
+    float d1 = distance_to_wave - delta;
+    float d2 = distance_to_wave + delta;
+    return (calc_wave(d2) - calc_wave(d1)) / (2.0 * delta);
+}
+
+half4 main(float2 fragCoord)
+{
+    float shortEdge = min(iResolution.x, iResolution.y);
+    float2 uv = fragCoord / iResolution;
+    float2 uv_homogeneous = fragCoord / shortEdge;
+    float2 resolution_ratio = iResolution / shortEdge;
+
+    float progress_slope = BASIC_SLOPE + 0.1 * waveCount;
+    float time_value = progress_slope * progress;
+
+    float2 wave_center = rippleCenter * resolution_ratio;
+    float propagated_distance = distance(uv_homogeneous, wave_center);
+    float2 wave_vector = uv_homogeneous - wave_center;
+    float amplitude_decay = (propagated_distance < 1.0) ? pow((1.0 - propagated_distance), 4.0) : 0.0;
+    float amplitude_suppress = smoothstep(0.0, AMPLITUDE_SUPPRESS_AREA, propagated_distance);
+    float intensity = wave_gradient(propagated_distance, time_value) *
+        amplitude_decay * amplitude_suppress * AMPLITUDE_SUPPRESS;
+
+    float2 normalized_wave_vector = length(wave_vector) > 1e-5 ? normalize(wave_vector) : float2(0.0);
+    float2 circles = normalized_wave_vector * intensity;
+    float3 normal = float3(circles, intensity);
+    float2 distorted_coord = (uv - DISTORT_INTENSITY * normal.xy) * iResolution;
+
+    half3 color = image.eval(distorted_coord).rgb;
+    color += 150.0 * pow(clamp(dot(normal, normalize(float3(0.0, 4.0, -0.5))), 0.0, 1.0), 2.5);
+    return half4(color, 1.0);
+}

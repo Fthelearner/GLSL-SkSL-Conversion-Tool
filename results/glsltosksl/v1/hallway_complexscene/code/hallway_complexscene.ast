@@ -1,0 +1,694 @@
+/home/user/project/results/t5/tmp/hallway_complexscene_with_version.frag
+ERROR: 0:98: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 1 compilation errors.  No code generated.
+
+Shader version: 330
+ERROR: node is still EOpNull!
+0:44  Function Definition: mainImage0(vf4;vf2; ( global void)
+0:44    Function Parameters: 
+0:44      'o' ( out 4-component vector of float)
+0:44      'u' ( in 2-component vector of float)
+0:45    Sequence
+0:45      Sequence
+0:45        move second child to first child ( temp float)
+0:45          't' ( temp float)
+0:45          'iTime' ( uniform float)
+0:46      Sequence
+0:46        move second child to first child ( temp 3-component vector of float)
+0:46          'p' ( temp 3-component vector of float)
+0:46          'resol' ( global 3-component vector of float)
+0:47      move second child to first child ( temp 2-component vector of float)
+0:47        'u' ( in 2-component vector of float)
+0:47        divide ( temp 2-component vector of float)
+0:47          subtract ( temp 2-component vector of float)
+0:47            'u' ( in 2-component vector of float)
+0:47            divide ( temp 2-component vector of float)
+0:47              vector swizzle ( temp 2-component vector of float)
+0:47                'p' ( temp 3-component vector of float)
+0:47                Sequence
+0:47                  Constant:
+0:47                    0 (const int)
+0:47                  Constant:
+0:47                    1 (const int)
+0:47              Constant:
+0:47                2.000000
+0:47          direct index ( temp float)
+0:47            'p' ( temp 3-component vector of float)
+0:47            Constant:
+0:47              1 (const int)
+0:48      Sequence
+0:48        vector scale second child into first child ( temp 4-component vector of float)
+0:48          'o' ( out 4-component vector of float)
+0:48          'i' ( temp float)
+0:48        Loop with condition tested first
+0:48          Loop Condition
+0:48          Compare Less Than ( temp bool)
+0:48            Post-Increment ( temp float)
+0:48              'i' ( temp float)
+0:48            Constant:
+0:48              100.000000
+0:48          Loop Body
+0:51          Sequence
+0:54            Comma ( temp float)
+0:53              Comma ( temp float)
+0:52                Comma ( temp 2-component vector of float)
+0:51                  Comma ( temp float)
+0:51                    move second child to first child ( temp 3-component vector of float)
+0:51                      'p' ( temp 3-component vector of float)
+0:51                      Construct vec3 ( temp 3-component vector of float)
+0:51                        vector-scale ( temp 2-component vector of float)
+0:51                          'u' ( in 2-component vector of float)
+0:51                          'd' ( temp float)
+0:51                        subtract ( temp float)
+0:51                          'd' ( temp float)
+0:51                          Constant:
+0:51                            9.000000
+0:52                    multiply second child into first child ( temp float)
+0:52                      direct index ( temp float)
+0:52                        'p' ( temp 3-component vector of float)
+0:52                        Constant:
+0:52                          2 (const int)
+0:52                      Constant:
+0:52                        0.300000
+0:53                  matrix mult second child into first child ( temp 2-component vector of float)
+0:53                    vector swizzle ( temp 2-component vector of float)
+0:53                      'p' ( temp 3-component vector of float)
+0:53                      Sequence
+0:53                        Constant:
+0:53                          0 (const int)
+0:53                        Constant:
+0:53                          1 (const int)
+0:53                    Construct mat2 ( temp 2X2 matrix of float)
+0:53                      cosine ( global 4-component vector of float)
+0:53                        add ( temp 4-component vector of float)
+0:53                          add ( temp float)
+0:53                            component-wise multiply ( temp float)
+0:53                              Constant:
+0:53                                0.010000
+0:53                              't' ( temp float)
+0:53                            component-wise multiply ( temp float)
+0:53                              component-wise multiply ( temp float)
+0:53                                direct index ( temp float)
+0:53                                  'p' ( temp 3-component vector of float)
+0:53                                  Constant:
+0:53                                    2 (const int)
+0:53                                'd' ( temp float)
+0:53                              Constant:
+0:53                                0.005000
+0:53                          Constant:
+0:53                            0.000000
+0:53                            33.000000
+0:53                            11.000000
+0:53                            0.000000
+0:54                move second child to first child ( temp float)
+0:54                  's' ( temp float)
+0:54                  max ( global float)
+0:54                    subtract ( temp float)
+0:54                      Constant:
+0:54                        6.000000
+0:54                      length ( global float)
+0:54                        vector swizzle ( temp 2-component vector of float)
+0:54                          'p' ( temp 3-component vector of float)
+0:54                          Sequence
+0:54                            Constant:
+0:54                              0 (const int)
+0:54                            Constant:
+0:54                              1 (const int)
+0:54                    subtract ( temp float)
+0:54                      length ( global float)
+0:54                        'p' ( temp 3-component vector of float)
+0:54                      Constant:
+0:54                        16.000000
+0:55              move second child to first child ( temp float)
+0:55                'a' ( temp float)
+0:55                Constant:
+0:55                  1.000000
+0:51            Loop with condition tested first
+0:51              Loop Condition
+0:55              Compare Less Than ( temp bool)
+0:55                'a' ( temp float)
+0:55                Constant:
+0:55                  8.000000
+0:51              Loop Body
+0:56              Comma ( temp float)
+0:56                add second child into first child ( temp 3-component vector of float)
+0:56                  'p' ( temp 3-component vector of float)
+0:56                  vector-scale ( temp 3-component vector of float)
+0:56                    cosine ( global 3-component vector of float)
+0:56                      add ( temp 3-component vector of float)
+0:56                        add ( temp float)
+0:56                          component-wise multiply ( temp float)
+0:56                            Constant:
+0:56                              0.200000
+0:56                            't' ( temp float)
+0:56                          'a' ( temp float)
+0:56                        vector swizzle ( temp 3-component vector of float)
+0:56                          'p' ( temp 3-component vector of float)
+0:56                          Sequence
+0:56                            Constant:
+0:56                              1 (const int)
+0:56                            Constant:
+0:56                              2 (const int)
+0:56                            Constant:
+0:56                              0 (const int)
+0:56                    Constant:
+0:56                      0.300000
+0:57                subtract second child into first child ( temp float)
+0:57                  's' ( temp float)
+0:57                  divide ( temp float)
+0:57                    Absolute value ( global float)
+0:57                      dot-product ( global float)
+0:57                        sine ( global 3-component vector of float)
+0:57                          add ( temp 3-component vector of float)
+0:57                            't' ( temp float)
+0:57                            vector-scale ( temp 3-component vector of float)
+0:57                              vector-scale ( temp 3-component vector of float)
+0:57                                'p' ( temp 3-component vector of float)
+0:57                                'a' ( temp float)
+0:57                              Constant:
+0:57                                6.000000
+0:57                        subtract ( temp 3-component vector of float)
+0:57                          add ( temp 3-component vector of float)
+0:57                            Constant:
+0:57                              0.030000
+0:57                            'p' ( temp 3-component vector of float)
+0:57                          'p' ( temp 3-component vector of float)
+0:57                    'a' ( temp float)
+0:51              Loop Terminal Expression
+0:55              add second child into first child ( temp float)
+0:55                'a' ( temp float)
+0:55                'a' ( temp float)
+0:48          Loop Terminal Expression
+0:49          Comma ( temp 4-component vector of float)
+0:49            add second child into first child ( temp float)
+0:49              'd' ( temp float)
+0:49              move second child to first child ( temp float)
+0:49                's' ( temp float)
+0:49                add ( temp float)
+0:49                  Constant:
+0:49                    0.010000
+0:49                  component-wise multiply ( temp float)
+0:49                    Absolute value ( global float)
+0:49                      's' ( temp float)
+0:49                    Constant:
+0:49                      0.600000
+0:50            add second child into first child ( temp 4-component vector of float)
+0:50              'o' ( out 4-component vector of float)
+0:50              divide ( temp 4-component vector of float)
+0:50                Construct vec4 ( temp 4-component vector of float)
+0:50                  Constant:
+0:50                    14.000000
+0:50                  subtract ( temp float)
+0:50                    Constant:
+0:50                      2.700000
+0:50                    component-wise multiply ( temp float)
+0:50                      cosine ( global float)
+0:50                        component-wise multiply ( temp float)
+0:50                          Constant:
+0:50                            0.500000
+0:50                          't' ( temp float)
+0:50                      Constant:
+0:50                        0.600000
+0:50                  Constant:
+0:50                    0.800000
+0:50                  Constant:
+0:50                    0.000000
+0:50                's' ( temp float)
+0:58      move second child to first child ( temp 4-component vector of float)
+0:58        'o' ( out 4-component vector of float)
+0:58        hyp. tangent ( global 4-component vector of float)
+0:58          divide ( temp 4-component vector of float)
+0:58            divide ( temp 4-component vector of float)
+0:58              'o' ( out 4-component vector of float)
+0:58              Constant:
+0:58                10000.000000
+0:58            max ( global float)
+0:58              dot-product ( global float)
+0:58                add second child into first child ( temp 2-component vector of float)
+0:58                  'u' ( in 2-component vector of float)
+0:58                  vector-scale ( temp 2-component vector of float)
+0:58                    vector swizzle ( temp 2-component vector of float)
+0:58                      'u' ( in 2-component vector of float)
+0:58                      Sequence
+0:58                        Constant:
+0:58                          1 (const int)
+0:58                        Constant:
+0:58                          0 (const int)
+0:58                    Constant:
+0:58                      2.000000
+0:58                'u' ( in 2-component vector of float)
+0:58              Constant:
+0:58                0.100000
+0:62  Function Definition: mainImage1(vf4;vf2; ( global void)
+0:62    Function Parameters: 
+0:62      'o' ( out 4-component vector of float)
+0:62      'u' ( in 2-component vector of float)
+0:63    Sequence
+0:63      Sequence
+0:63        move second child to first child ( temp float)
+0:63          't' ( temp float)
+0:63          component-wise multiply ( temp float)
+0:63            'iTime' ( uniform float)
+0:63            Constant:
+0:63              0.500000
+0:64      Sequence
+0:64        move second child to first child ( temp 3-component vector of float)
+0:64          'p' ( temp 3-component vector of float)
+0:64          'resol' ( global 3-component vector of float)
+0:65      move second child to first child ( temp 2-component vector of float)
+0:65        'u' ( in 2-component vector of float)
+0:65        divide ( temp 2-component vector of float)
+0:65          subtract ( temp 2-component vector of float)
+0:65            add ( temp 2-component vector of float)
+0:65              'u' ( in 2-component vector of float)
+0:65              'u' ( in 2-component vector of float)
+0:65            vector swizzle ( temp 2-component vector of float)
+0:65              'p' ( temp 3-component vector of float)
+0:65              Sequence
+0:65                Constant:
+0:65                  0 (const int)
+0:65                Constant:
+0:65                  1 (const int)
+0:65          direct index ( temp float)
+0:65            'p' ( temp 3-component vector of float)
+0:65            Constant:
+0:65              1 (const int)
+0:66      add second child into first child ( temp 2-component vector of float)
+0:66        'u' ( in 2-component vector of float)
+0:66        Construct vec2 ( temp 2-component vector of float)
+0:66          component-wise multiply ( temp float)
+0:66            cosine ( global float)
+0:66              component-wise multiply ( temp float)
+0:66                't' ( temp float)
+0:66                Constant:
+0:66                  0.400000
+0:66            Constant:
+0:66              0.300000
+0:66          component-wise multiply ( temp float)
+0:66            cosine ( global float)
+0:66              component-wise multiply ( temp float)
+0:66                't' ( temp float)
+0:66                Constant:
+0:66                  0.800000
+0:66            Constant:
+0:66              0.100000
+0:67      Sequence
+0:67        vector scale second child into first child ( temp 4-component vector of float)
+0:67          'o' ( out 4-component vector of float)
+0:67          'i' ( temp float)
+0:67        Loop with condition tested first
+0:67          Loop Condition
+0:67          Compare Less Than ( temp bool)
+0:67            Post-Increment ( temp float)
+0:67              'i' ( temp float)
+0:67            Constant:
+0:67              100.000000
+0:67          Loop Body
+0:70          Sequence
+0:76            Comma ( temp float)
+0:75              Comma ( temp float)
+0:74                Comma ( temp float)
+0:70                  Comma ( temp 3-component vector of float)
+0:70                    move second child to first child ( temp 3-component vector of float)
+0:70                      'p' ( temp 3-component vector of float)
+0:70                      Construct vec3 ( temp 3-component vector of float)
+0:70                        vector-scale ( temp 2-component vector of float)
+0:70                          'u' ( in 2-component vector of float)
+0:70                          'd' ( temp float)
+0:70                        add ( temp float)
+0:70                          'd' ( temp float)
+0:70                          't' ( temp float)
+0:71                    move second child to first child ( temp 3-component vector of float)
+0:71                      'ep' ( temp 3-component vector of float)
+0:71                      subtract ( temp 3-component vector of float)
+0:71                        'p' ( temp 3-component vector of float)
+0:74                        Construct vec3 ( temp 3-component vector of float)
+0:72                          component-wise multiply ( temp float)
+0:72                            sine ( global float)
+0:72                              add ( temp float)
+0:72                                sine ( global float)
+0:72                                  't' ( temp float)
+0:72                                component-wise multiply ( temp float)
+0:72                                  't' ( temp float)
+0:72                                  Constant:
+0:72                                    0.400000
+0:72                            Constant:
+0:72                              8.000000
+0:73                          component-wise multiply ( temp float)
+0:73                            sine ( global float)
+0:73                              add ( temp float)
+0:73                                sine ( global float)
+0:73                                  't' ( temp float)
+0:73                                component-wise multiply ( temp float)
+0:73                                  't' ( temp float)
+0:73                                  Constant:
+0:73                                    0.200000
+0:73                            Constant:
+0:73                              2.000000
+0:74                          add ( temp float)
+0:74                            add ( temp float)
+0:74                              Constant:
+0:74                                16.000000
+0:74                              't' ( temp float)
+0:74                            component-wise multiply ( temp float)
+0:74                              cosine ( global float)
+0:74                                't' ( temp float)
+0:74                              Constant:
+0:74                                8.000000
+0:75                  move second child to first child ( temp float)
+0:75                    'e' ( temp float)
+0:75                    subtract ( temp float)
+0:75                      length ( global float)
+0:75                        'ep' ( temp 3-component vector of float)
+0:75                      Constant:
+0:75                        0.100000
+0:76                move second child to first child ( temp float)
+0:76                  's' ( temp float)
+0:76                  mix ( global float)
+0:76                    component-wise multiply ( temp float)
+0:76                      'e' ( temp float)
+0:76                      Constant:
+0:76                        0.020000
+0:76                    add ( temp float)
+0:76                      Constant:
+0:76                        4.000000
+0:76                      direct index ( temp float)
+0:76                        'p' ( temp 3-component vector of float)
+0:76                        Constant:
+0:76                          1 (const int)
+0:76                    smoothstep ( global float)
+0:76                      Constant:
+0:76                        0.000000
+0:76                      Constant:
+0:76                        12.000000
+0:76                      length ( global float)
+0:76                        'ep' ( temp 3-component vector of float)
+0:77              move second child to first child ( temp float)
+0:77                'a' ( temp float)
+0:77                Constant:
+0:77                  0.400000
+0:70            Loop with condition tested first
+0:70              Loop Condition
+0:77              Compare Less Than ( temp bool)
+0:77                'a' ( temp float)
+0:77                Constant:
+0:77                  8.000000
+0:70              Loop Body
+0:78              subtract second child into first child ( temp float)
+0:78                's' ( temp float)
+0:78                divide ( temp float)
+0:78                  Absolute value ( global float)
+0:78                    dot-product ( global float)
+0:78                      cosine ( global 3-component vector of float)
+0:78                        add ( temp 3-component vector of float)
+0:78                          add ( temp float)
+0:78                            't' ( temp float)
+0:78                            component-wise multiply ( temp float)
+0:78                              Constant:
+0:78                                0.200000
+0:78                              direct index ( temp float)
+0:78                                'p' ( temp 3-component vector of float)
+0:78                                Constant:
+0:78                                  2 (const int)
+0:78                          vector-scale ( temp 3-component vector of float)
+0:78                            'p' ( temp 3-component vector of float)
+0:78                            'a' ( temp float)
+0:78                      subtract ( temp 3-component vector of float)
+0:78                        add ( temp 3-component vector of float)
+0:78                          Constant:
+0:78                            0.110000
+0:78                          'p' ( temp 3-component vector of float)
+0:78                        'p' ( temp 3-component vector of float)
+0:78                  'a' ( temp float)
+0:70              Loop Terminal Expression
+0:77              multiply second child into first child ( temp float)
+0:77                'a' ( temp float)
+0:77                Constant:
+0:77                  1.400000
+0:67          Loop Terminal Expression
+0:68          Comma ( temp 4-component vector of float)
+0:68            add second child into first child ( temp float)
+0:68              'd' ( temp float)
+0:68              move second child to first child ( temp float)
+0:68                's' ( temp float)
+0:68                min ( global float)
+0:68                  add ( temp float)
+0:68                    Constant:
+0:68                      0.020000
+0:68                    component-wise multiply ( temp float)
+0:68                      Constant:
+0:68                        0.600000
+0:68                      Absolute value ( global float)
+0:68                        's' ( temp float)
+0:68                  move second child to first child ( temp float)
+0:68                    'e' ( temp float)
+0:68                    max ( global float)
+0:68                      component-wise multiply ( temp float)
+0:68                        Constant:
+0:68                          0.800000
+0:68                        'e' ( temp float)
+0:68                      Constant:
+0:68                        0.010000
+0:69            add second child into first child ( temp 4-component vector of float)
+0:69              'o' ( out 4-component vector of float)
+0:69              divide ( temp float)
+0:69                Constant:
+0:69                  1.000000
+0:69                add ( temp float)
+0:69                  's' ( temp float)
+0:69                  component-wise multiply ( temp float)
+0:69                    'e' ( temp float)
+0:69                    Constant:
+0:69                      2.000000
+0:79      move second child to first child ( temp 4-component vector of float)
+0:79        'o' ( out 4-component vector of float)
+0:79        hyp. tangent ( global 4-component vector of float)
+0:79          divide ( temp 4-component vector of float)
+0:79            divide ( temp 4-component vector of float)
+0:79              component-wise multiply ( temp 4-component vector of float)
+0:79                Constant:
+0:79                  1.000000
+0:79                  2.000000
+0:79                  6.000000
+0:79                  0.000000
+0:79                'o' ( out 4-component vector of float)
+0:79              Constant:
+0:79                10.000000
+0:79            length ( global float)
+0:79              subtract ( temp 2-component vector of float)
+0:79                'u' ( in 2-component vector of float)
+0:79                Constant:
+0:79                  0.650000
+0:83  Function Definition: mainImage2(vf4;vf2; ( global void)
+0:83    Function Parameters: 
+0:83      'o' ( out 4-component vector of float)
+0:83      'u' ( in 2-component vector of float)
+0:84    Sequence
+0:84      Sequence
+0:84        move second child to first child ( temp float)
+0:84          't' ( temp float)
+0:84          'iTime' ( uniform float)
+0:85      Sequence
+0:85        move second child to first child ( temp 3-component vector of float)
+0:85          'p' ( temp 3-component vector of float)
+0:85          'resol' ( global 3-component vector of float)
+0:86      move second child to first child ( temp 2-component vector of float)
+0:86        'u' ( in 2-component vector of float)
+0:86        divide ( temp 2-component vector of float)
+0:86          subtract ( temp 2-component vector of float)
+0:86            'u' ( in 2-component vector of float)
+0:86            divide ( temp 2-component vector of float)
+0:86              vector swizzle ( temp 2-component vector of float)
+0:86                'p' ( temp 3-component vector of float)
+0:86                Sequence
+0:86                  Constant:
+0:86                    0 (const int)
+0:86                  Constant:
+0:86                    1 (const int)
+0:86              Constant:
+0:86                2.000000
+0:86          direct index ( temp float)
+0:86            'p' ( temp 3-component vector of float)
+0:86            Constant:
+0:86              1 (const int)
+0:87      Sequence
+0:87        vector scale second child into first child ( temp 4-component vector of float)
+0:87          'o' ( out 4-component vector of float)
+0:87          'i' ( temp float)
+0:87        Loop with condition tested first
+0:87          Loop Condition
+0:87          Compare Less Than ( temp bool)
+0:87            Post-Increment ( temp float)
+0:87              'i' ( temp float)
+0:87            Constant:
+0:87              128.000000
+0:87          Loop Body
+0:88          Sequence
+0:90            Comma ( temp float)
+0:89              Comma ( temp float)
+0:88                Comma ( temp 2-component vector of float)
+0:88                  move second child to first child ( temp 3-component vector of float)
+0:88                    'p' ( temp 3-component vector of float)
+0:88                    Construct vec3 ( temp 3-component vector of float)
+0:88                      vector-scale ( temp 2-component vector of float)
+0:88                        'u' ( in 2-component vector of float)
+0:88                        'd' ( temp float)
+0:88                      add ( temp float)
+0:88                        'd' ( temp float)
+0:88                        component-wise multiply ( temp float)
+0:88                          't' ( temp float)
+0:88                          Constant:
+0:88                            4.000000
+0:89                  matrix mult second child into first child ( temp 2-component vector of float)
+0:89                    vector swizzle ( temp 2-component vector of float)
+0:89                      'p' ( temp 3-component vector of float)
+0:89                      Sequence
+0:89                        Constant:
+0:89                          0 (const int)
+0:89                        Constant:
+0:89                          1 (const int)
+0:89                    Construct mat2 ( temp 2X2 matrix of float)
+0:89                      cosine ( global 4-component vector of float)
+0:89                        add ( temp 4-component vector of float)
+0:89                          add ( temp float)
+0:89                            component-wise multiply ( temp float)
+0:89                              Constant:
+0:89                                0.100000
+0:89                              't' ( temp float)
+0:89                            component-wise multiply ( temp float)
+0:89                              direct index ( temp float)
+0:89                                'p' ( temp 3-component vector of float)
+0:89                                Constant:
+0:89                                  2 (const int)
+0:89                              Constant:
+0:89                                0.100000
+0:89                          Constant:
+0:89                            0.000000
+0:89                            33.000000
+0:89                            11.000000
+0:89                            0.000000
+0:90                move second child to first child ( temp float)
+0:90                  's' ( temp float)
+0:90                  add ( temp float)
+0:90                    Constant:
+0:90                      1.000000
+0:90                    sine ( global float)
+0:90                      add ( temp float)
+0:90                        add ( temp float)
+0:90                          Constant:
+0:90                            1.000000
+0:90                          direct index ( temp float)
+0:90                            'p' ( temp 3-component vector of float)
+0:90                            Constant:
+0:90                              1 (const int)
+0:90                        direct index ( temp float)
+0:90                          'p' ( temp 3-component vector of float)
+0:90                          Constant:
+0:90                            0 (const int)
+0:91              move second child to first child ( temp float)
+0:91                'n' ( temp float)
+0:91                Constant:
+0:91                  8.000000
+0:88            Loop with condition tested first
+0:88              Loop Condition
+0:91              Compare Less Than ( temp bool)
+0:91                'n' ( temp float)
+0:91                Constant:
+0:91                  32.000000
+0:88              Loop Body
+0:92              Comma ( temp float)
+0:92                move second child to first child ( temp float)
+0:92                  'a' ( temp float)
+0:92                  divide ( temp float)
+0:92                    Absolute value ( global float)
+0:92                      dot-product ( global float)
+0:92                        cosine ( global 3-component vector of float)
+0:92                          vector-scale ( temp 3-component vector of float)
+0:92                            vector-scale ( temp 3-component vector of float)
+0:92                              vector-scale ( temp 3-component vector of float)
+0:92                                vector-scale ( temp 3-component vector of float)
+0:92                                  vector-scale ( temp 3-component vector of float)
+0:92                                    'p' ( temp 3-component vector of float)
+0:92                                    'n' ( temp float)
+0:92                                  's' ( temp float)
+0:92                                's' ( temp float)
+0:92                              'd' ( temp float)
+0:92                            Constant:
+0:92                              2.000000
+0:92                        sine ( global 3-component vector of float)
+0:92                          'p' ( temp 3-component vector of float)
+0:92                    'n' ( temp float)
+0:93                subtract second child into first child ( temp float)
+0:93                  's' ( temp float)
+0:93                  'a' ( temp float)
+0:88              Loop Terminal Expression
+0:91              add second child into first child ( temp float)
+0:91                'n' ( temp float)
+0:91                'n' ( temp float)
+0:87          Loop Terminal Expression
+0:87          Comma ( temp 4-component vector of float)
+0:87            add second child into first child ( temp float)
+0:87              'd' ( temp float)
+0:87              move second child to first child ( temp float)
+0:87                's' ( temp float)
+0:87                add ( temp float)
+0:87                  Constant:
+0:87                    0.003000
+0:87                  component-wise multiply ( temp float)
+0:87                    Absolute value ( global float)
+0:87                      's' ( temp float)
+0:87                    Constant:
+0:87                      0.800000
+0:87            add second child into first child ( temp 4-component vector of float)
+0:87              'o' ( out 4-component vector of float)
+0:87              divide ( temp 4-component vector of float)
+0:87                Constant:
+0:87                  32.000000
+0:87                  4.000000
+0:87                  16.000000
+0:87                  0.000000
+0:87                add ( temp float)
+0:87                  's' ( temp float)
+0:87                  'a' ( temp float)
+0:94      move second child to first child ( temp 4-component vector of float)
+0:94        'o' ( out 4-component vector of float)
+0:94        hyp. tangent ( global 4-component vector of float)
+0:94          divide ( temp 4-component vector of float)
+0:94            divide ( temp 4-component vector of float)
+0:94              mix ( global 4-component vector of float)
+0:94                'o' ( out 4-component vector of float)
+0:94                vector swizzle ( temp 4-component vector of float)
+0:94                  'o' ( out 4-component vector of float)
+0:94                  Sequence
+0:94                    Constant:
+0:94                      1 (const int)
+0:94                    Constant:
+0:94                      2 (const int)
+0:94                    Constant:
+0:94                      0 (const int)
+0:94                    Constant:
+0:94                      3 (const int)
+0:94                move second child to first child ( temp float)
+0:94                  'i' ( temp float)
+0:94                  length ( global float)
+0:94                    'u' ( in 2-component vector of float)
+0:94              Constant:
+0:94                200000.000000
+0:94            'i' ( temp float)
+0:?   Linker Objects
+0:?     'iResolution' ( uniform 3-component vector of float)
+0:?     'iTime' ( uniform float)
+0:?     'iTimeDelta' ( uniform float)
+0:?     'iFrameRate' ( uniform float)
+0:?     'iFrame' ( uniform int)
+0:?     'iChannelTime' ( uniform 4-element array of float)
+0:?     'iChannelResolution' ( uniform 4-element array of 3-component vector of float)
+0:?     'iMouse' ( uniform 4-component vector of float)
+0:?     'iChannel0' ( uniform sampler2D)
+0:?     'iChannel1' ( uniform sampler2D)
+0:?     'iChannel2' ( uniform sampler2D)
+0:?     'iChannel3' ( uniform sampler2D)
+0:?     'iDate' ( uniform 4-component vector of float)
+0:?     'iSampleRate' ( uniform float)
+0:?     'resol' ( global 3-component vector of float)
+

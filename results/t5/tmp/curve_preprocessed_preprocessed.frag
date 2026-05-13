@@ -53,7 +53,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         // Create crisp lines using smoothstep. 
         // We use fwidth to keep the line thickness consistent regardless of distance.
-        float thickness = fwidth(height * 10.0) * 1.5;
+        float thickness = (abs(height * 10.0) * (1.0 / iResolution.y) + (1.0 / iResolution.y)) * 1.5;
         float lineMask = smoothstep(thickness, 0.0, lines);
         
         // Mix the terrain color (white) with the line color (black)
