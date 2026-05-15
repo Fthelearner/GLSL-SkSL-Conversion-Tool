@@ -22,6 +22,9 @@ enum class IntrinsicId : uint16_t {
     kIntBitsToFloat,
     kReflect,
     kRefract,
+    kFwidth,       // fwidth() → abs(x)/iResolution.y approximation
+    kFwidthFine,   // fwidthFine → same approximation
+    kFwidthCoarse, // fwidthCoarse → same approximation
 };
 
 enum class IntrinsicFamily : uint8_t {

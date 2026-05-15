@@ -1,0 +1,1 @@
+{"dimensions":{"width":1280,"height":720},"textures":{"image":"assets/input.png","preblurImage":"assets/preblur.png"},"uniforms":{"iResolution":[1280,720],"startPoint":[0.5,0.15],"endPoint":[0.5,0.85],"softness":0.2,"invert":0.0,"blurMix":1.0},"direction":"glsl_to_sksl"}

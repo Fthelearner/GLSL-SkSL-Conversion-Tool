@@ -1,0 +1,11 @@
+ERROR: render failed — error: 36: no match for fwidth(float)
+        float thickness = fwidth(height * 10.0) * 1.5;
+                          ^^^^^^^^^^^^^^^^^^^^^
+error: 37: unknown identifier 'thickness'
+        float lineMask = smoothstep(thickness, 0.0, lines);
+                                    ^^^^^^^^^
+error: 38: unknown identifier 'lineMask'
+        col = mix(float3(1.0, 1.0, 1.0), float3(0.0, 0.0, 0.0), lineMask);
+                                                                ^^^^^^^^
+3 errors
+

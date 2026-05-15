@@ -29,7 +29,13 @@ def main():
     parser.add_argument("--height", type=int, default=720)
     args = parser.parse_args()
 
-    # Build child_images dict
+    # Auto-defaults for common Shadertoy uniforms when not explicitly set
+    if "iResolution" not in [u.partition("=")[0] for u in args.uniform]:
+        args.uniform.append(f"iResolution={args.width},{args.height},1")
+    if "iTime" not in [u.partition("=")[0] for u in args.uniform]:
+        args.uniform.append("iTime=1.5")
+
+    # Build child_images dict, and auto-set iChannelResolution from texture sizes
     child_images = {}
     for t in args.texture:
         if "=" not in t:
@@ -41,6 +47,13 @@ def main():
             print(f"ERROR: cannot load texture '{path}' for '{name}'", file=sys.stderr)
             return 1
         child_images[name] = img
+        # Auto-set iChannelResolution[N] from this texture's dimensions
+        if name.startswith("iChannel") and name[8:].isdigit():
+            import re as _re
+            w, h = img.width(), img.height()
+            idx = name[8:]
+            if f"iChannelResolution[{idx}]" not in [u.partition("=")[0] for u in args.uniform]:
+                args.uniform.append(f"iChannelResolution[{idx}]={w},{h},1")
 
     # Build uniforms dict
     uniforms = {}
@@ -50,7 +63,14 @@ def main():
             return 1
         name, _, val = u.partition("=")
         if "," in val:
-            uniforms[name] = [float(v) for v in val.split(",")]
+            vals = [float(v) for v in val.split(",")]
+            # Pad iResolution to 3 components if the shader declares float3
+            if name == "iResolution":
+                sksl_src = Path(args.sksl).read_text(encoding='utf-8')
+                if 'float3 iResolution' in sksl_src or 'half3 iResolution' in sksl_src:
+                    while len(vals) < 3:
+                        vals.append(1.0)
+            uniforms[name] = vals
         else:
             uniforms[name] = float(val)
 

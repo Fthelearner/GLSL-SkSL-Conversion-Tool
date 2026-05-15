@@ -46,6 +46,7 @@ Commands:
   test             Run bidirectional SKSL↔GLSL round-trip tests (default)
   pipeline <in>    Flexible single-direction conversion + render + animate
   live <shader>    Open real-time GUI preview window (SDL2, wall-clock time)
+  compare <a> <b>  Compare two PNG images pixel-by-pixel (PSNR/MSE)
   help             Show this help
 
 ────────────────────────────────────────────────────────────────────────────
@@ -116,6 +117,24 @@ live — Real-time GUI preview window (SDL2, wall-clock time driven)
     runner.sh live tests/shaders/water_ripple.sksl --texture image=tests/assets/input.png
     runner.sh live tests/frag/spread.frag --width 640 --height 360
     runner.sh live glslang/glslang_demo/result/v7/spread.sksl --width 640 --height 360
+
+────────────────────────────────────────────────────────────────────────────
+compare — Pixel-level image comparison
+────────────────────────────────────────────────────────────────────────────
+  runner.sh compare <image_a> <image_b> [options]
+
+  <image_a>         First PNG path (baseline)
+  <image_b>         Second PNG path (test image)
+
+  --threshold-psnr N      Minimum PSNR to pass (default: 30.0 dB)
+  --threshold-diff-pct N  Maximum pixel diff % to pass (default: 5.0%)
+  --output-json FILE      Write JSON report to file
+  --json                  Print JSON report to stdout
+
+  Examples:
+    runner.sh compare before.png after.png
+    runner.sh compare a.png b.png --output-json results/report.json
+    runner.sh compare a.png b.png --threshold-psnr 35 --threshold-diff-pct 2
 EOF
 }
 
@@ -169,7 +188,7 @@ png_to_raw_rgba() {
         echo "ERROR: missing PNG: $png" >&2
         return 1
     fi
-    python3 -c "
+    uv run --project "$PROJECT_ROOT" --no-sync python3 -c "
 import struct, sys
 from PIL import Image
 img = Image.open('$png').convert('RGBA')
@@ -322,6 +341,50 @@ run_live_preview() {
         echo "ERROR: unknown shader type for '$input'" >&2
         return 1
     fi
+}
+
+# ── image comparison ───────────────────────────────────────────────────────
+
+run_compare() {
+    local image_a="" image_b="" output_json="" threshold_psnr="" threshold_diff_pct=""
+    local json_flag=""
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --output-json) output_json="$2"; shift 2 ;;
+            --threshold-psnr) threshold_psnr="$2"; shift 2 ;;
+            --threshold-diff-pct) threshold_diff_pct="$2"; shift 2 ;;
+            --json) json_flag="--json"; shift ;;
+            -*)
+                echo "Unknown option: $1" >&2
+                return 2
+                ;;
+            *)
+                if [ -z "$image_a" ]; then image_a="$1"
+                elif [ -z "$image_b" ]; then image_b="$1"
+                else
+                    echo "ERROR: unexpected arg: $1" >&2
+                    return 2
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [ -z "$image_a" ] || [ -z "$image_b" ]; then
+        echo "ERROR: two image paths required" >&2
+        echo "Usage: runner.sh compare <image_a> <image_b> [--output-json FILE] [--threshold-psnr N] [--threshold-diff-pct N] [--json]" >&2
+        return 2
+    fi
+
+    local cmd=("python3" "$COMPARE_PY" "$image_a" "$image_b")
+    [ -n "$threshold_psnr" ] && cmd+=("--threshold-psnr" "$threshold_psnr")
+    [ -n "$threshold_diff_pct" ] && cmd+=("--threshold-diff-percent" "$threshold_diff_pct")
+    [ -n "$output_json" ] && cmd+=("--output-json" "$output_json")
+    [ -n "$json_flag" ] && cmd+=("$json_flag")
+
+    "${cmd[@]}"
+    return $?
 }
 
 check_tools() {
@@ -787,7 +850,34 @@ render_single_frame_glsl() {
     local frag_path="$1" out_path="$2" width="$3" height="$4" config_json="$5"
     local out_ppm="${out_path%.png}.ppm"
 
-    local render_cmd=("$RENDER_GLSL" "$frag_path" "$out_ppm" "$width" "$height")
+    # Flatten uniform blocks: render_glsl can't access block members by name.
+    # Extract "vec2 iResolution;" from "uniform Params { vec2 iResolution; } u;"
+    # and replace "u.iResolution" references with "iResolution".
+    local flat_glsl="$TMP/$(basename "${frag_path%.*}")_flat.glsl"
+    cp "$frag_path" "$flat_glsl"
+    python3 -c "
+import re
+with open('$flat_glsl', 'r') as f: src = f.read()
+# Flatten: 'layout(...) uniform Name { type member; } inst;' → 'uniform type member;'
+def flatten_block(m):
+    body = m.group(1).strip()
+    # body is like 'vec2 iResolution;' or 'float x;\\n    vec2 y;'
+    members = [s.strip() for s in body.split(';') if s.strip()]
+    return '\\n'.join('uniform ' + s + ';' for s in members)
+src = re.sub(r'layout\([^)]*\)\s*uniform\s+\w+\s*\{([^}]*)\}\s*\w+\s*;',
+             flatten_block, src)
+# Replace block instance member access: u.iResolution → iResolution
+src = re.sub(r'\bu\.(\w+)\b', r'\1', src)
+with open('$flat_glsl', 'w') as f: f.write(src)
+" 2>/dev/null || cp "$frag_path" "$flat_glsl"
+
+    # Auto-set iResolution with correct component count
+    local ires_vals="$width $height"
+    if grep -qE 'vec3\s+iResolution|float3\s+iResolution' "$flat_glsl" 2>/dev/null; then
+        ires_vals="$width $height 1"
+    fi
+    local render_cmd=("$RENDER_GLSL" "$flat_glsl" "$out_ppm" "$width" "$height"
+        "--uniform" "iResolution" $ires_vals)
 
     # Add textures from config (process substitution avoids subshell)
     while read -r tname tpath traw; do
@@ -885,12 +975,82 @@ for name, val in cfg.get('textures', {}).items():
     fi
 }
 
+render_single_frame_sksl_gpu() {
+    # Render SKSL via GPU path: skslc (.frag mode, preserves fwidth/dFdx)
+    # → GLSL → render_glsl (OpenGL, natively supports derivatives).
+    local sksl="$1" out_png="$2" width="$3" height="$4" config_json="$5"
+    local sksl_as_frag="$TMP/sksl_gpu_$(basename "${sksl%.*}").frag"
+    local out_glsl="$TMP/sksl_gpu_$(basename "${sksl%.*}").glsl"
+    local out_ppm="${out_png%.png}.ppm"
+
+    # Step 1: Compile SKSL → GLSL using skslc with .frag input mode
+    # .frag mode = GPU fragment processor, preserves fwidth/dFdx natively
+    cp "$sksl" "$sksl_as_frag"
+    "$SKSLC" "$sksl_as_frag" "$out_glsl" 2>&1 || { echo "skslc compile failed"; return 1; }
+
+    # skslc outputs Skia-internal GLSL (vec4 main(), fragCoord vec4 builtin,
+    # sk_FragColor). Rewrite to standard GLSL fragment shader for render_glsl.
+    sed -i \
+        -e 's/^vec4 main()/void main()/' \
+        -e 's/return fragColor;/sk_FragColor = fragColor;/' \
+        -e 's/return \([^f]\)/sk_FragColor = \1/' \
+        -e 's/\bfragCoord\b/gl_FragCoord/g' \
+        "$out_glsl"
+    # Fix: skslc emits `fragCoord - vec2_expr` where fragCoord is vec4
+    # but expression is vec2. Use .xy swizzle for type match.
+    sed -i 's/gl_FragCoord - /gl_FragCoord.xy - /g' "$out_glsl"
+    sed -i 's/gl_FragCoord + /gl_FragCoord.xy + /g' "$out_glsl"
+
+    # Step 2: Render GLSL via OpenGL (fwidth/dFdx work natively)
+    local render_cmd=("$RENDER_GLSL" "$out_glsl" "$out_ppm" "$width" "$height")
+    # Add textures/uniforms from config
+    while read -r tname tpath traw; do
+        [ -z "$tname" ] && continue
+        local raw="$TMP/pipeline_${tname}.raw"
+        png_to_raw_rgba "$tpath" "$raw" || continue
+        render_cmd+=("--rgatex" "$tname" "$raw")
+        [ "$traw" = "true" ] && render_cmd+=("--rawtex" "$tname")
+    done < <(python3 -c "
+import json
+cfg = json.loads('''$config_json''')
+for name, val in cfg.get('textures', {}).items():
+    if isinstance(val, str): print(f'{name} {val} false')
+    else: print(f'{name} {val[\"path\"]} {val.get(\"raw\", False)}')
+" 2>/dev/null)
+    while read -r uname uvals; do
+        [ -z "$uname" ] && continue
+        render_cmd+=("--uniform" "$uname" $uvals)
+    done < <(python3 -c "
+import json
+cfg = json.loads('''$config_json''')
+for name, val in cfg.get('uniforms', {}).items():
+    if isinstance(val, list): print(f'{name} {\" \".join(str(v) for v in val)}')
+    else: print(f'{name} {val}')
+" 2>/dev/null)
+    # Auto-set Shadertoy defaults
+    render_cmd+=("--itime" "1.5")
+
+    local err_log="${out_png%.png}.errors.txt"
+    if "${render_cmd[@]}" > "$err_log" 2>&1; then
+        rm -f "$err_log"
+        convert "$out_ppm" "$out_png" 2>/dev/null || return 1
+        rm -f "$out_ppm"
+    else
+        echo "ERROR: GPU SKSL render failed — see $err_log" >&2
+        return 1
+    fi
+}
+
 convert_sksl_to_glsl() {
     local sksl="$1" out_glsl="$2"
     local sksl_as_rts="$TMP/$(basename "${sksl%.*}").rts"
     cp "$sksl" "$sksl_as_rts"
     "$SKSLC_CUSTOM" "$sksl_as_rts" "$out_glsl" 2>&1 || return 1
     rm -f "$sksl_as_rts"
+    # Fix FragColor shadowing: round-tripped SKSL has "float4 FragColor;"
+    # which becomes "vec4 FragColor;" in GLSL, shadowing "out vec4 FragColor;"
+    sed -i '/^    vec4 FragColor;$/d' "$out_glsl"
+    sed -i '/^    FragColor = FragColor;$/d' "$out_glsl"
 }
 
 convert_glsl_to_sksl() {
@@ -1259,7 +1419,15 @@ run_pipeline_glsl_to_sksl() {
         encode_mp4 "$out_dir/after" "$out_dir/after/${name}.mp4" \
             "$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['fps'])")" || true
     else
-        render_single_frame_sksl "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json"
+        # Try CPU RuntimeEffect first; fall back to GPU (skslc→GLSL→OpenGL)
+        # only when the shader needs GPU derivatives (fwidth/dFdx/dFdy).
+        if ! render_single_frame_sksl "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json"; then
+            local err_log="$out_dir/after/${name}.errors.txt"
+            if grep -q "fwidth\|dFdx\|dFdy" "$err_log" 2>/dev/null; then
+                echo "  [after] fwidth detected, retrying with GPU path..."
+                render_single_frame_sksl_gpu "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json"
+            fi
+        fi
         echo "  [after] rendered $name.png"
     fi
 
@@ -1460,6 +1628,11 @@ main() {
                 usage; return 2
             fi
             run_live_preview "$@"
+            return $?
+            ;;
+        compare)
+            shift
+            run_compare "$@"
             return $?
             ;;
         help|--help|-h)

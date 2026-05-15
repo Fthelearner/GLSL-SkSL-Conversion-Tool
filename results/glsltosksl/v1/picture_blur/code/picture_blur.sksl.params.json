@@ -1,0 +1,7 @@
+{
+  "dimensions": {"width": 1280, "height": 720},
+  "textures": {
+    "iChannel0": "assets/iChannel0.png"
+  },
+  "direction": "glsl_to_sksl"
+}

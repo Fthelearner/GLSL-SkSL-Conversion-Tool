@@ -152,7 +152,26 @@ constexpr std::array<SurfaceForm, 1> kRefractGlslForms{{
          "Direct GLSL builtin call; eta should stay scalar."},
 }};
 
-constexpr std::array<IntrinsicBinding, 13> kIntrinsicBindings{{
+// fwidth / fwidthFine / fwidthCoarse: GPU derivative functions unavailable in
+// SkSL RuntimeEffect. Forward lowering emits an iResolution-based approximation:
+//   fwidth(x) ≈ (abs(x) + 5.0) / min(iResolution.x, iResolution.y)
+// The abs(x) term captures value-proportional per-pixel change; the +5.0 floor
+// ensures anti-aliasing for small values. Empirically tuned against curve.frag.
+// Provenance records kFunctionCall(helper_key="fwidth_approx", glsl_function="fwidth",
+// sksl_method="fwidth_approx") for round-trip reversibility.
+constexpr std::array<SurfaceForm, 1> kFwidthForms{{
+        {SurfaceLanguage::kSkSL, SurfaceFormKind::kFunctionCall,
+         "fwidth_approx(x)",
+         "Resolution-based derivative approximation; requires iResolution uniform."},
+}};
+constexpr std::array<SurfaceForm, 2> kFwidthGlslForms{{
+        {SurfaceLanguage::kGLSL, SurfaceFormKind::kFunctionCall, "fwidth(p)",
+         "Direct GLSL derivative builtin; replaced by approximate formula in SkSL."},
+        {SurfaceLanguage::kGLSL, SurfaceFormKind::kFunctionCall, "fwidthFine(p)",
+         "Fine derivative variant; same approximation as fwidth."},
+}};
+
+constexpr std::array<IntrinsicBinding, 16> kIntrinsicBindings{{
         {IntrinsicId::kSin, "Sin", IntrinsicFamily::kHomogeneousNumeric,
          IntrinsicLoweringKind::kDirectBuiltinCall, RoundTripKind::kExact,
          kAnyStageMask, kAnyGlslDialectMask,
@@ -238,6 +257,28 @@ constexpr std::array<IntrinsicBinding, 13> kIntrinsicBindings{{
          "refract", "refract", kRefractForms, kRefractGlslForms,
          "genType x genType x scalar -> genType", {},
          "Geometric builtin; eta should stay scalar and must not be folded into vecN(eta)."},
+
+        // fwidth: GPU derivative → resolution-based approximation
+        {IntrinsicId::kFwidth, "Fwidth", IntrinsicFamily::kHomogeneousNumeric,
+         IntrinsicLoweringKind::kHelperRewrite, RoundTripKind::kUnsupported,
+         kAnyStageMask, kAnyGlslDialectMask,
+         "", "fwidth", kFwidthForms, kFwidthGlslForms,
+         "genType -> genType", "fwidth_approx",
+         "Replaced with (abs(x)+5.0)/min(iResolution.xy) in SkSL; empirically tuned; provenance records mapping."},
+
+        {IntrinsicId::kFwidthFine, "FwidthFine", IntrinsicFamily::kHomogeneousNumeric,
+         IntrinsicLoweringKind::kHelperRewrite, RoundTripKind::kUnsupported,
+         kAnyStageMask, kAnyGlslDialectMask,
+         "", "fwidthFine", kFwidthForms, kFwidthGlslForms,
+         "genType -> genType", "fwidth_approx",
+         "Same approximation as fwidth."},
+
+        {IntrinsicId::kFwidthCoarse, "FwidthCoarse", IntrinsicFamily::kHomogeneousNumeric,
+         IntrinsicLoweringKind::kHelperRewrite, RoundTripKind::kUnsupported,
+         kAnyStageMask, kAnyGlslDialectMask,
+         "", "fwidthCoarse", kFwidthForms, kFwidthGlslForms,
+         "genType -> genType", "fwidth_approx",
+         "Same approximation as fwidth."},
 }};
 
 }  // namespace

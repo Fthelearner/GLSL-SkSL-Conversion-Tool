@@ -34,6 +34,12 @@ def main():
                         help="Render only a specific frame number (1-based)")
     args = parser.parse_args()
 
+    # Auto-defaults for common Shadertoy uniforms
+    if "iResolution" not in [u.partition("=")[0] for u in args.uniform]:
+        args.uniform.append(f"iResolution={args.width},{args.height},1")
+    if "iTime" not in [u.partition("=")[0] for u in args.uniform]:
+        args.uniform.append("iTime=1.5")
+
     skia = require_skia()
 
     # Parse child images
@@ -57,7 +63,13 @@ def main():
             return 1
         name, _, val = u.partition("=")
         if "," in val:
-            base_uniforms[name] = [float(v) for v in val.split(",")]
+            vals = [float(v) for v in val.split(",")]
+            if name == "iResolution":
+                sksl_src = Path(args.sksl).read_text(encoding='utf-8')
+                if 'float3 iResolution' in sksl_src or 'half3 iResolution' in sksl_src:
+                    while len(vals) < 3:
+                        vals.append(1.0)
+            base_uniforms[name] = vals
         else:
             base_uniforms[name] = float(val)
 
