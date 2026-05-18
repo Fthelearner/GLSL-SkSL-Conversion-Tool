@@ -1,0 +1,15 @@
+{
+  "dimensions": {"width": 1280, "height": 720},
+  "uniforms": {
+    "iResolution": [1280.0, 720.0, 1.0]
+  },
+  "animation": {
+    "enabled": true,
+    "uniform": "iTime",
+    "start": 0.0,
+    "end": 4.0,
+    "fps": 30,
+    "ascii": {"enabled": true, "fps": 12}
+  },
+  "direction": "glsl_to_sksl"
+}

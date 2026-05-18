@@ -1,0 +1,12 @@
+uniform float amount;
+
+half4 main(half4 color) {
+    half3 sepia = half3(
+        dot(color.rgb, half3(0.393, 0.769, 0.189)),
+        dot(color.rgb, half3(0.349, 0.686, 0.168)),
+        dot(color.rgb, half3(0.272, 0.534, 0.131))
+    );
+
+    half t = half(clamp(amount, 0.0, 1.0));
+    return half4(mix(color.rgb, sepia, t), color.a);
+}

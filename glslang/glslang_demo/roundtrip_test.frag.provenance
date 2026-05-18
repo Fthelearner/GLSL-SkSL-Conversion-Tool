@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "image",
+      "sksl_method": "eval",
+      "glsl_function": "texture"
+    }
+  ]
+}

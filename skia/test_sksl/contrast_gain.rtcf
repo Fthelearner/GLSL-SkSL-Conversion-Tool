@@ -1,0 +1,7 @@
+uniform float gain;
+
+half4 main(half4 color) {
+    half centeredGain = half(max(gain, 0.0));
+    half3 rgb = saturate((color.rgb - half3(0.5)) * centeredGain + half3(0.5));
+    return half4(rgb, color.a);
+}

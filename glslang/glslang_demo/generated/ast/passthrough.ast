@@ -1,0 +1,73 @@
+/home/user/project/glslang/glslang_demo/passthrough.frag
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:11  Function Definition: sampleImage(vf2; ( global highp 4-component vector of float)
+0:11    Function Parameters: 
+0:11      'coord' ( in highp 2-component vector of float)
+0:13    Sequence
+0:13      Branch: Return with expression
+0:13        texture ( global highp 4-component vector of float)
+0:13          'image' (layout( binding=0) uniform highp sampler2D)
+0:13          divide ( temp highp 2-component vector of float)
+0:13            'coord' ( in highp 2-component vector of float)
+0:13            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:13              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution})
+0:13              Constant:
+0:13                0 (const int)
+0:16  Function Definition: main( ( global void)
+0:16    Function Parameters: 
+0:18    Sequence
+0:18      move second child to first child ( temp highp 4-component vector of float)
+0:18        'outColor' (layout( location=0) out highp 4-component vector of float)
+0:18        Function Call: sampleImage(vf2; ( global highp 4-component vector of float)
+0:18          vector swizzle ( temp 2-component vector of float)
+0:18            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:18            Sequence
+0:18              Constant:
+0:18                0 (const int)
+0:18              Constant:
+0:18                1 (const int)
+0:?   Linker Objects
+0:?     'outColor' (layout( location=0) out highp 4-component vector of float)
+0:?     'image' (layout( binding=0) uniform highp sampler2D)
+0:?     'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution})
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:11  Function Definition: sampleImage(vf2; ( global highp 4-component vector of float)
+0:11    Function Parameters: 
+0:11      'coord' ( in highp 2-component vector of float)
+0:13    Sequence
+0:13      Branch: Return with expression
+0:13        texture ( global highp 4-component vector of float)
+0:13          'image' (layout( binding=0) uniform highp sampler2D)
+0:13          divide ( temp highp 2-component vector of float)
+0:13            'coord' ( in highp 2-component vector of float)
+0:13            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:13              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution})
+0:13              Constant:
+0:13                0 (const int)
+0:16  Function Definition: main( ( global void)
+0:16    Function Parameters: 
+0:18    Sequence
+0:18      move second child to first child ( temp highp 4-component vector of float)
+0:18        'outColor' (layout( location=0) out highp 4-component vector of float)
+0:18        Function Call: sampleImage(vf2; ( global highp 4-component vector of float)
+0:18          vector swizzle ( temp 2-component vector of float)
+0:18            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:18            Sequence
+0:18              Constant:
+0:18                0 (const int)
+0:18              Constant:
+0:18                1 (const int)
+0:?   Linker Objects
+0:?     'outColor' (layout( location=0) out highp 4-component vector of float)
+0:?     'image' (layout( binding=0) uniform highp sampler2D)
+0:?     'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution})
+

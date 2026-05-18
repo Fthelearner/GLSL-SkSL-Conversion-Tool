@@ -1,0 +1,9 @@
+half4 main(float2 coords) {
+    float2 uv = coords / 256.0;
+    float2 cell = abs(fract(uv * 8.0) - 0.5);
+    float line = step(min(cell.x, cell.y), 0.04);
+
+    half3 base = half3(uv.x, uv.y, 1.0 - uv.x);
+    half3 grid = mix(base, half3(1.0, 1.0, 1.0), half(line));
+    return half4(grid, 1.0);
+}

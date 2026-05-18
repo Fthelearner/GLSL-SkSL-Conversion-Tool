@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "kind": "builtin_variable",
+      "helper_key": "entry_point_transform",
+      "sksl_name": "fragColor",
+      "glsl_name": "out vec4 fragColor"
+    }
+  ]
+}

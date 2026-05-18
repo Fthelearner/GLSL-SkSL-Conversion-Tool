@@ -1,0 +1,779 @@
+/home/user/project/glslang/glslang_demo/water_ripple.frag
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:21  Function Definition: sampleImage(vf2; ( global highp 4-component vector of float)
+0:21    Function Parameters: 
+0:21      'coord' ( in highp 2-component vector of float)
+0:23    Sequence
+0:23      Branch: Return with expression
+0:23        texture ( global highp 4-component vector of float)
+0:23          'image' (layout( binding=0) uniform highp sampler2D)
+0:23          divide ( temp highp 2-component vector of float)
+0:23            'coord' ( in highp 2-component vector of float)
+0:23            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:23              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:23              Constant:
+0:23                0 (const int)
+0:26  Function Definition: calcWave(f1; ( global highp float)
+0:26    Function Parameters: 
+0:26      'distanceToWave' ( in highp float)
+0:28    Sequence
+0:28      Sequence
+0:28        move second child to first child ( temp highp float)
+0:28          'preWave' ( temp highp float)
+0:28          smoothstep ( global highp float)
+0:28            Constant:
+0:28              0.000000
+0:28            Constant:
+0:28              -0.300000
+0:28            'distanceToWave' ( in highp float)
+0:29      Sequence
+0:29        move second child to first child ( temp highp float)
+0:29          'waveForm' ( temp highp float)
+0:29          Test condition and select ( temp highp float)
+0:29            Condition
+0:29            Compare Equal ( temp bool)
+0:29              waveCount: direct index for structure (layout( column_major std140 offset=12) uniform highp float)
+0:29                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:29                Constant:
+0:29                  2 (const int)
+0:29              Constant:
+0:29                1.000000
+0:29            true case
+0:30            component-wise multiply ( temp highp float)
+0:30              smoothstep ( global highp float)
+0:30                Constant:
+0:30                  -0.400000
+0:30                Constant:
+0:30                  -0.200000
+0:30                'distanceToWave' ( in highp float)
+0:30              smoothstep ( global highp float)
+0:30                Constant:
+0:30                  0.000000
+0:30                Constant:
+0:30                  -0.200000
+0:30                'distanceToWave' ( in highp float)
+0:29            false case
+0:31            Test condition and select ( temp highp float)
+0:31              Condition
+0:31              Compare Equal ( temp bool)
+0:31                waveCount: direct index for structure (layout( column_major std140 offset=12) uniform highp float)
+0:31                  'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:31                  Constant:
+0:31                    2 (const int)
+0:31                Constant:
+0:31                  2.000000
+0:31              true case
+0:32              component-wise multiply ( temp highp float)
+0:32                smoothstep ( global highp float)
+0:32                  Constant:
+0:32                    -0.600000
+0:32                  Constant:
+0:32                    -0.300000
+0:32                  'distanceToWave' ( in highp float)
+0:32                'preWave' ( temp highp float)
+0:31              false case
+0:33              component-wise multiply ( temp highp float)
+0:33                component-wise multiply ( temp highp float)
+0:33                  smoothstep ( global highp float)
+0:33                    Constant:
+0:33                      -0.900000
+0:33                    Constant:
+0:33                      -0.600000
+0:33                    'distanceToWave' ( in highp float)
+0:33                  step ( global highp float)
+0:33                    Absolute value ( global highp float)
+0:33                      add ( temp highp float)
+0:33                        'distanceToWave' ( in highp float)
+0:33                        Constant:
+0:33                          0.450000
+0:33                    Constant:
+0:33                      0.450000
+0:33                'preWave' ( temp highp float)
+0:34      Branch: Return with expression
+0:34        component-wise multiply ( temp highp float)
+0:34          Negate value ( temp highp float)
+0:34            sine ( global highp float)
+0:34              component-wise multiply ( temp highp float)
+0:34                Constant:
+0:34                  31.000000
+0:34                'distanceToWave' ( in highp float)
+0:34          'waveForm' ( temp highp float)
+0:37  Function Definition: waveGradient(f1;f1; ( global highp float)
+0:37    Function Parameters: 
+0:37      'propagatedDistance' ( in highp float)
+0:37      'timeValue' ( in highp float)
+0:39    Sequence
+0:39      Sequence
+0:39        move second child to first child ( temp highp float)
+0:39          'distanceToWave' ( temp highp float)
+0:39          subtract ( temp highp float)
+0:39            'propagatedDistance' ( in highp float)
+0:39            component-wise multiply ( temp highp float)
+0:39              Constant:
+0:39                2.000000
+0:39              'timeValue' ( in highp float)
+0:40      Sequence
+0:40        move second child to first child ( temp highp float)
+0:40          'delta' ( temp highp float)
+0:40          Constant:
+0:40            0.001000
+0:41      Sequence
+0:41        move second child to first child ( temp highp float)
+0:41          'd1' ( temp highp float)
+0:41          subtract ( temp highp float)
+0:41            'distanceToWave' ( temp highp float)
+0:41            'delta' ( temp highp float)
+0:42      Sequence
+0:42        move second child to first child ( temp highp float)
+0:42          'd2' ( temp highp float)
+0:42          add ( temp highp float)
+0:42            'distanceToWave' ( temp highp float)
+0:42            'delta' ( temp highp float)
+0:43      Branch: Return with expression
+0:43        divide ( temp highp float)
+0:43          subtract ( temp highp float)
+0:43            Function Call: calcWave(f1; ( global highp float)
+0:43              'd2' ( temp highp float)
+0:43            Function Call: calcWave(f1; ( global highp float)
+0:43              'd1' ( temp highp float)
+0:43          component-wise multiply ( temp highp float)
+0:43            Constant:
+0:43              2.000000
+0:43            'delta' ( temp highp float)
+0:46  Function Definition: main( ( global void)
+0:46    Function Parameters: 
+0:48    Sequence
+0:48      Sequence
+0:48        move second child to first child ( temp highp 2-component vector of float)
+0:48          'fragCoord' ( temp highp 2-component vector of float)
+0:48          vector swizzle ( temp highp 2-component vector of float)
+0:48            'gl_FragCoord' ( gl_FragCoord highp 4-component vector of float FragCoord)
+0:48            Sequence
+0:48              Constant:
+0:48                0 (const int)
+0:48              Constant:
+0:48                1 (const int)
+0:49      Sequence
+0:49        move second child to first child ( temp highp float)
+0:49          'shortEdge' ( temp highp float)
+0:49          min ( global highp float)
+0:49            direct index ( temp highp float)
+0:49              iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:49                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:49                Constant:
+0:49                  0 (const int)
+0:49              Constant:
+0:49                0 (const int)
+0:49            direct index ( temp highp float)
+0:49              iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:49                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:49                Constant:
+0:49                  0 (const int)
+0:49              Constant:
+0:49                1 (const int)
+0:50      Sequence
+0:50        move second child to first child ( temp highp 2-component vector of float)
+0:50          'uv' ( temp highp 2-component vector of float)
+0:50          divide ( temp highp 2-component vector of float)
+0:50            'fragCoord' ( temp highp 2-component vector of float)
+0:50            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:50              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:50              Constant:
+0:50                0 (const int)
+0:51      Sequence
+0:51        move second child to first child ( temp highp 2-component vector of float)
+0:51          'uvHomogeneous' ( temp highp 2-component vector of float)
+0:51          divide ( temp highp 2-component vector of float)
+0:51            'fragCoord' ( temp highp 2-component vector of float)
+0:51            'shortEdge' ( temp highp float)
+0:52      Sequence
+0:52        move second child to first child ( temp highp 2-component vector of float)
+0:52          'resolutionRatio' ( temp highp 2-component vector of float)
+0:52          divide ( temp highp 2-component vector of float)
+0:52            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:52              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:52              Constant:
+0:52                0 (const int)
+0:52            'shortEdge' ( temp highp float)
+0:54      Sequence
+0:54        move second child to first child ( temp highp float)
+0:54          'progressSlope' ( temp highp float)
+0:54          add ( temp highp float)
+0:54            Constant:
+0:54              0.500000
+0:54            component-wise multiply ( temp highp float)
+0:54              Constant:
+0:54                0.100000
+0:54              waveCount: direct index for structure (layout( column_major std140 offset=12) uniform highp float)
+0:54                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:54                Constant:
+0:54                  2 (const int)
+0:55      Sequence
+0:55        move second child to first child ( temp highp float)
+0:55          'timeValue' ( temp highp float)
+0:55          component-wise multiply ( temp highp float)
+0:55            'progressSlope' ( temp highp float)
+0:55            progress: direct index for structure (layout( column_major std140 offset=8) uniform highp float)
+0:55              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:55              Constant:
+0:55                1 (const int)
+0:57      Sequence
+0:57        move second child to first child ( temp highp 2-component vector of float)
+0:57          'waveCenter' ( temp highp 2-component vector of float)
+0:57          component-wise multiply ( temp highp 2-component vector of float)
+0:57            rippleCenter: direct index for structure (layout( column_major std140 offset=16) uniform highp 2-component vector of float)
+0:57              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:57              Constant:
+0:57                3 (const int)
+0:57            'resolutionRatio' ( temp highp 2-component vector of float)
+0:58      Sequence
+0:58        move second child to first child ( temp highp float)
+0:58          'propagatedDistance' ( temp highp float)
+0:58          distance ( global highp float)
+0:58            'uvHomogeneous' ( temp highp 2-component vector of float)
+0:58            'waveCenter' ( temp highp 2-component vector of float)
+0:59      Sequence
+0:59        move second child to first child ( temp highp 2-component vector of float)
+0:59          'waveVector' ( temp highp 2-component vector of float)
+0:59          subtract ( temp highp 2-component vector of float)
+0:59            'uvHomogeneous' ( temp highp 2-component vector of float)
+0:59            'waveCenter' ( temp highp 2-component vector of float)
+0:60      Sequence
+0:60        move second child to first child ( temp highp float)
+0:60          'amplitudeDecay' ( temp highp float)
+0:60          Test condition and select ( temp highp float)
+0:60            Condition
+0:60            Compare Less Than ( temp bool)
+0:60              'propagatedDistance' ( temp highp float)
+0:60              Constant:
+0:60                1.000000
+0:60            true case
+0:60            pow ( global highp float)
+0:60              subtract ( temp highp float)
+0:60                Constant:
+0:60                  1.000000
+0:60                'propagatedDistance' ( temp highp float)
+0:60              Constant:
+0:60                4.000000
+0:60            false case
+0:60            Constant:
+0:60              0.000000
+0:61      Sequence
+0:61        move second child to first child ( temp highp float)
+0:61          'amplitudeSuppress' ( temp highp float)
+0:61          smoothstep ( global highp float)
+0:61            Constant:
+0:61              0.000000
+0:61            Constant:
+0:61              0.450000
+0:61            'propagatedDistance' ( temp highp float)
+0:62      Sequence
+0:62        move second child to first child ( temp highp float)
+0:62          'intensity' ( temp highp float)
+0:63          component-wise multiply ( temp highp float)
+0:63            component-wise multiply ( temp highp float)
+0:62              component-wise multiply ( temp highp float)
+0:62                Function Call: waveGradient(f1;f1; ( global highp float)
+0:62                  'propagatedDistance' ( temp highp float)
+0:62                  'timeValue' ( temp highp float)
+0:63                'amplitudeDecay' ( temp highp float)
+0:63              'amplitudeSuppress' ( temp highp float)
+0:63            Constant:
+0:63              0.012000
+0:65      Sequence
+0:65        move second child to first child ( temp highp 2-component vector of float)
+0:65          'normalizedWaveVector' ( temp highp 2-component vector of float)
+0:65          Test condition and select ( temp highp 2-component vector of float)
+0:65            Condition
+0:65            Compare Greater Than ( temp bool)
+0:65              length ( global highp float)
+0:65                'waveVector' ( temp highp 2-component vector of float)
+0:65              Constant:
+0:65                0.000010
+0:65            true case
+0:65            normalize ( global highp 2-component vector of float)
+0:65              'waveVector' ( temp highp 2-component vector of float)
+0:65            false case
+0:65            Constant:
+0:65              0.000000
+0:65              0.000000
+0:66      Sequence
+0:66        move second child to first child ( temp highp 2-component vector of float)
+0:66          'circles' ( temp highp 2-component vector of float)
+0:66          vector-scale ( temp highp 2-component vector of float)
+0:66            'normalizedWaveVector' ( temp highp 2-component vector of float)
+0:66            'intensity' ( temp highp float)
+0:67      Sequence
+0:67        move second child to first child ( temp highp 3-component vector of float)
+0:67          'normal' ( temp highp 3-component vector of float)
+0:67          Construct vec3 ( temp highp 3-component vector of float)
+0:67            'circles' ( temp highp 2-component vector of float)
+0:67            'intensity' ( temp highp float)
+0:68      Sequence
+0:68        move second child to first child ( temp highp 2-component vector of float)
+0:68          'distortedCoord' ( temp highp 2-component vector of float)
+0:68          component-wise multiply ( temp highp 2-component vector of float)
+0:68            subtract ( temp highp 2-component vector of float)
+0:68              'uv' ( temp highp 2-component vector of float)
+0:68              vector-scale ( temp highp 2-component vector of float)
+0:68                Constant:
+0:68                  0.150000
+0:68                vector swizzle ( temp highp 2-component vector of float)
+0:68                  'normal' ( temp highp 3-component vector of float)
+0:68                  Sequence
+0:68                    Constant:
+0:68                      0 (const int)
+0:68                    Constant:
+0:68                      1 (const int)
+0:68            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:68              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:68              Constant:
+0:68                0 (const int)
+0:70      Sequence
+0:70        move second child to first child ( temp highp 3-component vector of float)
+0:70          'color' ( temp highp 3-component vector of float)
+0:70          vector swizzle ( temp highp 3-component vector of float)
+0:70            Function Call: sampleImage(vf2; ( global highp 4-component vector of float)
+0:70              'distortedCoord' ( temp highp 2-component vector of float)
+0:70            Sequence
+0:70              Constant:
+0:70                0 (const int)
+0:70              Constant:
+0:70                1 (const int)
+0:70              Constant:
+0:70                2 (const int)
+0:71      add second child into first child ( temp highp 3-component vector of float)
+0:71        'color' ( temp highp 3-component vector of float)
+0:71        component-wise multiply ( temp highp float)
+0:71          Constant:
+0:71            150.000000
+0:71          pow ( global highp float)
+0:71            clamp ( global highp float)
+0:71              dot-product ( global highp float)
+0:71                'normal' ( temp highp 3-component vector of float)
+0:71                Constant:
+0:71                  0.000000
+0:71                  0.992278
+0:71                  -0.124035
+0:71              Constant:
+0:71                0.000000
+0:71              Constant:
+0:71                1.000000
+0:71            Constant:
+0:71              2.500000
+0:72      move second child to first child ( temp highp 4-component vector of float)
+0:72        'outColor' (layout( location=0) out highp 4-component vector of float)
+0:72        Construct vec4 ( temp highp 4-component vector of float)
+0:72          'color' ( temp highp 3-component vector of float)
+0:72          Constant:
+0:72            1.000000
+0:?   Linker Objects
+0:?     'outColor' (layout( location=0) out highp 4-component vector of float)
+0:?     'image' (layout( binding=0) uniform highp sampler2D)
+0:?     'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:?     'BASIC_SLOPE' ( const highp float)
+0:?       0.500000
+0:?     'AMPLITUDE_SUPPRESS' ( const highp float)
+0:?       0.012000
+0:?     'WAVE_FREQUENCY' ( const highp float)
+0:?       31.000000
+0:?     'WAVE_PROPAGATION_RATIO' ( const highp float)
+0:?       2.000000
+0:?     'AMPLITUDE_SUPPRESS_AREA' ( const highp float)
+0:?       0.450000
+0:?     'DISTORT_INTENSITY' ( const highp float)
+0:?       0.150000
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:21  Function Definition: sampleImage(vf2; ( global highp 4-component vector of float)
+0:21    Function Parameters: 
+0:21      'coord' ( in highp 2-component vector of float)
+0:23    Sequence
+0:23      Branch: Return with expression
+0:23        texture ( global highp 4-component vector of float)
+0:23          'image' (layout( binding=0) uniform highp sampler2D)
+0:23          divide ( temp highp 2-component vector of float)
+0:23            'coord' ( in highp 2-component vector of float)
+0:23            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:23              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:23              Constant:
+0:23                0 (const int)
+0:26  Function Definition: calcWave(f1; ( global highp float)
+0:26    Function Parameters: 
+0:26      'distanceToWave' ( in highp float)
+0:28    Sequence
+0:28      Sequence
+0:28        move second child to first child ( temp highp float)
+0:28          'preWave' ( temp highp float)
+0:28          smoothstep ( global highp float)
+0:28            Constant:
+0:28              0.000000
+0:28            Constant:
+0:28              -0.300000
+0:28            'distanceToWave' ( in highp float)
+0:29      Sequence
+0:29        move second child to first child ( temp highp float)
+0:29          'waveForm' ( temp highp float)
+0:29          Test condition and select ( temp highp float)
+0:29            Condition
+0:29            Compare Equal ( temp bool)
+0:29              waveCount: direct index for structure (layout( column_major std140 offset=12) uniform highp float)
+0:29                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:29                Constant:
+0:29                  2 (const int)
+0:29              Constant:
+0:29                1.000000
+0:29            true case
+0:30            component-wise multiply ( temp highp float)
+0:30              smoothstep ( global highp float)
+0:30                Constant:
+0:30                  -0.400000
+0:30                Constant:
+0:30                  -0.200000
+0:30                'distanceToWave' ( in highp float)
+0:30              smoothstep ( global highp float)
+0:30                Constant:
+0:30                  0.000000
+0:30                Constant:
+0:30                  -0.200000
+0:30                'distanceToWave' ( in highp float)
+0:29            false case
+0:31            Test condition and select ( temp highp float)
+0:31              Condition
+0:31              Compare Equal ( temp bool)
+0:31                waveCount: direct index for structure (layout( column_major std140 offset=12) uniform highp float)
+0:31                  'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:31                  Constant:
+0:31                    2 (const int)
+0:31                Constant:
+0:31                  2.000000
+0:31              true case
+0:32              component-wise multiply ( temp highp float)
+0:32                smoothstep ( global highp float)
+0:32                  Constant:
+0:32                    -0.600000
+0:32                  Constant:
+0:32                    -0.300000
+0:32                  'distanceToWave' ( in highp float)
+0:32                'preWave' ( temp highp float)
+0:31              false case
+0:33              component-wise multiply ( temp highp float)
+0:33                component-wise multiply ( temp highp float)
+0:33                  smoothstep ( global highp float)
+0:33                    Constant:
+0:33                      -0.900000
+0:33                    Constant:
+0:33                      -0.600000
+0:33                    'distanceToWave' ( in highp float)
+0:33                  step ( global highp float)
+0:33                    Absolute value ( global highp float)
+0:33                      add ( temp highp float)
+0:33                        'distanceToWave' ( in highp float)
+0:33                        Constant:
+0:33                          0.450000
+0:33                    Constant:
+0:33                      0.450000
+0:33                'preWave' ( temp highp float)
+0:34      Branch: Return with expression
+0:34        component-wise multiply ( temp highp float)
+0:34          Negate value ( temp highp float)
+0:34            sine ( global highp float)
+0:34              component-wise multiply ( temp highp float)
+0:34                Constant:
+0:34                  31.000000
+0:34                'distanceToWave' ( in highp float)
+0:34          'waveForm' ( temp highp float)
+0:37  Function Definition: waveGradient(f1;f1; ( global highp float)
+0:37    Function Parameters: 
+0:37      'propagatedDistance' ( in highp float)
+0:37      'timeValue' ( in highp float)
+0:39    Sequence
+0:39      Sequence
+0:39        move second child to first child ( temp highp float)
+0:39          'distanceToWave' ( temp highp float)
+0:39          subtract ( temp highp float)
+0:39            'propagatedDistance' ( in highp float)
+0:39            component-wise multiply ( temp highp float)
+0:39              Constant:
+0:39                2.000000
+0:39              'timeValue' ( in highp float)
+0:40      Sequence
+0:40        move second child to first child ( temp highp float)
+0:40          'delta' ( temp highp float)
+0:40          Constant:
+0:40            0.001000
+0:41      Sequence
+0:41        move second child to first child ( temp highp float)
+0:41          'd1' ( temp highp float)
+0:41          subtract ( temp highp float)
+0:41            'distanceToWave' ( temp highp float)
+0:41            'delta' ( temp highp float)
+0:42      Sequence
+0:42        move second child to first child ( temp highp float)
+0:42          'd2' ( temp highp float)
+0:42          add ( temp highp float)
+0:42            'distanceToWave' ( temp highp float)
+0:42            'delta' ( temp highp float)
+0:43      Branch: Return with expression
+0:43        divide ( temp highp float)
+0:43          subtract ( temp highp float)
+0:43            Function Call: calcWave(f1; ( global highp float)
+0:43              'd2' ( temp highp float)
+0:43            Function Call: calcWave(f1; ( global highp float)
+0:43              'd1' ( temp highp float)
+0:43          component-wise multiply ( temp highp float)
+0:43            Constant:
+0:43              2.000000
+0:43            'delta' ( temp highp float)
+0:46  Function Definition: main( ( global void)
+0:46    Function Parameters: 
+0:48    Sequence
+0:48      Sequence
+0:48        move second child to first child ( temp highp 2-component vector of float)
+0:48          'fragCoord' ( temp highp 2-component vector of float)
+0:48          vector swizzle ( temp highp 2-component vector of float)
+0:48            'gl_FragCoord' ( gl_FragCoord highp 4-component vector of float FragCoord)
+0:48            Sequence
+0:48              Constant:
+0:48                0 (const int)
+0:48              Constant:
+0:48                1 (const int)
+0:49      Sequence
+0:49        move second child to first child ( temp highp float)
+0:49          'shortEdge' ( temp highp float)
+0:49          min ( global highp float)
+0:49            direct index ( temp highp float)
+0:49              iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:49                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:49                Constant:
+0:49                  0 (const int)
+0:49              Constant:
+0:49                0 (const int)
+0:49            direct index ( temp highp float)
+0:49              iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:49                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:49                Constant:
+0:49                  0 (const int)
+0:49              Constant:
+0:49                1 (const int)
+0:50      Sequence
+0:50        move second child to first child ( temp highp 2-component vector of float)
+0:50          'uv' ( temp highp 2-component vector of float)
+0:50          divide ( temp highp 2-component vector of float)
+0:50            'fragCoord' ( temp highp 2-component vector of float)
+0:50            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:50              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:50              Constant:
+0:50                0 (const int)
+0:51      Sequence
+0:51        move second child to first child ( temp highp 2-component vector of float)
+0:51          'uvHomogeneous' ( temp highp 2-component vector of float)
+0:51          divide ( temp highp 2-component vector of float)
+0:51            'fragCoord' ( temp highp 2-component vector of float)
+0:51            'shortEdge' ( temp highp float)
+0:52      Sequence
+0:52        move second child to first child ( temp highp 2-component vector of float)
+0:52          'resolutionRatio' ( temp highp 2-component vector of float)
+0:52          divide ( temp highp 2-component vector of float)
+0:52            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:52              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:52              Constant:
+0:52                0 (const int)
+0:52            'shortEdge' ( temp highp float)
+0:54      Sequence
+0:54        move second child to first child ( temp highp float)
+0:54          'progressSlope' ( temp highp float)
+0:54          add ( temp highp float)
+0:54            Constant:
+0:54              0.500000
+0:54            component-wise multiply ( temp highp float)
+0:54              Constant:
+0:54                0.100000
+0:54              waveCount: direct index for structure (layout( column_major std140 offset=12) uniform highp float)
+0:54                'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:54                Constant:
+0:54                  2 (const int)
+0:55      Sequence
+0:55        move second child to first child ( temp highp float)
+0:55          'timeValue' ( temp highp float)
+0:55          component-wise multiply ( temp highp float)
+0:55            'progressSlope' ( temp highp float)
+0:55            progress: direct index for structure (layout( column_major std140 offset=8) uniform highp float)
+0:55              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:55              Constant:
+0:55                1 (const int)
+0:57      Sequence
+0:57        move second child to first child ( temp highp 2-component vector of float)
+0:57          'waveCenter' ( temp highp 2-component vector of float)
+0:57          component-wise multiply ( temp highp 2-component vector of float)
+0:57            rippleCenter: direct index for structure (layout( column_major std140 offset=16) uniform highp 2-component vector of float)
+0:57              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:57              Constant:
+0:57                3 (const int)
+0:57            'resolutionRatio' ( temp highp 2-component vector of float)
+0:58      Sequence
+0:58        move second child to first child ( temp highp float)
+0:58          'propagatedDistance' ( temp highp float)
+0:58          distance ( global highp float)
+0:58            'uvHomogeneous' ( temp highp 2-component vector of float)
+0:58            'waveCenter' ( temp highp 2-component vector of float)
+0:59      Sequence
+0:59        move second child to first child ( temp highp 2-component vector of float)
+0:59          'waveVector' ( temp highp 2-component vector of float)
+0:59          subtract ( temp highp 2-component vector of float)
+0:59            'uvHomogeneous' ( temp highp 2-component vector of float)
+0:59            'waveCenter' ( temp highp 2-component vector of float)
+0:60      Sequence
+0:60        move second child to first child ( temp highp float)
+0:60          'amplitudeDecay' ( temp highp float)
+0:60          Test condition and select ( temp highp float)
+0:60            Condition
+0:60            Compare Less Than ( temp bool)
+0:60              'propagatedDistance' ( temp highp float)
+0:60              Constant:
+0:60                1.000000
+0:60            true case
+0:60            pow ( global highp float)
+0:60              subtract ( temp highp float)
+0:60                Constant:
+0:60                  1.000000
+0:60                'propagatedDistance' ( temp highp float)
+0:60              Constant:
+0:60                4.000000
+0:60            false case
+0:60            Constant:
+0:60              0.000000
+0:61      Sequence
+0:61        move second child to first child ( temp highp float)
+0:61          'amplitudeSuppress' ( temp highp float)
+0:61          smoothstep ( global highp float)
+0:61            Constant:
+0:61              0.000000
+0:61            Constant:
+0:61              0.450000
+0:61            'propagatedDistance' ( temp highp float)
+0:62      Sequence
+0:62        move second child to first child ( temp highp float)
+0:62          'intensity' ( temp highp float)
+0:63          component-wise multiply ( temp highp float)
+0:63            component-wise multiply ( temp highp float)
+0:62              component-wise multiply ( temp highp float)
+0:62                Function Call: waveGradient(f1;f1; ( global highp float)
+0:62                  'propagatedDistance' ( temp highp float)
+0:62                  'timeValue' ( temp highp float)
+0:63                'amplitudeDecay' ( temp highp float)
+0:63              'amplitudeSuppress' ( temp highp float)
+0:63            Constant:
+0:63              0.012000
+0:65      Sequence
+0:65        move second child to first child ( temp highp 2-component vector of float)
+0:65          'normalizedWaveVector' ( temp highp 2-component vector of float)
+0:65          Test condition and select ( temp highp 2-component vector of float)
+0:65            Condition
+0:65            Compare Greater Than ( temp bool)
+0:65              length ( global highp float)
+0:65                'waveVector' ( temp highp 2-component vector of float)
+0:65              Constant:
+0:65                0.000010
+0:65            true case
+0:65            normalize ( global highp 2-component vector of float)
+0:65              'waveVector' ( temp highp 2-component vector of float)
+0:65            false case
+0:65            Constant:
+0:65              0.000000
+0:65              0.000000
+0:66      Sequence
+0:66        move second child to first child ( temp highp 2-component vector of float)
+0:66          'circles' ( temp highp 2-component vector of float)
+0:66          vector-scale ( temp highp 2-component vector of float)
+0:66            'normalizedWaveVector' ( temp highp 2-component vector of float)
+0:66            'intensity' ( temp highp float)
+0:67      Sequence
+0:67        move second child to first child ( temp highp 3-component vector of float)
+0:67          'normal' ( temp highp 3-component vector of float)
+0:67          Construct vec3 ( temp highp 3-component vector of float)
+0:67            'circles' ( temp highp 2-component vector of float)
+0:67            'intensity' ( temp highp float)
+0:68      Sequence
+0:68        move second child to first child ( temp highp 2-component vector of float)
+0:68          'distortedCoord' ( temp highp 2-component vector of float)
+0:68          component-wise multiply ( temp highp 2-component vector of float)
+0:68            subtract ( temp highp 2-component vector of float)
+0:68              'uv' ( temp highp 2-component vector of float)
+0:68              vector-scale ( temp highp 2-component vector of float)
+0:68                Constant:
+0:68                  0.150000
+0:68                vector swizzle ( temp highp 2-component vector of float)
+0:68                  'normal' ( temp highp 3-component vector of float)
+0:68                  Sequence
+0:68                    Constant:
+0:68                      0 (const int)
+0:68                    Constant:
+0:68                      1 (const int)
+0:68            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform highp 2-component vector of float)
+0:68              'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:68              Constant:
+0:68                0 (const int)
+0:70      Sequence
+0:70        move second child to first child ( temp highp 3-component vector of float)
+0:70          'color' ( temp highp 3-component vector of float)
+0:70          vector swizzle ( temp highp 3-component vector of float)
+0:70            Function Call: sampleImage(vf2; ( global highp 4-component vector of float)
+0:70              'distortedCoord' ( temp highp 2-component vector of float)
+0:70            Sequence
+0:70              Constant:
+0:70                0 (const int)
+0:70              Constant:
+0:70                1 (const int)
+0:70              Constant:
+0:70                2 (const int)
+0:71      add second child into first child ( temp highp 3-component vector of float)
+0:71        'color' ( temp highp 3-component vector of float)
+0:71        component-wise multiply ( temp highp float)
+0:71          Constant:
+0:71            150.000000
+0:71          pow ( global highp float)
+0:71            clamp ( global highp float)
+0:71              dot-product ( global highp float)
+0:71                'normal' ( temp highp 3-component vector of float)
+0:71                Constant:
+0:71                  0.000000
+0:71                  0.992278
+0:71                  -0.124035
+0:71              Constant:
+0:71                0.000000
+0:71              Constant:
+0:71                1.000000
+0:71            Constant:
+0:71              2.500000
+0:72      move second child to first child ( temp highp 4-component vector of float)
+0:72        'outColor' (layout( location=0) out highp 4-component vector of float)
+0:72        Construct vec4 ( temp highp 4-component vector of float)
+0:72          'color' ( temp highp 3-component vector of float)
+0:72          Constant:
+0:72            1.000000
+0:?   Linker Objects
+0:?     'outColor' (layout( location=0) out highp 4-component vector of float)
+0:?     'image' (layout( binding=0) uniform highp sampler2D)
+0:?     'u' (layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform highp float progress, layout( column_major std140 offset=12) uniform highp float waveCount, layout( column_major std140 offset=16) uniform highp 2-component vector of float rippleCenter})
+0:?     'BASIC_SLOPE' ( const highp float)
+0:?       0.500000
+0:?     'AMPLITUDE_SUPPRESS' ( const highp float)
+0:?       0.012000
+0:?     'WAVE_FREQUENCY' ( const highp float)
+0:?       31.000000
+0:?     'WAVE_PROPAGATION_RATIO' ( const highp float)
+0:?       2.000000
+0:?     'AMPLITUDE_SUPPRESS_AREA' ( const highp float)
+0:?       0.450000
+0:?     'DISTORT_INTENSITY' ( const highp float)
+0:?       0.150000
+

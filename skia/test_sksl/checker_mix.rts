@@ -1,0 +1,15 @@
+uniform shader image;
+uniform float2 resolution;
+uniform float amount;
+
+half4 main(float2 xy) {
+    float2 uv = xy / max(resolution, float2(1.0));
+    float checker = mod(floor(uv.x * 10.0) + floor(uv.y * 10.0), 2.0);
+
+    half4 src = image.eval(xy);
+    half3 tintA = half3(0.10, 0.45, 0.95);
+    half3 tintB = half3(0.95, 0.55, 0.10);
+    half3 tint = mix(tintA, tintB, half(checker));
+
+    return half4(mix(src.rgb, tint * src.rgb, half(clamp(amount, 0.0, 1.0))), src.a);
+}

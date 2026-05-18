@@ -1,0 +1,9 @@
+uniform float amount;
+
+half4 main(half4 src, half4 dst) {
+    half t = half(clamp(amount, 0.0, 1.0));
+    half3 screen = 1.0 - (1.0 - src.rgb) * (1.0 - dst.rgb);
+    half3 rgb = mix(dst.rgb, screen, t);
+    half a = src.a + (1.0 - src.a) * dst.a;
+    return half4(rgb, a);
+}
