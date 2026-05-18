@@ -7,7 +7,7 @@ import math
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 def compute_metrics(img_a: Image.Image, img_b: Image.Image) -> dict:
@@ -22,20 +22,25 @@ def compute_metrics(img_a: Image.Image, img_b: Image.Image) -> dict:
     sse = 0
     max_diff = 0
     diff_count = 0
+    diff_data = [0] * total_pixels
 
-    for pa, pb in zip(px_a, px_b):
+    for idx, (pa, pb) in enumerate(zip(px_a, px_b)):
         pixel_differs = False
-        for ca, cb in zip(pa, pb):
+        pixel_max = 0
+        for ca, cb in zip(pa[:3], pb[:3]):  # RGB only, ignore alpha
             d = abs(int(ca) - int(cb))
             sse += d * d
             if d > max_diff:
                 max_diff = d
+            if d > pixel_max:
+                pixel_max = d
             if d > 0:
                 pixel_differs = True
+        diff_data[idx] = pixel_max
         if pixel_differs:
             diff_count += 1
 
-    mse = sse / (total_pixels * channels)
+    mse = sse / (total_pixels * min(channels, 3))
     psnr = (20.0 * math.log10(255.0 / math.sqrt(mse))) if mse > 0 else float("inf")
 
     return {
@@ -45,7 +50,22 @@ def compute_metrics(img_a: Image.Image, img_b: Image.Image) -> dict:
         "pixel_diff_percent": round(100.0 * diff_count / total_pixels, 2),
         "total_pixels": total_pixels,
         "different_pixels": diff_count,
-    }
+    }, diff_data
+
+
+def save_diff_heatmap(diff_data, size, output_path, equalize=True):
+    """Save a grayscale heatmap where brightness = per-pixel max RGB difference.
+
+    When equalize=True (default), the contrast is stretched so the largest
+    difference maps to white, making subtle patterns visible.  When False,
+    the raw difference values are used directly.
+    """
+    img = Image.new("L", size)
+    img.putdata(diff_data)
+    if equalize and max(diff_data) > 0:
+        img = ImageOps.autocontrast(img, cutoff=0)
+    img.save(output_path)
+    return output_path
 
 
 def main():
@@ -59,6 +79,9 @@ def main():
     parser.add_argument("--json", action="store_true",
                         help="Output results as JSON to stdout")
     parser.add_argument("--output-json", help="Write JSON report to file")
+    parser.add_argument("--diffmap", help="Save grayscale difference heatmap to PNG")
+    parser.add_argument("--diffmap-raw", action="store_true",
+                        help="Do not equalize the diff heatmap (raw values)")
     args = parser.parse_args()
 
     if not Path(args.image_a).exists():
@@ -81,7 +104,7 @@ def main():
               file=sys.stderr)
         img_b = img_b.resize(img_a.size, Image.LANCZOS)
 
-    metrics = compute_metrics(img_a, img_b)
+    metrics, diff_data = compute_metrics(img_a, img_b)
     passed = (
         metrics["psnr"] >= args.threshold_psnr
         and metrics["pixel_diff_percent"] <= args.threshold_diff_percent
@@ -89,6 +112,11 @@ def main():
     metrics["passed"] = passed
     metrics["threshold_psnr"] = args.threshold_psnr
     metrics["threshold_diff_percent"] = args.threshold_diff_percent
+
+    if args.diffmap:
+        path = save_diff_heatmap(diff_data, img_a.size, args.diffmap,
+                                 equalize=not args.diffmap_raw)
+        metrics["diffmap"] = path
 
     if args.output_json:
         Path(args.output_json).parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,12 @@
+{
+  "mse": 2.7975,
+  "psnr": 43.66,
+  "max_pixel_diff": 101,
+  "pixel_diff_percent": 1.07,
+  "total_pixels": 921600,
+  "different_pixels": 9882,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test2/water_ripple/v1/report/water_ripple_diffmap.png"
+}

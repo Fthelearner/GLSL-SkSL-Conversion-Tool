@@ -1,24 +1,36 @@
 #version 450 core
-out vec4 FragColor;
-uniform sampler2D image;
-uniform sampler2D displacementMap;
+
+layout(location = 0) out vec4 outColor;
+
+layout(binding = 0) uniform sampler2D image;
+layout(binding = 1) uniform sampler2D displacementMap;
+
 uniform vec2 iResolution;
 uniform vec2 factor;
 uniform float strength;
-void main() {
+
+vec4 sampleImage(vec2 coord)
+{
+    return texture(image, coord / iResolution);
+}
+
+vec4 sampleDisplacementMap(vec2 coord)
+{
+    return texture(displacementMap, coord / iResolution);
+}
+
+void main()
+{
     vec2 fragCoord = gl_FragCoord.xy;
-    vec4 outColor;
     vec2 uv = fragCoord / iResolution;
-    vec4 displacement = texture(displacementMap, (fragCoord) / iResolution);
-    displacement.rgb *= displacement.a;
-    if (displacement.w <= 0.0) {
-        FragColor = texture(image, (fragCoord) / iResolution);
+    vec4 displacement = sampleDisplacementMap(fragCoord);
+    if (displacement.a <= 0.0) {
+        outColor = sampleImage(fragCoord);
         return;
     }
-    vec2 direction = 2.0 * (displacement.xy - 0.5);
-    vec2 normal = (direction * factor) * strength;
+
+    vec2 direction = 2.0 * (displacement.rg - 0.5);
+    vec2 normal = direction * factor * strength;
     vec2 refractedUv = clamp(uv - normal * 0.05, vec2(0.001), vec2(0.999));
     outColor = texture(image, refractedUv);
-    FragColor = vec4(outColor.xyz, 1.0);
-    return;
 }

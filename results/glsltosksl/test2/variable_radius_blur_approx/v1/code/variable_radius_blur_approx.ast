@@ -1,0 +1,266 @@
+tests/frag/variable_radius_blur_approx.frag
+Shader version: 450
+0:? Sequence
+0:14  Function Definition: sampleImage(vf2; ( global 4-component vector of float)
+0:14    Function Parameters: 
+0:14      'coord' ( in 2-component vector of float)
+0:16    Sequence
+0:16      Branch: Return with expression
+0:16        texture ( global 4-component vector of float)
+0:16          'image' (layout( binding=0) uniform sampler2D)
+0:16          divide ( temp 2-component vector of float)
+0:16            'coord' ( in 2-component vector of float)
+0:16            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform 2-component vector of float)
+0:16              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform float maxRadius, layout( column_major std140 offset=12) uniform float strength})
+0:16              Constant:
+0:16                0 (const int)
+0:19  Function Definition: sampleBlurMask(vf2; ( global 4-component vector of float)
+0:19    Function Parameters: 
+0:19      'coord' ( in 2-component vector of float)
+0:21    Sequence
+0:21      Branch: Return with expression
+0:21        texture ( global 4-component vector of float)
+0:21          'blurMask' (layout( binding=1) uniform sampler2D)
+0:21          divide ( temp 2-component vector of float)
+0:21            'coord' ( in 2-component vector of float)
+0:21            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform 2-component vector of float)
+0:21              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform float maxRadius, layout( column_major std140 offset=12) uniform float strength})
+0:21              Constant:
+0:21                0 (const int)
+0:24  Function Definition: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:24    Function Parameters: 
+0:24      'coord' ( in 2-component vector of float)
+0:24      'direction' ( in 2-component vector of float)
+0:24      'radius' ( in float)
+0:24      'factor' ( in float)
+0:24      'totalWeight' ( inout float)
+0:26    Sequence
+0:26      Sequence
+0:26        move second child to first child ( temp 2-component vector of float)
+0:26          'offset' ( temp 2-component vector of float)
+0:26          vector-scale ( temp 2-component vector of float)
+0:26            vector-scale ( temp 2-component vector of float)
+0:26              'direction' ( in 2-component vector of float)
+0:26              'radius' ( in float)
+0:26            'factor' ( in float)
+0:27      Sequence
+0:27        move second child to first child ( temp float)
+0:27          'weight' ( temp float)
+0:27          subtract ( temp float)
+0:27            Constant:
+0:27              1.000000
+0:27            component-wise multiply ( temp float)
+0:27              Constant:
+0:27                0.180000
+0:27              'factor' ( in float)
+0:28      add second child into first child ( temp float)
+0:28        'totalWeight' ( inout float)
+0:28        component-wise multiply ( temp float)
+0:28          Constant:
+0:28            2.000000
+0:28          'weight' ( temp float)
+0:29      Branch: Return with expression
+0:29        vector-scale ( temp 4-component vector of float)
+0:29          add ( temp 4-component vector of float)
+0:29            Function Call: sampleImage(vf2; ( global 4-component vector of float)
+0:29              add ( temp 2-component vector of float)
+0:29                'coord' ( in 2-component vector of float)
+0:29                'offset' ( temp 2-component vector of float)
+0:29            Function Call: sampleImage(vf2; ( global 4-component vector of float)
+0:29              subtract ( temp 2-component vector of float)
+0:29                'coord' ( in 2-component vector of float)
+0:29                'offset' ( temp 2-component vector of float)
+0:29          'weight' ( temp float)
+0:32  Function Definition: main( ( global void)
+0:32    Function Parameters: 
+0:34    Sequence
+0:34      Sequence
+0:34        move second child to first child ( temp 2-component vector of float)
+0:34          'coord' ( temp 2-component vector of float)
+0:34          vector swizzle ( temp 2-component vector of float)
+0:34            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:34            Sequence
+0:34              Constant:
+0:34                0 (const int)
+0:34              Constant:
+0:34                1 (const int)
+0:35      Sequence
+0:35        move second child to first child ( temp float)
+0:35          'maskAlpha' ( temp float)
+0:35          direct index ( temp float)
+0:35            Function Call: sampleBlurMask(vf2; ( global 4-component vector of float)
+0:35              'coord' ( temp 2-component vector of float)
+0:35            Constant:
+0:35              3 (const int)
+0:36      Sequence
+0:36        move second child to first child ( temp float)
+0:36          'radius' ( temp float)
+0:36          clamp ( global float)
+0:36            component-wise multiply ( temp float)
+0:36              component-wise multiply ( temp float)
+0:36                'maskAlpha' ( temp float)
+0:36                maxRadius: direct index for structure (layout( column_major std140 offset=8) uniform float)
+0:36                  'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform float maxRadius, layout( column_major std140 offset=12) uniform float strength})
+0:36                  Constant:
+0:36                    1 (const int)
+0:36              strength: direct index for structure (layout( column_major std140 offset=12) uniform float)
+0:36                'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform float maxRadius, layout( column_major std140 offset=12) uniform float strength})
+0:36                Constant:
+0:36                  2 (const int)
+0:36            Constant:
+0:36              0.000000
+0:36            maxRadius: direct index for structure (layout( column_major std140 offset=8) uniform float)
+0:36              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform float maxRadius, layout( column_major std140 offset=12) uniform float strength})
+0:36              Constant:
+0:36                1 (const int)
+0:37      Test condition and select ( temp void)
+0:37        Condition
+0:37        Compare Less Than ( temp bool)
+0:37          'radius' ( temp float)
+0:37          Constant:
+0:37            0.500000
+0:37        true case
+0:38        Sequence
+0:38          move second child to first child ( temp 4-component vector of float)
+0:38            'outColor' (layout( location=0) out 4-component vector of float)
+0:38            Function Call: sampleImage(vf2; ( global 4-component vector of float)
+0:38              'coord' ( temp 2-component vector of float)
+0:39          Branch: Return
+0:42      Sequence
+0:42        move second child to first child ( temp 4-component vector of float)
+0:42          'sum' ( temp 4-component vector of float)
+0:42          vector-scale ( temp 4-component vector of float)
+0:42            Function Call: sampleImage(vf2; ( global 4-component vector of float)
+0:42              'coord' ( temp 2-component vector of float)
+0:42            Constant:
+0:42              1.400000
+0:43      Sequence
+0:43        move second child to first child ( temp float)
+0:43          'totalWeight' ( temp float)
+0:43          Constant:
+0:43            1.400000
+0:45      Sequence
+0:45        move second child to first child ( temp 2-component vector of float)
+0:45          'horizontal' ( temp 2-component vector of float)
+0:45          Constant:
+0:45            1.000000
+0:45            0.000000
+0:46      Sequence
+0:46        move second child to first child ( temp 2-component vector of float)
+0:46          'vertical' ( temp 2-component vector of float)
+0:46          Constant:
+0:46            0.000000
+0:46            1.000000
+0:47      Sequence
+0:47        move second child to first child ( temp 2-component vector of float)
+0:47          'diagonalA' ( temp 2-component vector of float)
+0:47          Constant:
+0:47            0.707107
+0:47            0.707107
+0:48      Sequence
+0:48        move second child to first child ( temp 2-component vector of float)
+0:48          'diagonalB' ( temp 2-component vector of float)
+0:48          Constant:
+0:48            0.707107
+0:48            -0.707107
+0:50      add second child into first child ( temp 4-component vector of float)
+0:50        'sum' ( temp 4-component vector of float)
+0:50        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:50          'coord' ( temp 2-component vector of float)
+0:50          'horizontal' ( temp 2-component vector of float)
+0:50          'radius' ( temp float)
+0:50          Constant:
+0:50            0.330000
+0:50          'totalWeight' ( temp float)
+0:51      add second child into first child ( temp 4-component vector of float)
+0:51        'sum' ( temp 4-component vector of float)
+0:51        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:51          'coord' ( temp 2-component vector of float)
+0:51          'horizontal' ( temp 2-component vector of float)
+0:51          'radius' ( temp float)
+0:51          Constant:
+0:51            0.660000
+0:51          'totalWeight' ( temp float)
+0:52      add second child into first child ( temp 4-component vector of float)
+0:52        'sum' ( temp 4-component vector of float)
+0:52        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:52          'coord' ( temp 2-component vector of float)
+0:52          'horizontal' ( temp 2-component vector of float)
+0:52          'radius' ( temp float)
+0:52          Constant:
+0:52            1.000000
+0:52          'totalWeight' ( temp float)
+0:54      add second child into first child ( temp 4-component vector of float)
+0:54        'sum' ( temp 4-component vector of float)
+0:54        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:54          'coord' ( temp 2-component vector of float)
+0:54          'vertical' ( temp 2-component vector of float)
+0:54          'radius' ( temp float)
+0:54          Constant:
+0:54            0.330000
+0:54          'totalWeight' ( temp float)
+0:55      add second child into first child ( temp 4-component vector of float)
+0:55        'sum' ( temp 4-component vector of float)
+0:55        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:55          'coord' ( temp 2-component vector of float)
+0:55          'vertical' ( temp 2-component vector of float)
+0:55          'radius' ( temp float)
+0:55          Constant:
+0:55            0.660000
+0:55          'totalWeight' ( temp float)
+0:56      add second child into first child ( temp 4-component vector of float)
+0:56        'sum' ( temp 4-component vector of float)
+0:56        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:56          'coord' ( temp 2-component vector of float)
+0:56          'vertical' ( temp 2-component vector of float)
+0:56          'radius' ( temp float)
+0:56          Constant:
+0:56            1.000000
+0:56          'totalWeight' ( temp float)
+0:58      add second child into first child ( temp 4-component vector of float)
+0:58        'sum' ( temp 4-component vector of float)
+0:58        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:58          'coord' ( temp 2-component vector of float)
+0:58          'diagonalA' ( temp 2-component vector of float)
+0:58          'radius' ( temp float)
+0:58          Constant:
+0:58            0.500000
+0:58          'totalWeight' ( temp float)
+0:59      add second child into first child ( temp 4-component vector of float)
+0:59        'sum' ( temp 4-component vector of float)
+0:59        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:59          'coord' ( temp 2-component vector of float)
+0:59          'diagonalA' ( temp 2-component vector of float)
+0:59          'radius' ( temp float)
+0:59          Constant:
+0:59            0.900000
+0:59          'totalWeight' ( temp float)
+0:60      add second child into first child ( temp 4-component vector of float)
+0:60        'sum' ( temp 4-component vector of float)
+0:60        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:60          'coord' ( temp 2-component vector of float)
+0:60          'diagonalB' ( temp 2-component vector of float)
+0:60          'radius' ( temp float)
+0:60          Constant:
+0:60            0.500000
+0:60          'totalWeight' ( temp float)
+0:61      add second child into first child ( temp 4-component vector of float)
+0:61        'sum' ( temp 4-component vector of float)
+0:61        Function Call: samplePair(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:61          'coord' ( temp 2-component vector of float)
+0:61          'diagonalB' ( temp 2-component vector of float)
+0:61          'radius' ( temp float)
+0:61          Constant:
+0:61            0.900000
+0:61          'totalWeight' ( temp float)
+0:63      move second child to first child ( temp 4-component vector of float)
+0:63        'outColor' (layout( location=0) out 4-component vector of float)
+0:63        divide ( temp 4-component vector of float)
+0:63          'sum' ( temp 4-component vector of float)
+0:63          'totalWeight' ( temp float)
+0:?   Linker Objects
+0:?     'outColor' (layout( location=0) out 4-component vector of float)
+0:?     'image' (layout( binding=0) uniform sampler2D)
+0:?     'blurMask' (layout( binding=1) uniform sampler2D)
+0:?     'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform float maxRadius, layout( column_major std140 offset=12) uniform float strength})
+

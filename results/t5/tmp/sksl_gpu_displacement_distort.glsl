@@ -13,6 +13,6 @@ error: 19: type 'shader' has no method named 'eval'
     return displacementMap.eval(coord);
            ^^^^^^^^^^^^^^^^^^^^
 error: 32: type 'shader' has no method named 'eval'
-    outColor = image.eval(iResolution * (refractedUv));
+    outColor = image.eval(iResolution.xy * (refractedUv));
                ^^^^^^^^^^
 5 errors

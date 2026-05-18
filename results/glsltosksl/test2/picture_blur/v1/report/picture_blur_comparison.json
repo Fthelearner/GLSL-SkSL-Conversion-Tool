@@ -1,0 +1,12 @@
+{
+  "mse": 0.3136,
+  "psnr": 53.17,
+  "max_pixel_diff": 9,
+  "pixel_diff_percent": 13.99,
+  "total_pixels": 921600,
+  "different_pixels": 128917,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/glsltosksl/test2/picture_blur/v1/report/picture_blur_diffmap.png"
+}

@@ -45,6 +45,7 @@ Usage: runner.sh <command> [options]
 Commands:
   test             Run bidirectional SKSL↔GLSL round-trip tests (default)
   pipeline <in>    Flexible single-direction conversion + render + animate
+  fulltest <in>    Bidirectional v1+v2+roundtrip verification (one shader)
   live <shader>    Open real-time GUI preview window (SDL2, wall-clock time)
   compare <a> <b>  Compare two PNG images pixel-by-pixel (PSNR/MSE)
   help             Show this help
@@ -62,6 +63,31 @@ test — Bidirectional round-trip tests
   Examples:
     runner.sh test --shader passthrough
     runner.sh test --dir1 --shader water_ripple
+
+────────────────────────────────────────────────────────────────────────────
+fulltest — Bidirectional v1+v2+roundtrip verification (one shader)
+────────────────────────────────────────────────────────────────────────────
+  runner.sh fulltest <input> --output <dir> [--stage v1|v2|report]
+
+  <input>            .sksl or .glsl/.frag file
+  --output DIR       Output root (required)
+
+  --stage v1|v2|report  Run single stage (default: all three — v1→v2→roundtrip)
+  --gpu              Render SKSL via GPU path (sksl→GLSL→render_glsl), matching
+                      the GLSL backend. Essential for raymarched / numerically
+                      sensitive shaders (e.g. purple_cloud, curve).
+  --force            Re-render even if outputs exist
+  --help             Show full options
+
+  Directory layout (inside <output>/<name>/):
+    v1/{before,code,after,report}/  — original→convert→render→compare
+    v2/{before,code,after,report}/  — v1/code→reverse→render→compare
+    report/                         — roundtrip: v1/before vs v2/after
+
+  Examples:
+    runner.sh fulltest tests/shaders/water_ripple.sksl --output results/sksltoglsl/test2
+    runner.sh fulltest tests/frag/curve.frag --output results/glsltosksl/test2
+    runner.sh fulltest tests/frag/curve.frag --output results/glsltosksl/test2 --stage v1
 
 ────────────────────────────────────────────────────────────────────────────
 pipeline — Single-direction conversion + render (+ animate)
@@ -204,14 +230,39 @@ with open('$raw', 'wb') as f:
 fix_premultiplied_alpha() {
     # Skia RuntimeEffect's .eval() returns premultiplied alpha.
     # texture() in GLSL returns non-premultiplied (straight) alpha.
-    # For intermediate computations (not direct FragColor output), premultiply
-    # to match Skia's behavior. Pattern: "vec4 VAR = texture(...);"
+    #
+    # Two-pass approach:
+    #   1. Inline one-line helper functions that wrap texture() calls
+    #      (e.g. vec4 sampleImage(coord) { return texture(img, expr); })
+    #   2. Add VAR.rgb *= VAR.a after every vec4 VAR = texture(...);
     local glsl="$1"
     python3 -c "
 import re
 with open('$glsl', 'r') as f:
     content = f.read()
-# After each 'vec4 VAR = texture(...);' add 'VAR.rgb *= VAR.a;'
+
+# Pass 1: Inline simple texture-wrapper helpers.
+# Match: vec4 NAME(vec2 PARAM) { return texture(SAMPLER, BODY); }
+helper_re = re.compile(
+    r'vec4\s+(\w+)\s*\(\s*vec2\s+(\w+)\s*\)\s*\{\s*return\s+(texture\([^;]+\))\s*;\s*\}'
+)
+for m in helper_re.finditer(content):
+    name, param, tex_call = m.group(1), m.group(2), m.group(3)
+    # Remove the function definition FIRST to avoid matching its parameter list
+    content = content.replace(m.group(0), '')
+    # Then replace remaining call sites: name(ARG) → texture(..., ARG)
+    def make_sub(_tc=tex_call, _p=param):
+        def replacer(call_m):
+            arg = call_m.group(1)
+            return _tc.replace(_p, arg)
+        return replacer
+    content = re.sub(
+        rf'\b{name}\(([^)]+)\)',
+        make_sub(),
+        content
+    )
+
+# Pass 2: Add premultiplied-alpha fix after texture() assignments.
 content = re.sub(
     r'    vec4 (\w+) = texture\([^;]+\);',
     r'\g<0>\n    \1.rgb *= \1.a;',
@@ -219,7 +270,7 @@ content = re.sub(
 )
 with open('$glsl', 'w') as f:
     f.write(content)
-"
+" 2>/dev/null
     return $?
 }
 
@@ -347,13 +398,14 @@ run_live_preview() {
 
 run_compare() {
     local image_a="" image_b="" output_json="" threshold_psnr="" threshold_diff_pct=""
-    local json_flag=""
+    local json_flag="" diffmap=""
 
     while [ $# -gt 0 ]; do
         case "$1" in
             --output-json) output_json="$2"; shift 2 ;;
             --threshold-psnr) threshold_psnr="$2"; shift 2 ;;
             --threshold-diff-pct) threshold_diff_pct="$2"; shift 2 ;;
+            --diffmap) diffmap="$2"; shift 2 ;;
             --json) json_flag="--json"; shift ;;
             -*)
                 echo "Unknown option: $1" >&2
@@ -373,7 +425,7 @@ run_compare() {
 
     if [ -z "$image_a" ] || [ -z "$image_b" ]; then
         echo "ERROR: two image paths required" >&2
-        echo "Usage: runner.sh compare <image_a> <image_b> [--output-json FILE] [--threshold-psnr N] [--threshold-diff-pct N] [--json]" >&2
+        echo "Usage: runner.sh compare <image_a> <image_b> [--output-json FILE] [--threshold-psnr N] [--threshold-diff-pct N] [--diffmap FILE] [--json]" >&2
         return 2
     fi
 
@@ -381,6 +433,7 @@ run_compare() {
     [ -n "$threshold_psnr" ] && cmd+=("--threshold-psnr" "$threshold_psnr")
     [ -n "$threshold_diff_pct" ] && cmd+=("--threshold-diff-percent" "$threshold_diff_pct")
     [ -n "$output_json" ] && cmd+=("--output-json" "$output_json")
+    [ -n "$diffmap" ] && cmd+=("--diffmap" "$diffmap")
     [ -n "$json_flag" ] && cmd+=("$json_flag")
 
     "${cmd[@]}"
@@ -767,10 +820,11 @@ run_comparisons() {
     local d1_orig="$V1/sksl/${shader}.png"
     local d1_restored="$V1/to_sksl/${shader}.png"
     local d1_report="$REPORTS/${shader}_dir1.json"
+    local d1_diffmap="$REPORTS/${shader}_dir1_diffmap.png"
 
     if [ -f "$d1_orig" ] && [ -f "$d1_restored" ]; then
         if python3 "$COMPARE_PY" "$d1_orig" "$d1_restored" \
-            --output-json "$d1_report" 2>/dev/null; then
+            --output-json "$d1_report" --diffmap "$d1_diffmap" 2>/dev/null; then
             log_step "$shader" "D1_COMPARE_SKSL" OK "$(python3 -c "import json; d=json.load(open('$d1_report')); print(f\"PSNR={d['psnr']}dB diff={d['pixel_diff_percent']}%\")" 2>/dev/null)"
         else
             log_step "$shader" "D1_COMPARE_SKSL" FAIL "see $d1_report"
@@ -783,10 +837,11 @@ run_comparisons() {
     local d2_orig="$V12/glsl/${shader}.png"
     local d2_restored="$V12/to_glsl/${shader}.png"
     local d2_report="$REPORTS/${shader}_dir2.json"
+    local d2_diffmap="$REPORTS/${shader}_dir2_diffmap.png"
 
     if [ -f "$d2_orig" ] && [ -f "$d2_restored" ]; then
         if python3 "$COMPARE_PY" "$d2_orig" "$d2_restored" \
-            --output-json "$d2_report" 2>/dev/null; then
+            --output-json "$d2_report" --diffmap "$d2_diffmap" 2>/dev/null; then
             log_step "$shader" "D2_COMPARE_GLSL" OK "$(python3 -c "import json; d=json.load(open('$d2_report')); print(f\"PSNR={d['psnr']}dB diff={d['pixel_diff_percent']}%\")" 2>/dev/null)"
         else
             log_step "$shader" "D2_COMPARE_GLSL" FAIL "see $d2_report"
@@ -988,18 +1043,20 @@ render_single_frame_sksl_gpu() {
     cp "$sksl" "$sksl_as_frag"
     "$SKSLC" "$sksl_as_frag" "$out_glsl" 2>&1 || { echo "skslc compile failed"; return 1; }
 
-    # skslc outputs Skia-internal GLSL (vec4 main(), fragCoord vec4 builtin,
-    # sk_FragColor). Rewrite to standard GLSL fragment shader for render_glsl.
-    sed -i \
-        -e 's/^vec4 main()/void main()/' \
-        -e 's/return fragColor;/sk_FragColor = fragColor;/' \
-        -e 's/return \([^f]\)/sk_FragColor = \1/' \
-        -e 's/\bfragCoord\b/gl_FragCoord/g' \
-        "$out_glsl"
-    # Fix: skslc emits `fragCoord - vec2_expr` where fragCoord is vec4
-    # but expression is vec2. Use .xy swizzle for type match.
-    sed -i 's/gl_FragCoord - /gl_FragCoord.xy - /g' "$out_glsl"
-    sed -i 's/gl_FragCoord + /gl_FragCoord.xy + /g' "$out_glsl"
+    # skslc outputs Skia-internal GLSL; rewrite for standard GLSL.
+    python3 -c "
+import re
+with open('$out_glsl', 'r') as f: src = f.read()
+# vec4/float4 main() → void main()
+src = re.sub(r'\b(vec4|float4|half4)\s+main\s*\(\)', 'void main()', src)
+# 'return EXPR;' → 'sk_FragColor = EXPR; return;'
+src = re.sub(r'return\s+(.+?);', r'sk_FragColor = \1; return;', src)
+# fragCoord → gl_FragCoord
+src = re.sub(r'\bfragCoord\b', 'gl_FragCoord', src)
+src = re.sub(r'gl_FragCoord\s*-\s*(?!\.xy)', 'gl_FragCoord.xy - ', src)
+src = re.sub(r'gl_FragCoord\s*\+\s*(?!\.xy)', 'gl_FragCoord.xy + ', src)
+with open('$out_glsl', 'w') as f: f.write(src)
+"
 
     # Step 2: Render GLSL via OpenGL (fwidth/dFdx work natively)
     local render_cmd=("$RENDER_GLSL" "$out_glsl" "$out_ppm" "$width" "$height")
@@ -1043,14 +1100,36 @@ for name, val in cfg.get('uniforms', {}).items():
 
 convert_sksl_to_glsl() {
     local sksl="$1" out_glsl="$2"
+    # Try .rts mode first (supports shader/eval)
     local sksl_as_rts="$TMP/$(basename "${sksl%.*}").rts"
     cp "$sksl" "$sksl_as_rts"
-    "$SKSLC_CUSTOM" "$sksl_as_rts" "$out_glsl" 2>&1 || return 1
-    rm -f "$sksl_as_rts"
-    # Fix FragColor shadowing: round-tripped SKSL has "float4 FragColor;"
-    # which becomes "vec4 FragColor;" in GLSL, shadowing "out vec4 FragColor;"
-    sed -i '/^    vec4 FragColor;$/d' "$out_glsl"
-    sed -i '/^    FragColor = FragColor;$/d' "$out_glsl"
+    if "$SKSLC_CUSTOM" "$sksl_as_rts" "$out_glsl" 2>/dev/null; then
+        rm -f "$sksl_as_rts"
+        sed -i '/^    vec4 FragColor;$/d' "$out_glsl"
+        sed -i '/^    FragColor = FragColor;$/d' "$out_glsl"
+        return 0
+    fi
+    rm -f "$sksl_as_rts" "$out_glsl"
+
+    # Fall back to .frag mode via skslc (supports fwidth/dFdx for procedural shaders)
+    local sksl_as_frag="$TMP/$(basename "${sksl%.*}").frag"
+    cp "$sksl" "$sksl_as_frag"
+    if "$SKSLC" "$sksl_as_frag" "$out_glsl" 2>/dev/null; then
+        python3 -c "
+import re
+with open('$out_glsl', 'r') as f: src = f.read()
+src = re.sub(r'\b(vec4|float4|half4)\s+main\s*\(\)', 'void main()', src)
+src = re.sub(r'return\s+(.+?);', r'sk_FragColor = \1; return;', src)
+src = re.sub(r'\bfragCoord\b', 'gl_FragCoord', src)
+src = re.sub(r'gl_FragCoord\s*-\s*(?!\.xy)', 'gl_FragCoord.xy - ', src)
+src = re.sub(r'gl_FragCoord\s*\+\s*(?!\.xy)', 'gl_FragCoord.xy + ', src)
+with open('$out_glsl', 'w') as f: f.write(src)
+"
+        rm -f "$sksl_as_frag"
+        return 0
+    fi
+    rm -f "$sksl_as_frag"
+    return 1
 }
 
 convert_glsl_to_sksl() {
@@ -1386,6 +1465,9 @@ run_pipeline_glsl_to_sksl() {
         encode_mp4 "$out_dir/before" "$out_dir/before/${name}.mp4" \
             "$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['fps'])")" || true
     else
+        # No premultiplied-alpha fix here: the "after" SkSL is rendered via
+        # the GPU path (skslc→GLSL→OpenGL), which naturally produces straight
+        # alpha from texture().  Both sides use the same convention.
         render_single_frame_glsl "$preprocessed" "$out_dir/before/${name}.png" "$width" "$height" "$config_json"
         echo "  [before] rendered $name.png"
     fi
@@ -1419,14 +1501,13 @@ run_pipeline_glsl_to_sksl() {
         encode_mp4 "$out_dir/after" "$out_dir/after/${name}.mp4" \
             "$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['fps'])")" || true
     else
-        # Try CPU RuntimeEffect first; fall back to GPU (skslc→GLSL→OpenGL)
-        # only when the shader needs GPU derivatives (fwidth/dFdx/dFdy).
-        if ! render_single_frame_sksl "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json"; then
-            local err_log="$out_dir/after/${name}.errors.txt"
-            if grep -q "fwidth\|dFdx\|dFdy" "$err_log" 2>/dev/null; then
-                echo "  [after] fwidth detected, retrying with GPU path..."
-                render_single_frame_sksl_gpu "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json"
-            fi
+        # Render converted SKSL via GPU path (skslc→GLSL→OpenGL) to match
+        # the "before" GLSL rendering backend, eliminating CPU vs GPU differences.
+        # This is essential for: raymarched shaders (purple_cloud), shaders
+        # using fwidth/dFdx (curve), and any numerically-sensitive computation.
+        if ! render_single_frame_sksl_gpu "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json"; then
+            echo "  [after] GPU path failed, trying CPU RuntimeEffect..."
+            render_single_frame_sksl "$sksl" "$out_dir/after/${name}.png" "$width" "$height" "$config_json" || true
         fi
         echo "  [after] rendered $name.png"
     fi
@@ -1611,14 +1692,256 @@ run_pipeline() {
 }
 
 # ============================================================================
-# Main
+# Fulltest Mode — v1/v2/roundtrip bidirectional verification
 # ============================================================================
+# Usage: runner.sh fulltest <input> --output <dir> [--stage v1|v2|report]
+#
+# Directory layout:
+#   <output>/<name>/
+#     v1/{before,code,after,report}/
+#     v2/{before,code,after,report}/
+#     report/
+#
+# v1:  original → convert → render → compare
+# v2:  v1/code → reverse-convert → render → compare
+# report (roundtrip):  v1/before vs v2/after
+
+render_sksl_with_fallback() {
+    # Render SKSL: CPU RuntimeEffect first; fall back to GPU via
+    # convert_sksl_to_glsl (tries .rts then .frag) → render_glsl.
+    # Set FT_GPU=1 to skip CPU and use GPU directly (e.g. for raymarched shaders).
+    local sksl="$1" out_png="$2" width="$3" height="$4" config_json="$5"
+    if [ "${FT_GPU:-0}" != "1" ]; then
+        if render_single_frame_sksl "$sksl" "$out_png" "$width" "$height" "$config_json"; then
+            return 0
+        fi
+        echo "  [sksl] CPU failed, trying GPU path..." >&2
+    else
+        echo "  [sksl] --gpu flag set, using GPU path directly..." >&2
+    fi
+    local tmp_glsl="$TMP/ft_$(basename "${sksl%.*}").glsl"
+    if convert_sksl_to_glsl "$sksl" "$tmp_glsl"; then
+        fix_premultiplied_alpha "$tmp_glsl"
+        if render_single_frame_glsl "$tmp_glsl" "$out_png" "$width" "$height" "$config_json" 2>/dev/null; then
+            return 0
+        fi
+    fi
+    echo "  [sksl] All GPU paths failed" >&2
+    return 1
+}
+
+render_glsl_for_fulltest() {
+    # Render GLSL via GPU, applying premultiplied-alpha fix so the result
+    # matches SkSL's .eval() convention.  Renders from a temp copy.
+    local glsl="$1" out_png="$2" width="$3" height="$4" config_json="$5"
+    local tmp="$TMP/ft_$(basename "${glsl%.*}").glsl"
+    cp "$glsl" "$tmp"
+    fix_premultiplied_alpha "$tmp"
+    render_single_frame_glsl "$tmp" "$out_png" "$width" "$height" "$config_json"
+}
+
+run_fulltest() {
+    local input="" output_root="" stage=""
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --output) output_root="$2"; shift 2 ;;
+            --stage) stage="$2"; shift 2 ;;
+            --no-animate) export FT_NO_ANIMATE=1; shift ;;
+            --gpu) export FT_GPU=1; shift ;;
+            --force) export FT_FORCE=1; shift ;;
+            --help|-h) _ft_usage; return 0 ;;
+            -*) echo "Unknown option: $1" >&2; _ft_usage; return 2 ;;
+            *)  if [ -z "$input" ]; then input="$1"
+                else echo "ERROR: unexpected arg: $1" >&2; return 2; fi
+                shift ;;
+        esac
+    done
+
+    if [ -z "$input" ] || [ -z "$output_root" ]; then
+        echo "ERROR: <input> and --output <dir> are required" >&2
+        _ft_usage; return 2
+    fi
+    [ -e "$input" ] || { echo "ERROR: input not found: $input" >&2; return 1; }
+
+    local shader_type; shader_type=$(detect_shader_type "$input")
+    [ "$shader_type" != "unknown" ] || { echo "ERROR: unknown shader type: $input" >&2; return 1; }
+    local name; name=$(extract_shader_name "$input")
+
+    # Load config
+    local cfg_file; cfg_file=$(find_config_file "$input")
+    local config_json; config_json=$(load_and_validate_config "$cfg_file" "$name" "$shader_type")
+    # Override animation: fulltest always uses single-frame at fixed time (iTime=1.5)
+    config_json=$(echo "$config_json" | python3 -c "import json,sys; d=json.load(sys.stdin); d['animation']['enabled']=False; print(json.dumps(d))")
+    local width; width=$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['dimensions']['width'])")
+    local height; height=$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['dimensions']['height'])")
+    # Direction is determined by the input file type, overriding any config setting.
+    local direction
+    if [ "$shader_type" = "sksl" ]; then direction="sksl_to_glsl"
+    else direction="glsl_to_sksl"; fi
+
+    local out="$output_root/$name"
+    mkdir -p "$out"/v1/{before,code,after,report} "$out"/v2/{before,code,after,report} "$out"/report
+
+    echo "=== Fulltest: $name ($direction) → $out ==="
+
+    # --- Stage helpers -------------------------------------------------------
+    _ft_compare() {
+        local a="$1" b="$2" report_json="$3" diffmap="$4"
+        python3 "$COMPARE_PY" "$a" "$b" \
+            --output-json "$report_json" --diffmap "$diffmap" 2>/dev/null
+        python3 -c "import json; d=json.load(open('$report_json')); print(f\"  PSNR={d['psnr']}dB diff={d['pixel_diff_percent']}% maxΔ={d['max_pixel_diff']} px_diff={d['different_pixels']}\")" 2>/dev/null
+    }
+
+    # --- v1: original → convert → render → compare --------------------------
+    _ft_v1() {
+        echo "  [v1] $direction"
+        local v1_before="$out/v1/before/$name"
+        local v1_code="$out/v1/code/$name"
+        local v1_after="$out/v1/after/$name"
+        local v1_report="$out/v1/report/${name}_comparison.json"
+        local v1_diffmap="$out/v1/report/${name}_diffmap.png"
+
+        # 1. Render original
+        if [ "$shader_type" = "sksl" ]; then
+            cp "$input" "$out/v1/before/${name}.sksl"
+            render_sksl_with_fallback "$input" "${v1_before}.png" "$width" "$height" "$config_json"
+        else
+            cp "$input" "$out/v1/before/${name}.glsl"
+            render_glsl_for_fulltest "$input" "${v1_before}.png" "$width" "$height" "$config_json"
+        fi
+
+        # 2. Convert
+        if [ "$direction" = "sksl_to_glsl" ]; then
+            convert_sksl_to_glsl "$input" "${v1_code}.glsl"
+            [ -f "${v1_code}.glsl.provenance" ] && cp "${v1_code}.glsl.provenance" "$out/v1/code/"
+        else
+            convert_glsl_to_sksl "$input" "${v1_code}.sksl"
+            [ -f "${v1_code}.sksl.provenance" ] && cp "${v1_code}.sksl.provenance" "$out/v1/code/"
+        fi
+
+        # 3. Render converted
+        if [ "$direction" = "sksl_to_glsl" ]; then
+            render_glsl_for_fulltest "${v1_code}.glsl" "${v1_after}.png" "$width" "$height" "$config_json"
+        else
+            render_sksl_with_fallback "${v1_code}.sksl" "${v1_after}.png" "$width" "$height" "$config_json"
+        fi
+
+        # 4. Compare
+        _ft_compare "${v1_before}.png" "${v1_after}.png" "$v1_report" "$v1_diffmap"
+    }
+
+    # --- v2: v1/code → reverse-convert → render → compare -------------------
+    _ft_v2() {
+        echo "  [v2] $direction → reverse"
+        local v1_code_src; local v2_before_ext; local v2_code_ext
+        if [ "$direction" = "sksl_to_glsl" ]; then
+            v1_code_src="$out/v1/code/${name}.glsl"
+            v2_before_ext="glsl"; v2_code_ext="sksl"
+        else
+            v1_code_src="$out/v1/code/${name}.sksl"
+            v2_before_ext="sksl"; v2_code_ext="glsl"
+        fi
+        [ -f "$v1_code_src" ] || { echo "  [v2] SKIP — v1/code missing"; return 1; }
+
+        local v2_before="$out/v2/before/$name"
+        local v2_code="$out/v2/code/$name"
+        local v2_after="$out/v2/after/$name"
+        local v2_report="$out/v2/report/${name}_comparison.json"
+        local v2_diffmap="$out/v2/report/${name}_diffmap.png"
+
+        # 1. Copy v1/code → v2/before + render
+        cp "$v1_code_src" "$out/v2/before/${name}.${v2_before_ext}"
+        # Also copy provenance if present
+        local v1_prov="${v1_code_src}.provenance"
+        [ -f "$v1_prov" ] && cp "$v1_prov" "$out/v2/before/"
+
+        if [ "$direction" = "sksl_to_glsl" ]; then
+            # v1/code is GLSL → v2/before is GLSL
+            render_glsl_for_fulltest "$v1_code_src" "${v2_before}.png" "$width" "$height" "$config_json"
+        else
+            # v1/code is SkSL → v2/before is SkSL
+            render_sksl_with_fallback "$v1_code_src" "${v2_before}.png" "$width" "$height" "$config_json"
+        fi
+
+        # 2. Reverse convert (with provenance if available)
+        if [ "$direction" = "sksl_to_glsl" ]; then
+            # GLSL → SkSL
+            convert_glsl_to_sksl "$v1_code_src" "${v2_code}.sksl"
+            [ -f "${v2_code}.sksl.provenance" ] && cp "${v2_code}.sksl.provenance" "$out/v2/code/"
+        else
+            # SkSL → GLSL
+            convert_sksl_to_glsl "$v1_code_src" "${v2_code}.glsl"
+            [ -f "${v2_code}.glsl.provenance" ] && cp "${v2_code}.glsl.provenance" "$out/v2/code/"
+        fi
+
+        # 3. Render reverse-converted
+        if [ "$direction" = "sksl_to_glsl" ]; then
+            render_sksl_with_fallback "${v2_code}.sksl" "${v2_after}.png" "$width" "$height" "$config_json"
+        else
+            render_glsl_for_fulltest "${v2_code}.glsl" "${v2_after}.png" "$width" "$height" "$config_json"
+        fi
+
+        # 4. Compare
+        _ft_compare "${v2_before}.png" "${v2_after}.png" "$v2_report" "$v2_diffmap"
+    }
+
+    # --- Roundtrip: v1/before vs v2/after ------------------------------------
+    _ft_report() {
+        echo "  [roundtrip] v1/before vs v2/after"
+        local before_src="$out/v1/before/${name}.png"
+        local after_src="$out/v2/after/${name}.png"
+        if [ ! -f "$before_src" ] || [ ! -f "$after_src" ]; then
+            echo "  [roundtrip] SKIP — missing renders"
+            return 1
+        fi
+        _ft_compare "$before_src" "$after_src" \
+            "$out/report/${name}_roundtrip.json" \
+            "$out/report/${name}_roundtrip_diffmap.png"
+    }
+
+    # --- Execute stages ------------------------------------------------------
+    case "$stage" in
+        v1) _ft_v1 ;;
+        v2) _ft_v2 ;;
+        report) _ft_report ;;
+        *)  _ft_v1 && _ft_v2 && _ft_report ;;
+    esac
+
+    echo "  Done: $out"
+}
+
+_ft_usage() {
+    cat <<'EOF'
+fulltest — Bidirectional round-trip verification (v1 + v2 + roundtrip)
+
+Usage: runner.sh fulltest <input> --output <dir> [options]
+
+  <input>            .sksl or .glsl/.frag file
+  --output DIR       Output root directory (required)
+
+Options:
+  --stage v1|v2|report  Run a single stage (default: all three)
+  --no-animate       Force single-frame (default: on; iTime locked to 1.5)
+  --force            Re-render even if outputs exist
+  --help             Show this help
+
+Examples:
+  runner.sh fulltest tests/shaders/water_ripple.sksl --output results/sksltoglsl/test2
+  runner.sh fulltest tests/frag/curve.frag --output results/glsltosksl/test2
+  runner.sh fulltest tests/frag/purple_cloud.frag --output results/glsltosksl/test2 --stage v1
+EOF
+}
 main() {
     local cmd="${1:-test}"
     case "$cmd" in
         pipeline)
             shift
             run_pipeline "$@"
+            return $?
+            ;;
+        fulltest)
+            shift
+            run_fulltest "$@"
             return $?
             ;;
         live)

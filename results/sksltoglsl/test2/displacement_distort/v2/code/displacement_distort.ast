@@ -1,0 +1,103 @@
+results/sksltoglsl/test2/displacement_distort/v1/code/displacement_distort.glsl
+Shader version: 450
+0:? Sequence
+0:8  Function Definition: main( ( global void)
+0:8    Function Parameters: 
+0:9    Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp 2-component vector of float)
+0:9          'fragCoord' ( temp 2-component vector of float)
+0:9          vector swizzle ( temp 2-component vector of float)
+0:9            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:9            Sequence
+0:9              Constant:
+0:9                0 (const int)
+0:9              Constant:
+0:9                1 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp 2-component vector of float)
+0:10          'uv' ( temp 2-component vector of float)
+0:10          divide ( temp 2-component vector of float)
+0:10            'fragCoord' ( temp 2-component vector of float)
+0:10            'iResolution' ( uniform 2-component vector of float)
+0:11      Sequence
+0:11        move second child to first child ( temp 4-component vector of float)
+0:11          'displacement' ( temp 4-component vector of float)
+0:11          texture ( global 4-component vector of float)
+0:11            'displacementMap' ( uniform sampler2D)
+0:11            divide ( temp 2-component vector of float)
+0:11              'fragCoord' ( temp 2-component vector of float)
+0:11              'iResolution' ( uniform 2-component vector of float)
+0:12      Test condition and select ( temp void)
+0:12        Condition
+0:12        Compare Less Than or Equal ( temp bool)
+0:12          direct index ( temp float)
+0:12            'displacement' ( temp 4-component vector of float)
+0:12            Constant:
+0:12              3 (const int)
+0:12          Constant:
+0:12            0.000000
+0:12        true case
+0:13        Sequence
+0:13          move second child to first child ( temp 4-component vector of float)
+0:13            'FragColor' ( out 4-component vector of float)
+0:13            texture ( global 4-component vector of float)
+0:13              'image' ( uniform sampler2D)
+0:13              divide ( temp 2-component vector of float)
+0:13                'fragCoord' ( temp 2-component vector of float)
+0:13                'iResolution' ( uniform 2-component vector of float)
+0:14          Branch: Return
+0:16      Sequence
+0:16        move second child to first child ( temp 2-component vector of float)
+0:16          'direction' ( temp 2-component vector of float)
+0:16          vector-scale ( temp 2-component vector of float)
+0:16            Constant:
+0:16              2.000000
+0:16            subtract ( temp 2-component vector of float)
+0:16              vector swizzle ( temp 2-component vector of float)
+0:16                'displacement' ( temp 4-component vector of float)
+0:16                Sequence
+0:16                  Constant:
+0:16                    0 (const int)
+0:16                  Constant:
+0:16                    1 (const int)
+0:16              Constant:
+0:16                0.500000
+0:17      Sequence
+0:17        move second child to first child ( temp 2-component vector of float)
+0:17          'normal' ( temp 2-component vector of float)
+0:17          vector-scale ( temp 2-component vector of float)
+0:17            component-wise multiply ( temp 2-component vector of float)
+0:17              'direction' ( temp 2-component vector of float)
+0:17              'factor' ( uniform 2-component vector of float)
+0:17            'strength' ( uniform float)
+0:18      Sequence
+0:18        move second child to first child ( temp 2-component vector of float)
+0:18          'refracted_uv' ( temp 2-component vector of float)
+0:18          clamp ( global 2-component vector of float)
+0:18            subtract ( temp 2-component vector of float)
+0:18              'uv' ( temp 2-component vector of float)
+0:18              vector-scale ( temp 2-component vector of float)
+0:18                'normal' ( temp 2-component vector of float)
+0:18                Constant:
+0:18                  0.050000
+0:18            Constant:
+0:18              0.001000
+0:18              0.001000
+0:18            Constant:
+0:18              0.999000
+0:18              0.999000
+0:19      move second child to first child ( temp 4-component vector of float)
+0:19        'FragColor' ( out 4-component vector of float)
+0:19        texture ( global 4-component vector of float)
+0:19          'image' ( uniform sampler2D)
+0:19          'refracted_uv' ( temp 2-component vector of float)
+0:20      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'image' ( uniform sampler2D)
+0:?     'displacementMap' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'factor' ( uniform 2-component vector of float)
+0:?     'strength' ( uniform float)
+

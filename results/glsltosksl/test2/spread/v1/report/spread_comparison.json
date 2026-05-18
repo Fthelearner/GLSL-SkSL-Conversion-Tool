@@ -1,0 +1,12 @@
+{
+  "mse": 0.0456,
+  "psnr": 61.54,
+  "max_pixel_diff": 43,
+  "pixel_diff_percent": 9.52,
+  "total_pixels": 921600,
+  "different_pixels": 87724,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/glsltosksl/test2/spread/v1/report/spread_diffmap.png"
+}

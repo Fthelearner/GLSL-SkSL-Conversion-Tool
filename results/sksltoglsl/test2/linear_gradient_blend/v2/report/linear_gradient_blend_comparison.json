@@ -1,0 +1,12 @@
+{
+  "mse": 0.0126,
+  "psnr": 67.14,
+  "max_pixel_diff": 1,
+  "pixel_diff_percent": 3.33,
+  "total_pixels": 921600,
+  "different_pixels": 30721,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test2/linear_gradient_blend/v2/report/linear_gradient_blend_diffmap.png"
+}

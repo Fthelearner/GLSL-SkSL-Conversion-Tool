@@ -1,0 +1,12 @@
+{
+  "mse": 1.3511,
+  "psnr": 46.82,
+  "max_pixel_diff": 124,
+  "pixel_diff_percent": 0.3,
+  "total_pixels": 921600,
+  "different_pixels": 2807,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/glsltosksl/test2/displacement_distort/v1/report/displacement_distort_diffmap.png"
+}

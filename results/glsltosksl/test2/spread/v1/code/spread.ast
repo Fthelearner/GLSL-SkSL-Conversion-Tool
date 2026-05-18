@@ -1,0 +1,190 @@
+/home/user/project/results/t5/tmp/spread_with_version.frag
+Shader version: 330
+0:? Sequence
+0:17  Function Definition: palette(f1; ( global 3-component vector of float)
+0:17    Function Parameters: 
+0:17      't' ( in float)
+0:18    Sequence
+0:18      Sequence
+0:18        move second child to first child ( temp 3-component vector of float)
+0:18          'a' ( temp 3-component vector of float)
+0:18          Constant:
+0:18            0.500000
+0:18            0.500000
+0:18            0.500000
+0:19      Sequence
+0:19        move second child to first child ( temp 3-component vector of float)
+0:19          'b' ( temp 3-component vector of float)
+0:19          Constant:
+0:19            0.500000
+0:19            0.500000
+0:19            0.500000
+0:20      Sequence
+0:20        move second child to first child ( temp 3-component vector of float)
+0:20          'c' ( temp 3-component vector of float)
+0:20          Constant:
+0:20            1.000000
+0:20            1.000000
+0:20            1.000000
+0:21      Sequence
+0:21        move second child to first child ( temp 3-component vector of float)
+0:21          'd' ( temp 3-component vector of float)
+0:21          Constant:
+0:21            0.263000
+0:21            0.416000
+0:21            0.557000
+0:23      Branch: Return with expression
+0:23        add ( temp 3-component vector of float)
+0:23          'a' ( temp 3-component vector of float)
+0:23          component-wise multiply ( temp 3-component vector of float)
+0:23            'b' ( temp 3-component vector of float)
+0:23            cosine ( global 3-component vector of float)
+0:23              vector-scale ( temp 3-component vector of float)
+0:23                Constant:
+0:23                  6.283180
+0:23                add ( temp 3-component vector of float)
+0:23                  vector-scale ( temp 3-component vector of float)
+0:23                    'c' ( temp 3-component vector of float)
+0:23                    't' ( in float)
+0:23                  'd' ( temp 3-component vector of float)
+0:27  Function Definition: mainImage(vf4;vf2; ( global void)
+0:27    Function Parameters: 
+0:27      'fragColor' ( out 4-component vector of float)
+0:27      'fragCoord' ( in 2-component vector of float)
+0:28    Sequence
+0:28      Sequence
+0:28        move second child to first child ( temp 2-component vector of float)
+0:28          'uv' ( temp 2-component vector of float)
+0:28          divide ( temp 2-component vector of float)
+0:28            subtract ( temp 2-component vector of float)
+0:28              vector-scale ( temp 2-component vector of float)
+0:28                'fragCoord' ( in 2-component vector of float)
+0:28                Constant:
+0:28                  2.000000
+0:28              vector swizzle ( temp 2-component vector of float)
+0:28                'iResolution' ( uniform 3-component vector of float)
+0:28                Sequence
+0:28                  Constant:
+0:28                    0 (const int)
+0:28                  Constant:
+0:28                    1 (const int)
+0:28            direct index ( temp float)
+0:28              'iResolution' ( uniform 3-component vector of float)
+0:28              Constant:
+0:28                1 (const int)
+0:29      Sequence
+0:29        move second child to first child ( temp 2-component vector of float)
+0:29          'uv0' ( temp 2-component vector of float)
+0:29          'uv' ( temp 2-component vector of float)
+0:30      Sequence
+0:30        move second child to first child ( temp 3-component vector of float)
+0:30          'finalColor' ( temp 3-component vector of float)
+0:30          Constant:
+0:30            0.000000
+0:30            0.000000
+0:30            0.000000
+0:32      Sequence
+0:32        Sequence
+0:32          move second child to first child ( temp float)
+0:32            'i' ( temp float)
+0:32            Constant:
+0:32              0.000000
+0:32        Loop with condition tested first
+0:32          Loop Condition
+0:32          Compare Less Than ( temp bool)
+0:32            'i' ( temp float)
+0:32            Constant:
+0:32              4.000000
+0:32          Loop Body
+0:33          Sequence
+0:33            move second child to first child ( temp 2-component vector of float)
+0:33              'uv' ( temp 2-component vector of float)
+0:33              subtract ( temp 2-component vector of float)
+0:33                Fraction ( global 2-component vector of float)
+0:33                  vector-scale ( temp 2-component vector of float)
+0:33                    'uv' ( temp 2-component vector of float)
+0:33                    Constant:
+0:33                      1.500000
+0:33                Constant:
+0:33                  0.500000
+0:35            Sequence
+0:35              move second child to first child ( temp float)
+0:35                'd' ( temp float)
+0:35                component-wise multiply ( temp float)
+0:35                  length ( global float)
+0:35                    'uv' ( temp 2-component vector of float)
+0:35                  exp ( global float)
+0:35                    Negate value ( temp float)
+0:35                      length ( global float)
+0:35                        'uv0' ( temp 2-component vector of float)
+0:37            Sequence
+0:37              move second child to first child ( temp 3-component vector of float)
+0:37                'col' ( temp 3-component vector of float)
+0:37                Function Call: palette(f1; ( global 3-component vector of float)
+0:37                  add ( temp float)
+0:37                    add ( temp float)
+0:37                      length ( global float)
+0:37                        'uv0' ( temp 2-component vector of float)
+0:37                      component-wise multiply ( temp float)
+0:37                        'i' ( temp float)
+0:37                        Constant:
+0:37                          0.400000
+0:37                    component-wise multiply ( temp float)
+0:37                      'iTime' ( uniform float)
+0:37                      Constant:
+0:37                        0.400000
+0:39            move second child to first child ( temp float)
+0:39              'd' ( temp float)
+0:39              divide ( temp float)
+0:39                sine ( global float)
+0:39                  add ( temp float)
+0:39                    component-wise multiply ( temp float)
+0:39                      'd' ( temp float)
+0:39                      Constant:
+0:39                        8.000000
+0:39                    'iTime' ( uniform float)
+0:39                Constant:
+0:39                  8.000000
+0:40            move second child to first child ( temp float)
+0:40              'd' ( temp float)
+0:40              Absolute value ( global float)
+0:40                'd' ( temp float)
+0:42            move second child to first child ( temp float)
+0:42              'd' ( temp float)
+0:42              pow ( global float)
+0:42                divide ( temp float)
+0:42                  Constant:
+0:42                    0.010000
+0:42                  'd' ( temp float)
+0:42                Constant:
+0:42                  1.200000
+0:44            add second child into first child ( temp 3-component vector of float)
+0:44              'finalColor' ( temp 3-component vector of float)
+0:44              vector-scale ( temp 3-component vector of float)
+0:44                'col' ( temp 3-component vector of float)
+0:44                'd' ( temp float)
+0:32          Loop Terminal Expression
+0:32          Post-Increment ( temp float)
+0:32            'i' ( temp float)
+0:47      move second child to first child ( temp 4-component vector of float)
+0:47        'fragColor' ( out 4-component vector of float)
+0:47        Construct vec4 ( temp 4-component vector of float)
+0:47          'finalColor' ( temp 3-component vector of float)
+0:47          Constant:
+0:47            1.000000
+0:?   Linker Objects
+0:?     'iResolution' ( uniform 3-component vector of float)
+0:?     'iTime' ( uniform float)
+0:?     'iTimeDelta' ( uniform float)
+0:?     'iFrameRate' ( uniform float)
+0:?     'iFrame' ( uniform int)
+0:?     'iChannelTime' ( uniform 4-element array of float)
+0:?     'iChannelResolution' ( uniform 4-element array of 3-component vector of float)
+0:?     'iMouse' ( uniform 4-component vector of float)
+0:?     'iChannel0' ( uniform sampler2D)
+0:?     'iChannel1' ( uniform sampler2D)
+0:?     'iChannel2' ( uniform sampler2D)
+0:?     'iChannel3' ( uniform sampler2D)
+0:?     'iDate' ( uniform 4-component vector of float)
+0:?     'iSampleRate' ( uniform float)
+
