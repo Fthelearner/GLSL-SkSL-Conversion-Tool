@@ -1,0 +1,44 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png",
+    "edgeBlurredImg": "assets/blur_edge.png",
+    "bgBlurredImg": "assets/blur_bg.png",
+    "sdfNormalImg": "assets/frosted_sdf_normal.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "borderWidth": 8.0,
+    "offset": 2.0,
+    "downSampleFactor": 1.0,
+    "bgFactor": 0.6,
+    "innerShadowRefractPx": 12.0,
+    "innerShadowWidth": 0.3,
+    "innerShadowExp": 3.0,
+    "sdK": 0.3,
+    "sdB": -0.03,
+    "sdS": 1.1,
+    "refractOutPx": 16.0,
+    "envK": 1.5,
+    "envB": 0.1,
+    "envS": 1.8,
+    "highLightAngleDeg": 45.0,
+    "highLightFeatherDeg": 15.0,
+    "highLightWidthPx": 6.0,
+    "highLightFeatherPx": 2.0,
+    "highLightShiftPx": -3.0,
+    "highLightDirection": [
+      -0.7,
+      -0.7
+    ],
+    "hlK": 1.2,
+    "hlB": 0.08,
+    "hlS": 1.5
+  }
+}

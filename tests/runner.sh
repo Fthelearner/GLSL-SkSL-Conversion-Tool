@@ -73,9 +73,8 @@ fulltest — Bidirectional v1+v2+roundtrip verification (one shader)
   --output DIR       Output root (required)
 
   --stage v1|v2|report  Run single stage (default: all three — v1→v2→roundtrip)
-  --gpu              Render SKSL via GPU path (sksl→GLSL→render_glsl), matching
-                      the GLSL backend. Essential for raymarched / numerically
-                      sensitive shaders (e.g. purple_cloud, curve).
+      --cpu              Render SKSL via CPU RuntimeEffect instead of the default
+                      GPU path (sksl→GLSL→render_glsl).
   --force            Re-render even if outputs exist
   --help             Show full options
 
@@ -254,7 +253,7 @@ for m in helper_re.finditer(content):
     def make_sub(_tc=tex_call, _p=param):
         def replacer(call_m):
             arg = call_m.group(1)
-            return _tc.replace(_p, arg)
+            return _tc.replace(_p, '(' + arg + ')')
         return replacer
     content = re.sub(
         rf'\b{name}\(([^)]+)\)',
@@ -914,15 +913,19 @@ render_single_frame_glsl() {
 import re
 with open('$flat_glsl', 'r') as f: src = f.read()
 # Flatten: 'layout(...) uniform Name { type member; } inst;' → 'uniform type member;'
+# Find the block instance name BEFORE flattening
+block_m = re.search(r'layout\([^)]*\)\s*uniform\s+\w+\s*\{([^}]*)\}\s*(\w+)\s*;', src)
+block_inst = block_m.group(2) if block_m else None
+
 def flatten_block(m):
     body = m.group(1).strip()
-    # body is like 'vec2 iResolution;' or 'float x;\\n    vec2 y;'
     members = [s.strip() for s in body.split(';') if s.strip()]
     return '\\n'.join('uniform ' + s + ';' for s in members)
 src = re.sub(r'layout\([^)]*\)\s*uniform\s+\w+\s*\{([^}]*)\}\s*\w+\s*;',
              flatten_block, src)
-# Replace block instance member access: u.iResolution → iResolution
-src = re.sub(r'\bu\.(\w+)\b', r'\1', src)
+# Replace block instance member access, only when a block was actually found
+if block_inst:
+    src = re.sub(rf'\b{re.escape(block_inst)}\.(\w+)\b', r'\1', src)
 with open('$flat_glsl', 'w') as f: f.write(src)
 " 2>/dev/null || cp "$frag_path" "$flat_glsl"
 
@@ -1134,8 +1137,8 @@ with open('$out_glsl', 'w') as f: f.write(src)
 
 convert_glsl_to_sksl() {
     local glsl="$1" out_sksl="$2"
-    local tmp_in="$TMP/pipeline_glsl_to_sksl_in"
-    local tmp_out="$TMP/pipeline_glsl_to_sksl_out"
+    local tmp_in="$TMP/pipeline_glsl_to_sksl_in_$$"
+    local tmp_out="$TMP/pipeline_glsl_to_sksl_out_$$"
     rm -rf "$tmp_in" "$tmp_out"
     mkdir -p "$tmp_in"
     local base; base=$(basename "${glsl%.*}")
@@ -1147,22 +1150,28 @@ convert_glsl_to_sksl() {
     cp "$tmp_out/${base}.sksl" "$out_sksl" 2>/dev/null || return 1
     cp "$tmp_out/${base}.sksl.provenance" "$(dirname "$out_sksl")/${base}.sksl.provenance" 2>/dev/null || true
     # Dedup: glslang may produce both "type name;" and "type name = init;"
-    # for the same global. Remove the bare declaration if an initialized
-    # one follows within 3 lines.
+    # for the same global. Use a two-pass approach: first find all initialized
+    # globals, then remove any preceding bare declarations of the same name.
     python3 -c "
 import re
 with open('$out_sksl', 'r') as f:
     lines = f.readlines()
+
+# Pass 1: collect (type, name) pairs for initialized globals
+init_vars = set()
+for line in lines:
+    m = re.match(r'^(\w[\w\d]*)\s+(\w[\w\d]*)\s*=', line)
+    if m:
+        init_vars.add((m.group(1), m.group(2)))
+
+# Pass 2: remove bare declarations that have a matching init
 i = 0
 while i < len(lines):
     m = re.match(r'^(\w[\w\d]*)\s+(\w[\w\d]*)\s*;\s*$', lines[i])
-    if m:
-        typ, name = m.group(1), m.group(2)
-        for j in range(i+1, min(i+4, len(lines))):
-            if re.match(rf'^{re.escape(typ)}\s+{re.escape(name)}\s*=', lines[j]):
-                lines[i] = ''  # remove bare decl
-                break
+    if m and (m.group(1), m.group(2)) in init_vars:
+        lines[i] = ''
     i += 1
+
 with open('$out_sksl', 'w') as f:
     f.writelines([l for l in lines if l != ''])
 " 2>/dev/null || true
@@ -1388,7 +1397,7 @@ run_pipeline_sksl_to_glsl() {
         encode_mp4 "$out_dir/before" "$out_dir/before/${name}.mp4" \
             "$(echo "$config_json" | python3 -c "import json,sys; print(json.load(sys.stdin)['animation']['fps'])")" || true
     else
-        render_single_frame_sksl "$input" "$out_dir/before/${name}.png" "$width" "$height" "$config_json"
+        render_sksl_with_fallback "$input" "$out_dir/before/${name}.png" "$width" "$height" "$config_json"
         echo "  [before] rendered $name.png"
     fi
 
@@ -1707,17 +1716,15 @@ run_pipeline() {
 # report (roundtrip):  v1/before vs v2/after
 
 render_sksl_with_fallback() {
-    # Render SKSL: CPU RuntimeEffect first; fall back to GPU via
-    # convert_sksl_to_glsl (tries .rts then .frag) → render_glsl.
-    # Set FT_GPU=1 to skip CPU and use GPU directly (e.g. for raymarched shaders).
+    # Render SKSL: GPU first (sksl→GLSL→OpenGL); fall back to CPU RuntimeEffect.
+    # Set FT_CPU=1 to use CPU path instead (opt-in via --cpu flag).
     local sksl="$1" out_png="$2" width="$3" height="$4" config_json="$5"
-    if [ "${FT_GPU:-0}" != "1" ]; then
+    if [ "${FT_CPU:-0}" = "1" ]; then
+        echo "  [sksl] --cpu flag set, using CPU RuntimeEffect..." >&2
         if render_single_frame_sksl "$sksl" "$out_png" "$width" "$height" "$config_json"; then
             return 0
         fi
         echo "  [sksl] CPU failed, trying GPU path..." >&2
-    else
-        echo "  [sksl] --gpu flag set, using GPU path directly..." >&2
     fi
     local tmp_glsl="$TMP/ft_$(basename "${sksl%.*}").glsl"
     if convert_sksl_to_glsl "$sksl" "$tmp_glsl"; then
@@ -1747,7 +1754,7 @@ run_fulltest() {
             --output) output_root="$2"; shift 2 ;;
             --stage) stage="$2"; shift 2 ;;
             --no-animate) export FT_NO_ANIMATE=1; shift ;;
-            --gpu) export FT_GPU=1; shift ;;
+            --cpu) export FT_CPU=1; shift ;;
             --force) export FT_FORCE=1; shift ;;
             --help|-h) _ft_usage; return 0 ;;
             -*) echo "Unknown option: $1" >&2; _ft_usage; return 2 ;;
@@ -1921,6 +1928,7 @@ Usage: runner.sh fulltest <input> --output <dir> [options]
 
 Options:
   --stage v1|v2|report  Run a single stage (default: all three)
+  --cpu              Render SKSL via CPU RuntimeEffect (default: GPU path)
   --no-animate       Force single-frame (default: on; iTime locked to 1.5)
   --force            Re-render even if outputs exist
   --help             Show this help

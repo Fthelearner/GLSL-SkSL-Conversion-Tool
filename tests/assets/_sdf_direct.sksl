@@ -1,0 +1,24 @@
+
+uniform vec2 iResolution;
+
+float sdCircle(vec2 p, float r) { return length(p) - r; }
+float sdRoundedBox(vec2 p, vec2 b, float cr) {
+    vec2 q = abs(p) - b + cr;
+    return length(max(q, 0.0)) - cr + min(max(q.x, q.y), 0.0);
+}
+
+half4 main(vec2 fragCoord) {
+    vec2 p = fragCoord.xy;
+    
+    // Same shapes as the mask
+    float d = sdCircle(p - vec2(200.0, 200.0), 60.0);
+    d = min(d, sdCircle(p - vec2(1000.0, 180.0), 45.0));
+    d = min(d, sdRoundedBox(p - vec2(350.0, 520.0), vec2(80.0, 50.0), 20.0));
+    d = min(d, sdCircle(p - vec2(880.0, 500.0), 55.0));
+    d = min(d, sdRoundedBox(p - vec2(640.0, 360.0), vec2(120.0, 90.0), 30.0));
+    d = min(d, sdCircle(p - vec2(180.0, 100.0), 35.0));
+    
+    // Normalize SDF to [0,1]: map [-80, 80] pixel range
+    float sdNorm = clamp(d / 160.0 + 0.5, 0.0, 1.0);
+    return half4(sdNorm, sdNorm, sdNorm, sdNorm);
+}

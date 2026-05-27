@@ -1,0 +1,7 @@
+uniform shader inputShader;
+vec4 main(vec2 fragCoord) {
+    // PNG-stored SDF: alpha in [0,1], border at ~0.5
+    // Visualize: inside=dark, border=gray, outside=white
+    float sd = inputShader.eval(fragCoord).a;
+    return vec4(sd, sd, sd, 1.0);
+}

@@ -1,0 +1,14 @@
+uniform shader sdfShape;
+uniform vec4 u_color;
+uniform float u_width;
+uniform float u_isOutline;
+uniform float u_dashWidth;
+uniform float u_dashGap;
+const float aa = 0.5;
+
+half4 main(float2 fragCoord)
+{
+    float d = sdfShape.eval(fragCoord).a;
+    float p = d * u_isOutline;
+    return u_color * smoothstep(-aa, 0.0, p) * (1.0 - smoothstep(u_width, u_width+aa, p));
+}

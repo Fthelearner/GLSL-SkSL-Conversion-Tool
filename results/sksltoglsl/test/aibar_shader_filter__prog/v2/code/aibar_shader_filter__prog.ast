@@ -1,0 +1,128 @@
+results/sksltoglsl/test/aibar_shader_filter__prog/v1/code/aibar_shader_filter__prog.glsl
+Shader version: 450
+0:? Sequence
+0:10  Function Definition: main( ( global void)
+0:10    Function Parameters: 
+0:11    Sequence
+0:11      Sequence
+0:11        move second child to first child ( temp 2-component vector of float)
+0:11          'coord' ( temp 2-component vector of float)
+0:11          vector swizzle ( temp 2-component vector of float)
+0:11            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:11            Sequence
+0:11              Constant:
+0:11                0 (const int)
+0:11              Constant:
+0:11                1 (const int)
+0:12      Sequence
+0:12        move second child to first child ( temp 3-component vector of float)
+0:12          'c' ( temp 3-component vector of float)
+0:12          vector swizzle ( temp 3-component vector of float)
+0:12            texture ( global 4-component vector of float)
+0:12              'imageShader' ( uniform sampler2D)
+0:12              divide ( temp 2-component vector of float)
+0:12                'coord' ( temp 2-component vector of float)
+0:12                Convert int to float ( temp 2-component vector of float)
+0:12                  textureSize ( global 2-component vector of int)
+0:12                    'imageShader' ( uniform sampler2D)
+0:12                    Constant:
+0:12                      0 (const int)
+0:12            Sequence
+0:12              Constant:
+0:12                0 (const int)
+0:12              Constant:
+0:12                1 (const int)
+0:12              Constant:
+0:12                2 (const int)
+0:13      Sequence
+0:13        move second child to first child ( temp float)
+0:13          'gray' ( temp float)
+0:13          add ( temp float)
+0:13            add ( temp float)
+0:13              component-wise multiply ( temp float)
+0:13                Constant:
+0:13                  0.299000
+0:13                direct index ( temp float)
+0:13                  'c' ( temp 3-component vector of float)
+0:13                  Constant:
+0:13                    0 (const int)
+0:13              component-wise multiply ( temp float)
+0:13                Constant:
+0:13                  0.587000
+0:13                direct index ( temp float)
+0:13                  'c' ( temp 3-component vector of float)
+0:13                  Constant:
+0:13                    1 (const int)
+0:13            component-wise multiply ( temp float)
+0:13              Constant:
+0:13                0.114000
+0:13              direct index ( temp float)
+0:13                'c' ( temp 3-component vector of float)
+0:13                Constant:
+0:13                  2 (const int)
+0:14      Sequence
+0:14        move second child to first child ( temp float)
+0:14          'bin' ( temp float)
+0:14          mix ( global float)
+0:14            'high' ( uniform float)
+0:14            'low' ( uniform float)
+0:14            step ( global float)
+0:14              'threshold' ( uniform float)
+0:14              'gray' ( temp float)
+0:15      Sequence
+0:15        move second child to first child ( temp float)
+0:15          'luminance' ( temp float)
+0:15          dot-product ( global float)
+0:15            'c' ( temp 3-component vector of float)
+0:15            Constant:
+0:15              0.308600
+0:15              0.609400
+0:15              0.082000
+0:16      Sequence
+0:16        move second child to first child ( temp 3-component vector of float)
+0:16          'satAdjust' ( temp 3-component vector of float)
+0:16          mix ( global 3-component vector of float)
+0:16            Construct vec3 ( temp 3-component vector of float)
+0:16              'luminance' ( temp float)
+0:16            'c' ( temp 3-component vector of float)
+0:16            Construct vec3 ( temp 3-component vector of float)
+0:16              'saturation' ( uniform float)
+0:17      Sequence
+0:17        move second child to first child ( temp 3-component vector of float)
+0:17          'res' ( temp 3-component vector of float)
+0:17          add ( temp 3-component vector of float)
+0:17            subtract ( temp 3-component vector of float)
+0:17              'satAdjust' ( temp 3-component vector of float)
+0:17              component-wise multiply ( temp float)
+0:17                add ( temp float)
+0:17                  'opacity' ( uniform float)
+0:17                  Constant:
+0:17                    1.000000
+0:17                'gray' ( temp float)
+0:17            'bin' ( temp float)
+0:18      move second child to first child ( temp 4-component vector of float)
+0:18        'FragColor' ( out 4-component vector of float)
+0:18        Construct vec4 ( temp 4-component vector of float)
+0:18          mix ( global 3-component vector of float)
+0:18            'c' ( temp 3-component vector of float)
+0:18            'res' ( temp 3-component vector of float)
+0:18            Constant:
+0:18              0.428570
+0:18              0.428570
+0:18              0.428570
+0:18          Constant:
+0:18            1.000000
+0:19      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'low' ( uniform float)
+0:?     'high' ( uniform float)
+0:?     'threshold' ( uniform float)
+0:?     'opacity' ( uniform float)
+0:?     'saturation' ( uniform float)
+0:?     'imageShader' ( uniform sampler2D)
+0:?     'toLuminance' ( const 3-component vector of float)
+0:?       0.308600
+0:?       0.609400
+0:?       0.082000
+

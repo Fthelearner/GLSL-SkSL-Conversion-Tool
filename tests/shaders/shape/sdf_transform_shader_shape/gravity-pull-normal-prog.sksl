@@ -1,0 +1,105 @@
+uniform float spacing;
+uniform float warpStrength;
+uniform float hotZone;
+uniform vec2 shapeCenterPos;
+uniform vec2 centerPos;
+uniform vec2 influenceRadii;
+uniform float useEllipse;
+uniform shader shapeShader;
+const float kEpsilon = 1e-6;
+vec2 NormalizeWithLenSq(vec2 v, float lenSq)
+{
+    return (lenSq > kEpsilon) ? v * inversesqrt(lenSq) : vec2(0.0, 0.0);
+}
+float RationalFalloff(float t, float k)
+{
+    t = clamp(t, 0.0, 1.0);
+    return (1.0 - t) / (1.0 + k * t);
+}
+float BlendedRationalFalloff(float localT)
+{
+    localT = clamp(localT, 0.0, 1.0);
+    float k0 = 4.0;
+    float k1 = 15.0;
+    float start = 0.05;
+    float end = 0.75;
+    float a = RationalFalloff(localT, k0);
+    float b = RationalFalloff(localT, k1);
+    float w = smoothstep(start, end, localT);
+    return mix(a, b, w);
+}
+float InfluenceT(vec2 fromSmallCenter, float warpRadiusSq)
+{
+    if (useEllipse > 0.5) {
+        vec2 radii = max(abs(influenceRadii), vec2(kEpsilon, kEpsilon));
+        vec2 q = fromSmallCenter / radii;
+        return dot(q, q);
+    }
+    return dot(fromSmallCenter, fromSmallCenter) / warpRadiusSq;
+}
+float InfluenceRadiusAlongDir(vec2 dir, float warpRadius)
+{
+    if (useEllipse > 0.5) {
+        vec2 radii = max(abs(influenceRadii), vec2(kEpsilon, kEpsilon));
+        vec2 q = dir / radii;
+        float denom = dot(q, q);
+        return (denom > kEpsilon) ? inversesqrt(denom) : min(radii.x, radii.y);
+    }
+    return warpRadius;
+}
+vec2 ApplyLongAxisDamping(vec2 warpOffset)
+{
+    if (useEllipse <= 0.5) {
+        return warpOffset;
+    }
+    vec2 radii = max(abs(influenceRadii), vec2(kEpsilon, kEpsilon));
+    if (abs(radii.x - radii.y) <= kEpsilon) {
+        return warpOffset;
+    }
+    float longAxisScale = 0.3;
+    if (radii.x > radii.y) {
+        warpOffset.x *= longAxisScale;
+    } else {
+        warpOffset.y *= longAxisScale;
+    }
+    return warpOffset;
+}
+vec2 WarpedSamplePos(vec2 p)
+{
+    float warpRadius = max(spacing, kEpsilon);
+    float warpRadiusSq = warpRadius * warpRadius;
+    vec2 fromSmallCenter = p - centerPos;
+    float localT = InfluenceT(fromSmallCenter, warpRadiusSq);
+    if (localT >= 1.0) {
+        return p;
+    }
+    vec2 delta = centerPos - shapeCenterPos;
+    float centerDistSq = dot(delta, delta);
+    if (centerDistSq <= kEpsilon) {
+        return p;
+    }
+    float insideValue = shapeShader.eval(centerPos).a;
+    float insideGate = smoothstep(-hotZone, 0.0, insideValue);
+    if (insideGate <= kEpsilon) {
+        return p;
+    }
+    float hotGate = 1.0 - smoothstep(0.0, hotZone, insideValue);
+    float rawWarpScale = warpStrength * insideGate * hotGate;
+    vec2 pullDir = NormalizeWithLenSq(delta, centerDistSq);
+    float centerDist = sqrt(centerDistSq);
+    float radiusAlongPull = InfluenceRadiusAlongDir(pullDir, warpRadius);
+    float maxWarpScale = min(0.8 * radiusAlongPull, 0.8 * centerDist);
+    float warpScale = clamp(rawWarpScale, -maxWarpScale, maxWarpScale);
+    if (abs(warpScale) <= kEpsilon) {
+        return p;
+    }
+    float falloff = BlendedRationalFalloff(localT);
+    vec2 warpOffset = pullDir * (warpScale * falloff);
+    warpOffset = ApplyLongAxisDamping(warpOffset);
+    return p - warpOffset;
+}
+half4 main(vec2 p)
+{
+    vec4 shape = shapeShader.eval(WarpedSamplePos(p));
+    return half4(shape.x, shape.y, 0.0, shape.a);
+}

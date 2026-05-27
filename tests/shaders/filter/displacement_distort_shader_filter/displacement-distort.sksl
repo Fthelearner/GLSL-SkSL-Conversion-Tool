@@ -1,0 +1,21 @@
+uniform shader image;
+uniform shader maskEffect;
+uniform half2 iResolution;
+uniform half2 factor;
+
+half4 main(float2 fragCoord)
+{
+    vec2 uv = fragCoord.xy/iResolution.xy;
+    vec4 maskColor = maskEffect.eval(fragCoord);
+    vec4 finalColor = vec4(0.0);
+    if (maskColor.a > 0.0) {
+        //Distortion Effects
+        vec2 directionVector = 2.0 * (maskColor.rg - 0.5);
+        vec2 normal = directionVector * factor * 1.2;
+        vec2 refractedUVs = clamp(uv - normal * 0.05, 0.001, 0.999);
+        finalColor = image.eval(iResolution.xy * refractedUVs);
+    } else {
+        finalColor = image.eval(fragCoord);
+    }
+    return finalColor;
+}

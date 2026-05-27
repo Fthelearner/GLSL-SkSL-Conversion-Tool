@@ -1,0 +1,15 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "alphaMask": "assets/blur_mask.png",
+    "topLayer": "assets/input.png",
+    "bottomLayer": "assets/iChannel0.png"
+  },
+  "uniforms": {
+    "factor": 0.5,
+    "inverseFlag": 0.0
+  }
+}

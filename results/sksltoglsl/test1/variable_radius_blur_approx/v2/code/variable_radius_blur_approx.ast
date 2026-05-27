@@ -1,0 +1,249 @@
+results/sksltoglsl/test1/variable_radius_blur_approx/v1/code/variable_radius_blur_approx.glsl
+Shader version: 450
+0:? Sequence
+0:8  Function Definition: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:8    Function Parameters: 
+0:8      'coord' ( in 2-component vector of float)
+0:8      'direction' ( in 2-component vector of float)
+0:8      'radius' ( in float)
+0:8      'factor' ( in float)
+0:8      'totalWeight' ( inout float)
+0:9    Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp 2-component vector of float)
+0:9          'offset' ( temp 2-component vector of float)
+0:9          vector-scale ( temp 2-component vector of float)
+0:9            vector-scale ( temp 2-component vector of float)
+0:9              'direction' ( in 2-component vector of float)
+0:9              'radius' ( in float)
+0:9            'factor' ( in float)
+0:10      Sequence
+0:10        move second child to first child ( temp float)
+0:10          'weight' ( temp float)
+0:10          subtract ( temp float)
+0:10            Constant:
+0:10              1.000000
+0:10            component-wise multiply ( temp float)
+0:10              Constant:
+0:10                0.180000
+0:10              'factor' ( in float)
+0:11      add second child into first child ( temp float)
+0:11        'totalWeight' ( inout float)
+0:11        component-wise multiply ( temp float)
+0:11          Constant:
+0:11            2.000000
+0:11          'weight' ( temp float)
+0:12      Branch: Return with expression
+0:12        vector-scale ( temp 4-component vector of float)
+0:12          add ( temp 4-component vector of float)
+0:12            texture ( global 4-component vector of float)
+0:12              'image' ( uniform sampler2D)
+0:12              divide ( temp 2-component vector of float)
+0:12                add ( temp 2-component vector of float)
+0:12                  'coord' ( in 2-component vector of float)
+0:12                  'offset' ( temp 2-component vector of float)
+0:12                'iResolution' ( uniform 2-component vector of float)
+0:12            texture ( global 4-component vector of float)
+0:12              'image' ( uniform sampler2D)
+0:12              divide ( temp 2-component vector of float)
+0:12                subtract ( temp 2-component vector of float)
+0:12                  'coord' ( in 2-component vector of float)
+0:12                  'offset' ( temp 2-component vector of float)
+0:12                'iResolution' ( uniform 2-component vector of float)
+0:12          'weight' ( temp float)
+0:14  Function Definition: main( ( global void)
+0:14    Function Parameters: 
+0:15    Sequence
+0:15      Sequence
+0:15        move second child to first child ( temp 2-component vector of float)
+0:15          'coord' ( temp 2-component vector of float)
+0:15          vector swizzle ( temp 2-component vector of float)
+0:15            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:15            Sequence
+0:15              Constant:
+0:15                0 (const int)
+0:15              Constant:
+0:15                1 (const int)
+0:16      Sequence
+0:16        move second child to first child ( temp float)
+0:16          'maskAlpha' ( temp float)
+0:16          direct index ( temp float)
+0:16            texture ( global 4-component vector of float)
+0:16              'blurMask' ( uniform sampler2D)
+0:16              divide ( temp 2-component vector of float)
+0:16                'coord' ( temp 2-component vector of float)
+0:16                'iResolution' ( uniform 2-component vector of float)
+0:16            Constant:
+0:16              3 (const int)
+0:17      Sequence
+0:17        move second child to first child ( temp float)
+0:17          'radius' ( temp float)
+0:17          clamp ( global float)
+0:17            component-wise multiply ( temp float)
+0:17              component-wise multiply ( temp float)
+0:17                'maskAlpha' ( temp float)
+0:17                'maxRadius' ( uniform float)
+0:17              'strength' ( uniform float)
+0:17            Constant:
+0:17              0.000000
+0:17            'maxRadius' ( uniform float)
+0:18      Test condition and select ( temp void)
+0:18        Condition
+0:18        Compare Less Than ( temp bool)
+0:18          'radius' ( temp float)
+0:18          Constant:
+0:18            0.500000
+0:18        true case
+0:19        Sequence
+0:19          move second child to first child ( temp 4-component vector of float)
+0:19            'FragColor' ( out 4-component vector of float)
+0:19            texture ( global 4-component vector of float)
+0:19              'image' ( uniform sampler2D)
+0:19              divide ( temp 2-component vector of float)
+0:19                'coord' ( temp 2-component vector of float)
+0:19                'iResolution' ( uniform 2-component vector of float)
+0:20          Branch: Return
+0:22      Sequence
+0:22        move second child to first child ( temp 4-component vector of float)
+0:22          'sum' ( temp 4-component vector of float)
+0:22          vector-scale ( temp 4-component vector of float)
+0:22            texture ( global 4-component vector of float)
+0:22              'image' ( uniform sampler2D)
+0:22              divide ( temp 2-component vector of float)
+0:22                'coord' ( temp 2-component vector of float)
+0:22                'iResolution' ( uniform 2-component vector of float)
+0:22            Constant:
+0:22              1.400000
+0:23      Sequence
+0:23        move second child to first child ( temp float)
+0:23          'totalWeight' ( temp float)
+0:23          Constant:
+0:23            1.400000
+0:24      Sequence
+0:24        move second child to first child ( temp 2-component vector of float)
+0:24          'horizontal' ( temp 2-component vector of float)
+0:24          Constant:
+0:24            1.000000
+0:24            0.000000
+0:25      Sequence
+0:25        move second child to first child ( temp 2-component vector of float)
+0:25          'vertical' ( temp 2-component vector of float)
+0:25          Constant:
+0:25            0.000000
+0:25            1.000000
+0:26      Sequence
+0:26        move second child to first child ( temp 2-component vector of float)
+0:26          'diagonalA' ( temp 2-component vector of float)
+0:26          Constant:
+0:26            0.707107
+0:26            0.707107
+0:27      Sequence
+0:27        move second child to first child ( temp 2-component vector of float)
+0:27          'diagonalB' ( temp 2-component vector of float)
+0:27          Constant:
+0:27            0.707107
+0:27            -0.707107
+0:28      add second child into first child ( temp 4-component vector of float)
+0:28        'sum' ( temp 4-component vector of float)
+0:28        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:28          'coord' ( temp 2-component vector of float)
+0:28          'horizontal' ( temp 2-component vector of float)
+0:28          'radius' ( temp float)
+0:28          Constant:
+0:28            0.330000
+0:28          'totalWeight' ( temp float)
+0:29      add second child into first child ( temp 4-component vector of float)
+0:29        'sum' ( temp 4-component vector of float)
+0:29        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:29          'coord' ( temp 2-component vector of float)
+0:29          'horizontal' ( temp 2-component vector of float)
+0:29          'radius' ( temp float)
+0:29          Constant:
+0:29            0.660000
+0:29          'totalWeight' ( temp float)
+0:30      add second child into first child ( temp 4-component vector of float)
+0:30        'sum' ( temp 4-component vector of float)
+0:30        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:30          'coord' ( temp 2-component vector of float)
+0:30          'horizontal' ( temp 2-component vector of float)
+0:30          'radius' ( temp float)
+0:30          Constant:
+0:30            1.000000
+0:30          'totalWeight' ( temp float)
+0:31      add second child into first child ( temp 4-component vector of float)
+0:31        'sum' ( temp 4-component vector of float)
+0:31        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:31          'coord' ( temp 2-component vector of float)
+0:31          'vertical' ( temp 2-component vector of float)
+0:31          'radius' ( temp float)
+0:31          Constant:
+0:31            0.330000
+0:31          'totalWeight' ( temp float)
+0:32      add second child into first child ( temp 4-component vector of float)
+0:32        'sum' ( temp 4-component vector of float)
+0:32        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:32          'coord' ( temp 2-component vector of float)
+0:32          'vertical' ( temp 2-component vector of float)
+0:32          'radius' ( temp float)
+0:32          Constant:
+0:32            0.660000
+0:32          'totalWeight' ( temp float)
+0:33      add second child into first child ( temp 4-component vector of float)
+0:33        'sum' ( temp 4-component vector of float)
+0:33        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:33          'coord' ( temp 2-component vector of float)
+0:33          'vertical' ( temp 2-component vector of float)
+0:33          'radius' ( temp float)
+0:33          Constant:
+0:33            1.000000
+0:33          'totalWeight' ( temp float)
+0:34      add second child into first child ( temp 4-component vector of float)
+0:34        'sum' ( temp 4-component vector of float)
+0:34        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:34          'coord' ( temp 2-component vector of float)
+0:34          'diagonalA' ( temp 2-component vector of float)
+0:34          'radius' ( temp float)
+0:34          Constant:
+0:34            0.500000
+0:34          'totalWeight' ( temp float)
+0:35      add second child into first child ( temp 4-component vector of float)
+0:35        'sum' ( temp 4-component vector of float)
+0:35        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:35          'coord' ( temp 2-component vector of float)
+0:35          'diagonalA' ( temp 2-component vector of float)
+0:35          'radius' ( temp float)
+0:35          Constant:
+0:35            0.900000
+0:35          'totalWeight' ( temp float)
+0:36      add second child into first child ( temp 4-component vector of float)
+0:36        'sum' ( temp 4-component vector of float)
+0:36        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:36          'coord' ( temp 2-component vector of float)
+0:36          'diagonalB' ( temp 2-component vector of float)
+0:36          'radius' ( temp float)
+0:36          Constant:
+0:36            0.500000
+0:36          'totalWeight' ( temp float)
+0:37      add second child into first child ( temp 4-component vector of float)
+0:37        'sum' ( temp 4-component vector of float)
+0:37        Function Call: sample_pair_h4f2f2fff(vf2;vf2;f1;f1;f1; ( global 4-component vector of float)
+0:37          'coord' ( temp 2-component vector of float)
+0:37          'diagonalB' ( temp 2-component vector of float)
+0:37          'radius' ( temp float)
+0:37          Constant:
+0:37            0.900000
+0:37          'totalWeight' ( temp float)
+0:38      move second child to first child ( temp 4-component vector of float)
+0:38        'FragColor' ( out 4-component vector of float)
+0:38        divide ( temp 4-component vector of float)
+0:38          'sum' ( temp 4-component vector of float)
+0:38          'totalWeight' ( temp float)
+0:39      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'image' ( uniform sampler2D)
+0:?     'blurMask' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'maxRadius' ( uniform float)
+0:?     'strength' ( uniform float)
+

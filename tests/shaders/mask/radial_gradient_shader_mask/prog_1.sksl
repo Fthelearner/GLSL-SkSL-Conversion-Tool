@@ -1,0 +1,59 @@
+uniform half2 iResolution;
+uniform half2 centerPos;
+uniform half radiusX;
+uniform half radiusY;
+uniform half color0; uniform half color1; uniform half color2; uniform half color3; uniform half color4; uniform half color5; uniform half color6; uniform half color7; uniform half color8; uniform half color9; uniform half color10; uniform half color11;
+uniform half position0; uniform half position1; uniform half position2; uniform half position3; uniform half position4; uniform half position5; uniform half position6; uniform half position7; uniform half position8; uniform half position9; uniform half position10; uniform half position11;
+
+vec2 radialGradientMask(vec2 uv, vec2 centerPosition)
+{
+    float sdfValue = length(uv - centerPosition) / radiusY;
+    sdfValue = clamp(sdfValue, 0.0, 1.0);
+
+    half color = 0.0;
+    color = (sdfValue >= position0 && sdfValue < position1)
+        ? mix(color0, color1, smoothstep(position0, position1, sdfValue)) : color;
+    color = (sdfValue >= position1 && sdfValue < position2)
+        ? mix(color1, color2, smoothstep(position1, position2, sdfValue)) : color;
+    color = (sdfValue >= position2 && sdfValue < position3)
+        ? mix(color2, color3, smoothstep(position2, position3, sdfValue)) : color;
+    color = (sdfValue >= position3 && sdfValue < position4)
+        ? mix(color3, color4, smoothstep(position3, position4, sdfValue)) : color;
+    color = (sdfValue >= position4 && sdfValue < position5)
+        ? mix(color4, color5, smoothstep(position4, position5, sdfValue)) : color;
+    color = (sdfValue >= position5 && sdfValue < position6)
+        ? mix(color5, color6, smoothstep(position5, position6, sdfValue)) : color;
+    color = (sdfValue >= position6 && sdfValue < position7)
+        ? mix(color6, color7, smoothstep(position6, position7, sdfValue)) : color;
+    color = (sdfValue >= position7 && sdfValue < position8)
+        ? mix(color7, color8, smoothstep(position7, position8, sdfValue)) : color;
+    color = (sdfValue >= position8 && sdfValue < position9)
+        ? mix(color8, color9, smoothstep(position8, position9, sdfValue)) : color;
+    color = (sdfValue >= position9 && sdfValue < position10)
+        ? mix(color9, color10, smoothstep(position9, position10, sdfValue)) : color;
+    color = (sdfValue >= position10 && sdfValue < position11)
+        ? mix(color10, color11, smoothstep(position10, position11, sdfValue)) : color;
+
+    float directionX = 1.0, directionY = 0.0;
+    if (sdfValue > 0.001) {
+        vec2 gradientDir = normalize(uv - centerPosition);
+        directionX = gradientDir.x;
+        directionY = gradientDir.y;
+    }
+    return vec2(directionX, directionY);
+}
+
+half4 main(vec2 fragCoord)
+{
+    vec2 uv = fragCoord.xy / iResolution.xy;
+    float screenRatio = iResolution.x / iResolution.y;
+    vec2 centeredUVs = uv * 2.0 - 1.0;
+    centeredUVs.x *= screenRatio * (radiusY / radiusX);
+    vec2 centerPosition = centerPos * 2 - 1.0 ;
+    centerPosition.x *= screenRatio * (radiusY / radiusX);
+
+    vec2 result = radialGradientMask(centeredUVs, centerPosition);
+    float maskValue = 1.0 - clamp(length(centeredUVs - centerPosition) / radiusY, 0.0, 1.0);
+    float finalColor = clamp(maskValue, 0.0, 1.0);
+    return half4(normalize(vec3(result, 1.0)), finalColor);
+}

@@ -1,0 +1,43 @@
+uniform shader sdfImage;
+uniform shader progressImage;
+uniform float count;
+uniform float leftGridBoundary;
+uniform float topGridBoundary;
+uniform float curveWeightPrefix[128]; // 128: the max number of segments
+uniform float curveWeightCurrent[128]; // 128: the max number of segments
+
+vec4 SampleLocalImage(vec2 coord)
+{
+    vec2 mapCoord = vec2(coord.x - leftGridBoundary, coord.y - topGridBoundary);
+    return vec4(sdfImage.eval(mapCoord).rg, progressImage.eval(mapCoord).ba);
+}
+
+vec2 EncodeFloat(float x)
+{
+    x = clamp(x, 0.0, 1.0);
+    float hi = floor(x * 255.0) / 255.0; // 255.0 = maximum value representable in 8-bit channel
+    float lo = fract(x * 255.0); // 255.0 = maximum value representable in 8-bit channel
+    return vec2(hi, lo);
+}
+
+float GetElement(float arr[128], int index) // 128: the max number of segments
+{
+    for (int i = 0; i < 128; ++i) { // 128: the max number of segments
+        if (i == index) return arr[i];
+    }
+    return 0.0;
+}
+
+vec4 main(vec2 fragCoord)
+{
+    float segmentCount = 0.5 * count;
+    vec4 precalculationData = SampleLocalImage(fragCoord);
+    vec2 encodedSdf = precalculationData.rg;
+    float decodedIndex = floor(precalculationData.b * 200.0 + 0.5); // 200.0: decode the closestSegmentIndex
+    int closestSegmentIndex = int(decodedIndex);
+    float tLocal = precalculationData.a;
+
+    float tGlobal = GetElement(curveWeightPrefix, closestSegmentIndex) +
+        tLocal * GetElement(curveWeightCurrent, closestSegmentIndex);
+    return vec4(encodedSdf, tGlobal, 1.0);
+}

@@ -1,0 +1,57 @@
+uniform shader srcImageShader;
+uniform half2 iResolution;
+uniform half4 color0; uniform half4 color1; uniform half4 color2; uniform half4 color3;
+uniform half4 color4; uniform half4 color5; uniform half4 color6; uniform half4 color7;
+uniform half4 color8; uniform half4 color9; uniform half4 color10; uniform half4 color11;
+uniform half2 position0; uniform half2 position1; uniform half2 position2; uniform half2 position3;
+uniform half2 position4; uniform half2 position5; uniform half2 position6; uniform half2 position7;
+uniform half2 position8; uniform half2 position9; uniform half2 position10; uniform half2 position11;
+uniform half strength0; uniform half strength1; uniform half strength2; uniform half strength3;
+uniform half strength4; uniform half strength5; uniform half strength6; uniform half strength7;
+uniform half strength8; uniform half strength9; uniform half strength10; uniform half strength11;
+
+half blendMultipleColorsByDistance(half2 uv, half2 positions, half strength)
+{
+    positions.x *= iResolution.x / iResolution.y;
+    half2 dist = uv - positions;
+    half weight = strength / (dot(dist, dist) + 0.0001);
+    return weight;
+}
+
+half4 main(vec2 fragCoord)
+{
+    half2 uv = fragCoord / iResolution.xy;
+    half screenRatio = iResolution.x / iResolution.y;
+    uv.x *= screenRatio;
+    half totalWeight = 0.0;
+    half4 blendColor = half4(0.0);
+
+    half w0 = blendMultipleColorsByDistance(uv, position0, strength0);
+    totalWeight += w0; blendColor += color0 * w0;
+    half w1 = blendMultipleColorsByDistance(uv, position1, strength1);
+    totalWeight += w1; blendColor += color1 * w1;
+    half w2 = blendMultipleColorsByDistance(uv, position2, strength2);
+    totalWeight += w2; blendColor += color2 * w2;
+    half w3 = blendMultipleColorsByDistance(uv, position3, strength3);
+    totalWeight += w3; blendColor += color3 * w3;
+    half w4 = blendMultipleColorsByDistance(uv, position4, strength4);
+    totalWeight += w4; blendColor += color4 * w4;
+    half w5 = blendMultipleColorsByDistance(uv, position5, strength5);
+    totalWeight += w5; blendColor += color5 * w5;
+    half w6 = blendMultipleColorsByDistance(uv, position6, strength6);
+    totalWeight += w6; blendColor += color6 * w6;
+    half w7 = blendMultipleColorsByDistance(uv, position7, strength7);
+    totalWeight += w7; blendColor += color7 * w7;
+    half w8 = blendMultipleColorsByDistance(uv, position8, strength8);
+    totalWeight += w8; blendColor += color8 * w8;
+    half w9 = blendMultipleColorsByDistance(uv, position9, strength9);
+    totalWeight += w9; blendColor += color9 * w9;
+    half w10 = blendMultipleColorsByDistance(uv, position10, strength10);
+    totalWeight += w10; blendColor += color10 * w10;
+    half w11 = blendMultipleColorsByDistance(uv, position11, strength11);
+    totalWeight += w11; blendColor += color11 * w11;
+
+    half4 finalColor = half4(blendColor / totalWeight);
+    finalColor.rgb = mix(srcImageShader.eval(fragCoord).rgb, finalColor.rgb, finalColor.a);
+    return half4(finalColor.rgb, 1.0);
+}

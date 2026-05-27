@@ -1,0 +1,16 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "glowHalo": "assets/blur_level1.png",
+    "particleHalo": "assets/blur_level2.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ]
+  }
+}

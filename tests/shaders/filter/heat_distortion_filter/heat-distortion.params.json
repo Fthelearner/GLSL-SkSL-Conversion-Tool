@@ -1,0 +1,19 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "progress": 0.5,
+    "intensity": 0.8,
+    "noiseScale": 2.0,
+    "riseWeight": 0.5
+  }
+}

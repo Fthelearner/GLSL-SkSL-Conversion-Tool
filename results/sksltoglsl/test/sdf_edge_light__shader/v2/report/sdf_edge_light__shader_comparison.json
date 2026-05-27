@@ -1,0 +1,12 @@
+{
+  "mse": 132.5148,
+  "psnr": 26.91,
+  "max_pixel_diff": 68,
+  "pixel_diff_percent": 40.45,
+  "total_pixels": 921600,
+  "different_pixels": 372764,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test/sdf_edge_light__shader/v2/report/sdf_edge_light__shader_diffmap.png"
+}

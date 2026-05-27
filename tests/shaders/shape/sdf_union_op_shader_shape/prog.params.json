@@ -1,0 +1,10 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "left": "assets/sdf_rrect.png",
+    "right": "assets/sdf_triangle.png"
+  }
+}

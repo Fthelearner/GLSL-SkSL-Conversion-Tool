@@ -1,0 +1,89 @@
+results/sksltoglsl/test/mask_transition_shader_filter__prog/v1/code/mask_transition_shader_filter__prog.glsl
+Shader version: 450
+0:? Sequence
+0:8  Function Definition: main( ( global void)
+0:8    Function Parameters: 
+0:9    Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp 2-component vector of float)
+0:9          'fragCoord' ( temp 2-component vector of float)
+0:9          vector swizzle ( temp 2-component vector of float)
+0:9            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:9            Sequence
+0:9              Constant:
+0:9                0 (const int)
+0:9              Constant:
+0:9                1 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp float)
+0:10          'alpha' ( temp float)
+0:10          component-wise multiply ( temp float)
+0:10            direct index ( temp float)
+0:10              texture ( global 4-component vector of float)
+0:10                'alphaMask' ( uniform sampler2D)
+0:10                divide ( temp 2-component vector of float)
+0:10                  'fragCoord' ( temp 2-component vector of float)
+0:10                  Convert int to float ( temp 2-component vector of float)
+0:10                    textureSize ( global 2-component vector of int)
+0:10                      'alphaMask' ( uniform sampler2D)
+0:10                      Constant:
+0:10                        0 (const int)
+0:10              Constant:
+0:10                3 (const int)
+0:10            'factor' ( uniform float)
+0:11      move second child to first child ( temp float)
+0:11        'alpha' ( temp float)
+0:11        mix ( global float)
+0:11          'alpha' ( temp float)
+0:11          subtract ( temp float)
+0:11            Constant:
+0:11              1.000000
+0:11            'alpha' ( temp float)
+0:11          'inverseFlag' ( uniform float)
+0:12      Sequence
+0:12        move second child to first child ( temp 4-component vector of float)
+0:12          'topColor' ( temp 4-component vector of float)
+0:12          texture ( global 4-component vector of float)
+0:12            'topLayer' ( uniform sampler2D)
+0:12            divide ( temp 2-component vector of float)
+0:12              'fragCoord' ( temp 2-component vector of float)
+0:12              Convert int to float ( temp 2-component vector of float)
+0:12                textureSize ( global 2-component vector of int)
+0:12                  'topLayer' ( uniform sampler2D)
+0:12                  Constant:
+0:12                    0 (const int)
+0:13      Sequence
+0:13        move second child to first child ( temp 4-component vector of float)
+0:13          'bottomColor' ( temp 4-component vector of float)
+0:13          texture ( global 4-component vector of float)
+0:13            'bottomLayer' ( uniform sampler2D)
+0:13            divide ( temp 2-component vector of float)
+0:13              'fragCoord' ( temp 2-component vector of float)
+0:13              Convert int to float ( temp 2-component vector of float)
+0:13                textureSize ( global 2-component vector of int)
+0:13                  'bottomLayer' ( uniform sampler2D)
+0:13                  Constant:
+0:13                    0 (const int)
+0:14      Sequence
+0:14        move second child to first child ( temp 4-component vector of float)
+0:14          'finalColor' ( temp 4-component vector of float)
+0:14          mix ( global 4-component vector of float)
+0:14            'bottomColor' ( temp 4-component vector of float)
+0:14            'topColor' ( temp 4-component vector of float)
+0:14            Construct vec4 ( temp 4-component vector of float)
+0:14              subtract ( temp float)
+0:14                Constant:
+0:14                  1.000000
+0:14                'alpha' ( temp float)
+0:15      move second child to first child ( temp 4-component vector of float)
+0:15        'FragColor' ( out 4-component vector of float)
+0:15        'finalColor' ( temp 4-component vector of float)
+0:16      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'alphaMask' ( uniform sampler2D)
+0:?     'topLayer' ( uniform sampler2D)
+0:?     'bottomLayer' ( uniform sampler2D)
+0:?     'factor' ( uniform float)
+0:?     'inverseFlag' ( uniform float)
+

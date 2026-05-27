@@ -1,0 +1,11 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "srcImageShader": "assets/input.png",
+    "blurImageShader": "assets/blur_level2.png",
+    "gradientShader": "assets/height_map.png"
+  }
+}

@@ -1,0 +1,155 @@
+results/sksltoglsl/test/edge_light_shader_filter__add-mask/v1/code/edge_light_shader_filter__add-mask.glsl
+Shader version: 450
+0:? Sequence
+0:8  Function Definition: main( ( global void)
+0:8    Function Parameters: 
+0:9    Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp 2-component vector of float)
+0:9          'fragCoord' ( temp 2-component vector of float)
+0:9          vector swizzle ( temp 2-component vector of float)
+0:9            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:9            Sequence
+0:9              Constant:
+0:9                0 (const int)
+0:9              Constant:
+0:9                1 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp 4-component vector of float)
+0:10          'image_color' ( temp 4-component vector of float)
+0:10          texture ( global 4-component vector of float)
+0:10            'image' ( uniform sampler2D)
+0:10            divide ( temp 2-component vector of float)
+0:10              'fragCoord' ( temp 2-component vector of float)
+0:10              'iResolution' ( uniform 2-component vector of float)
+0:11      Sequence
+0:11        move second child to first child ( temp float)
+0:11          'mask' ( temp float)
+0:11          direct index ( temp float)
+0:11            texture ( global 4-component vector of float)
+0:11              'imageMask' ( uniform sampler2D)
+0:11              divide ( temp 2-component vector of float)
+0:11                'fragCoord' ( temp 2-component vector of float)
+0:11                'iResolution' ( uniform 2-component vector of float)
+0:11            Constant:
+0:11              3 (const int)
+0:12      Sequence
+0:12        move second child to first child ( temp 4-component vector of float)
+0:12          'final_color' ( temp 4-component vector of float)
+0:12          'image_color' ( temp 4-component vector of float)
+0:13      Sequence
+0:13        move second child to first child ( temp 4-component vector of float)
+0:13          'dst' ( temp 4-component vector of float)
+0:13          Construct vec4 ( temp 4-component vector of float)
+0:13            Constant:
+0:13              1.000000
+0:13            Constant:
+0:13              1.000000
+0:13            subtract ( temp float)
+0:13              direct index ( temp float)
+0:13                'iResolution' ( uniform 2-component vector of float)
+0:13                Constant:
+0:13                  0 (const int)
+0:13              Constant:
+0:13                1.000000
+0:13            subtract ( temp float)
+0:13              direct index ( temp float)
+0:13                'iResolution' ( uniform 2-component vector of float)
+0:13                Constant:
+0:13                  1 (const int)
+0:13              Constant:
+0:13                1.000000
+0:14      Test condition and select ( temp void)
+0:14        Condition
+0:14        logical-and ( temp bool)
+0:14          logical-and ( temp bool)
+0:14            logical-and ( temp bool)
+0:14              logical-and ( temp bool)
+0:14                Compare Less Than ( temp bool)
+0:14                  direct index ( temp float)
+0:14                    'dst' ( temp 4-component vector of float)
+0:14                    Constant:
+0:14                      0 (const int)
+0:14                  direct index ( temp float)
+0:14                    'fragCoord' ( temp 2-component vector of float)
+0:14                    Constant:
+0:14                      0 (const int)
+0:14                Compare Less Than ( temp bool)
+0:14                  direct index ( temp float)
+0:14                    'fragCoord' ( temp 2-component vector of float)
+0:14                    Constant:
+0:14                      0 (const int)
+0:14                  direct index ( temp float)
+0:14                    'dst' ( temp 4-component vector of float)
+0:14                    Constant:
+0:14                      2 (const int)
+0:14              Compare Less Than ( temp bool)
+0:14                direct index ( temp float)
+0:14                  'dst' ( temp 4-component vector of float)
+0:14                  Constant:
+0:14                    1 (const int)
+0:14                direct index ( temp float)
+0:14                  'fragCoord' ( temp 2-component vector of float)
+0:14                  Constant:
+0:14                    1 (const int)
+0:14            Compare Less Than ( temp bool)
+0:14              direct index ( temp float)
+0:14                'fragCoord' ( temp 2-component vector of float)
+0:14                Constant:
+0:14                  1 (const int)
+0:14              direct index ( temp float)
+0:14                'dst' ( temp 4-component vector of float)
+0:14                Constant:
+0:14                  3 (const int)
+0:14          Compare Greater Than ( temp bool)
+0:14            'mask' ( temp float)
+0:14            Constant:
+0:14              0.000000
+0:14        true case
+0:15        Sequence
+0:15          move second child to first child ( temp 4-component vector of float)
+0:15            'final_color' ( temp 4-component vector of float)
+0:15            Construct vec4 ( temp 4-component vector of float)
+0:15              add ( temp 3-component vector of float)
+0:15                vector-scale ( temp 3-component vector of float)
+0:15                  vector-scale ( temp 3-component vector of float)
+0:15                    'alphaProgress' ( uniform float)
+0:15                    vector swizzle ( temp 3-component vector of float)
+0:15                      texture ( global 4-component vector of float)
+0:15                        'imageBloom' ( uniform sampler2D)
+0:15                        divide ( temp 2-component vector of float)
+0:15                          'fragCoord' ( temp 2-component vector of float)
+0:15                          'iResolution' ( uniform 2-component vector of float)
+0:15                      Sequence
+0:15                        Constant:
+0:15                          0 (const int)
+0:15                        Constant:
+0:15                          1 (const int)
+0:15                        Constant:
+0:15                          2 (const int)
+0:15                  'mask' ( temp float)
+0:15                vector swizzle ( temp 3-component vector of float)
+0:15                  'image_color' ( temp 4-component vector of float)
+0:15                  Sequence
+0:15                    Constant:
+0:15                      0 (const int)
+0:15                    Constant:
+0:15                      1 (const int)
+0:15                    Constant:
+0:15                      2 (const int)
+0:15              direct index ( temp float)
+0:15                'image_color' ( temp 4-component vector of float)
+0:15                Constant:
+0:15                  3 (const int)
+0:17      move second child to first child ( temp 4-component vector of float)
+0:17        'FragColor' ( out 4-component vector of float)
+0:17        'final_color' ( temp 4-component vector of float)
+0:18      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'imageMask' ( uniform sampler2D)
+0:?     'image' ( uniform sampler2D)
+0:?     'imageBloom' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'alphaProgress' ( uniform float)
+

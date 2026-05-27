@@ -1,0 +1,12 @@
+{
+  "mse": 35747.746,
+  "psnr": 2.6,
+  "max_pixel_diff": 246,
+  "pixel_diff_percent": 100.0,
+  "total_pixels": 921600,
+  "different_pixels": 921600,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test/edge_light_shader_filter__convert-frag/v2/report/edge_light_shader_filter__convert-frag_diffmap.png"
+}

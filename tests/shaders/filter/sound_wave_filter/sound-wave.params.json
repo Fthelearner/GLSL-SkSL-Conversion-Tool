@@ -1,0 +1,37 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "colorA": [
+      1.0,
+      0.1,
+      0.1
+    ],
+    "colorB": [
+      0.1,
+      1.0,
+      0.1
+    ],
+    "colorC": [
+      0.1,
+      0.2,
+      1.0
+    ],
+    "colorProgress": 0.6,
+    "soundIntensity": 0.85,
+    "shockWaveAlphaA": 1.2,
+    "shockWaveAlphaB": 1.2,
+    "shockWaveProgressA": 0.28,
+    "shockWaveProgressB": 0.68,
+    "shockWaveTotalAlpha": 2.0
+  }
+}

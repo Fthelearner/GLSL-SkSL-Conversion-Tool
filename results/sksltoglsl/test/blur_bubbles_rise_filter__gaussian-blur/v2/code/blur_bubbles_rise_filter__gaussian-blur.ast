@@ -1,0 +1,231 @@
+results/sksltoglsl/test/blur_bubbles_rise_filter__gaussian-blur/v1/code/blur_bubbles_rise_filter__gaussian-blur.glsl
+Shader version: 450
+0:? Sequence
+0:7  Function Definition: main( ( global void)
+0:7    Function Parameters: 
+0:8    Sequence
+0:8      Sequence
+0:8        move second child to first child ( temp 2-component vector of float)
+0:8          'fragCoord' ( temp 2-component vector of float)
+0:8          vector swizzle ( temp 2-component vector of float)
+0:8            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:8            Sequence
+0:8              Constant:
+0:8                0 (const int)
+0:8              Constant:
+0:8                1 (const int)
+0:9      Sequence
+0:9        move second child to first child ( temp 2-component vector of float)
+0:9          'uv' ( temp 2-component vector of float)
+0:9          divide ( temp 2-component vector of float)
+0:9            'fragCoord' ( temp 2-component vector of float)
+0:9            'iResolution' ( uniform 2-component vector of float)
+0:10      Sequence
+0:10        move second child to first child ( temp 2-component vector of float)
+0:10          'texelSize' ( temp 2-component vector of float)
+0:10          Construct vec2 ( temp 2-component vector of float)
+0:10            divide ( temp float)
+0:10              Constant:
+0:10                1.000000
+0:10              direct index ( temp float)
+0:10                'iResolution' ( uniform 2-component vector of float)
+0:10                Constant:
+0:10                  0 (const int)
+0:10            divide ( temp float)
+0:10              Constant:
+0:10                1.000000
+0:10              direct index ( temp float)
+0:10                'iResolution' ( uniform 2-component vector of float)
+0:10                Constant:
+0:10                  1 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp 2-component vector of float)
+0:11          'direction' ( temp 2-component vector of float)
+0:11          Test condition and select ( temp 2-component vector of float)
+0:11            Condition
+0:11            Compare Greater Than ( temp bool)
+0:11              'horizontal' ( uniform float)
+0:11              Constant:
+0:11                0.500000
+0:11            true case
+0:11            Constant:
+0:11              1.000000
+0:11              0.000000
+0:11            false case
+0:11            Constant:
+0:11              0.000000
+0:11              1.000000
+0:12      Sequence
+0:12        move second child to first child ( temp float)
+0:12          'sigma' ( temp float)
+0:12          max ( global float)
+0:12            Constant:
+0:12              0.350000
+0:12            component-wise multiply ( temp float)
+0:12              'blurIntensity' ( uniform float)
+0:12              Constant:
+0:12                0.500000
+0:13      Sequence
+0:13        move second child to first child ( temp 4-component vector of float)
+0:13          'centerColor' ( temp 4-component vector of float)
+0:13          texture ( global 4-component vector of float)
+0:13            'image' ( uniform sampler2D)
+0:13            divide ( temp 2-component vector of float)
+0:13              component-wise multiply ( temp 2-component vector of float)
+0:13                'uv' ( temp 2-component vector of float)
+0:13                'iResolution' ( uniform 2-component vector of float)
+0:13              Convert int to float ( temp 2-component vector of float)
+0:13                textureSize ( global 2-component vector of int)
+0:13                  'image' ( uniform sampler2D)
+0:13                  Constant:
+0:13                    0 (const int)
+0:14      Sequence
+0:14        move second child to first child ( temp 3-component vector of float)
+0:14          'color' ( temp 3-component vector of float)
+0:14          vector swizzle ( temp 3-component vector of float)
+0:14            'centerColor' ( temp 4-component vector of float)
+0:14            Sequence
+0:14              Constant:
+0:14                0 (const int)
+0:14              Constant:
+0:14                1 (const int)
+0:14              Constant:
+0:14                2 (const int)
+0:15      Sequence
+0:15        move second child to first child ( temp float)
+0:15          'totalWeight' ( temp float)
+0:15          Constant:
+0:15            1.000000
+0:17      Sequence
+0:17        Sequence
+0:17          move second child to first child ( temp int)
+0:17            'i' ( temp int)
+0:17            Constant:
+0:17              1 (const int)
+0:17        Loop with condition tested first
+0:17          Loop Condition
+0:17          Compare Less Than or Equal ( temp bool)
+0:17            'i' ( temp int)
+0:17            Constant:
+0:17              10 (const int)
+0:17          Loop Body
+0:18          Sequence
+0:18            Sequence
+0:18              move second child to first child ( temp float)
+0:18                'fi' ( temp float)
+0:18                Convert int to float ( temp float)
+0:18                  'i' ( temp int)
+0:19            Sequence
+0:19              move second child to first child ( temp float)
+0:19                'sampleMask' ( temp float)
+0:19                step ( global float)
+0:19                  'fi' ( temp float)
+0:19                  add ( temp float)
+0:19                    'blurIntensity' ( uniform float)
+0:19                    Constant:
+0:19                      0.500000
+0:20            Sequence
+0:20              move second child to first child ( temp float)
+0:20                'weight' ( temp float)
+0:20                component-wise multiply ( temp float)
+0:20                  exp ( global float)
+0:20                    divide ( temp float)
+0:20                      Negate value ( temp float)
+0:20                        component-wise multiply ( temp float)
+0:20                          'fi' ( temp float)
+0:20                          'fi' ( temp float)
+0:20                      component-wise multiply ( temp float)
+0:20                        component-wise multiply ( temp float)
+0:20                          Constant:
+0:20                            2.000000
+0:20                          'sigma' ( temp float)
+0:20                        'sigma' ( temp float)
+0:20                  'sampleMask' ( temp float)
+0:21            Sequence
+0:21              move second child to first child ( temp 2-component vector of float)
+0:21                'offset' ( temp 2-component vector of float)
+0:21                vector-scale ( temp 2-component vector of float)
+0:21                  component-wise multiply ( temp 2-component vector of float)
+0:21                    'direction' ( temp 2-component vector of float)
+0:21                    'texelSize' ( temp 2-component vector of float)
+0:21                  'fi' ( temp float)
+0:22            add second child into first child ( temp 3-component vector of float)
+0:22              'color' ( temp 3-component vector of float)
+0:22              vector-scale ( temp 3-component vector of float)
+0:22                vector swizzle ( temp 3-component vector of float)
+0:22                  texture ( global 4-component vector of float)
+0:22                    'image' ( uniform sampler2D)
+0:22                    divide ( temp 2-component vector of float)
+0:22                      component-wise multiply ( temp 2-component vector of float)
+0:22                        add ( temp 2-component vector of float)
+0:22                          'uv' ( temp 2-component vector of float)
+0:22                          'offset' ( temp 2-component vector of float)
+0:22                        'iResolution' ( uniform 2-component vector of float)
+0:22                      Convert int to float ( temp 2-component vector of float)
+0:22                        textureSize ( global 2-component vector of int)
+0:22                          'image' ( uniform sampler2D)
+0:22                          Constant:
+0:22                            0 (const int)
+0:22                  Sequence
+0:22                    Constant:
+0:22                      0 (const int)
+0:22                    Constant:
+0:22                      1 (const int)
+0:22                    Constant:
+0:22                      2 (const int)
+0:22                'weight' ( temp float)
+0:23            add second child into first child ( temp 3-component vector of float)
+0:23              'color' ( temp 3-component vector of float)
+0:23              vector-scale ( temp 3-component vector of float)
+0:23                vector swizzle ( temp 3-component vector of float)
+0:23                  texture ( global 4-component vector of float)
+0:23                    'image' ( uniform sampler2D)
+0:23                    divide ( temp 2-component vector of float)
+0:23                      component-wise multiply ( temp 2-component vector of float)
+0:23                        subtract ( temp 2-component vector of float)
+0:23                          'uv' ( temp 2-component vector of float)
+0:23                          'offset' ( temp 2-component vector of float)
+0:23                        'iResolution' ( uniform 2-component vector of float)
+0:23                      Convert int to float ( temp 2-component vector of float)
+0:23                        textureSize ( global 2-component vector of int)
+0:23                          'image' ( uniform sampler2D)
+0:23                          Constant:
+0:23                            0 (const int)
+0:23                  Sequence
+0:23                    Constant:
+0:23                      0 (const int)
+0:23                    Constant:
+0:23                      1 (const int)
+0:23                    Constant:
+0:23                      2 (const int)
+0:23                'weight' ( temp float)
+0:24            add second child into first child ( temp float)
+0:24              'totalWeight' ( temp float)
+0:24              component-wise multiply ( temp float)
+0:24                Constant:
+0:24                  2.000000
+0:24                'weight' ( temp float)
+0:17          Loop Terminal Expression
+0:17          Pre-Increment ( temp int)
+0:17            'i' ( temp int)
+0:26      move second child to first child ( temp 4-component vector of float)
+0:26        'FragColor' ( out 4-component vector of float)
+0:26        Construct vec4 ( temp 4-component vector of float)
+0:26          divide ( temp 3-component vector of float)
+0:26            'color' ( temp 3-component vector of float)
+0:26            max ( global float)
+0:26              'totalWeight' ( temp float)
+0:26              Constant:
+0:26                0.000100
+0:26          direct index ( temp float)
+0:26            'centerColor' ( temp 4-component vector of float)
+0:26            Constant:
+0:26              3 (const int)
+0:27      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'image' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'blurIntensity' ( uniform float)
+0:?     'horizontal' ( uniform float)
+

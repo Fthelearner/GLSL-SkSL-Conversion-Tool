@@ -1,0 +1,13 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageBlur0": "assets/edge_blur0.png",
+    "imageBlur1": "assets/edge_blur1.png",
+    "imageBlur2": "assets/edge_blur2.png",
+    "imageBlur3": "assets/edge_blur3.png",
+    "imageBlur4": "assets/edge_blur4.png"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageShader": "assets/input.png",
+    "gradientShader": "assets/varblur_blocks.png"
+  },
+  "uniforms": {
+    "r": 25.0
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "total": 114,
+  "ok": 0,
+  "issues": 114,
+  "issue_details": [
+    {
+      "file": "filter/aibar_shader_filter/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/blur_bubbles_rise_filter/gaussian-blur.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/blur_bubbles_rise_filter/mask-mix.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/blur_bubbles_rise_filter/resample.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/color_gradient_shader_filter/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/color_gradient_shader_filter/with-mask.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/content_light_shader_filter/content-light.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/direction_light_shader_filter/direction-light-no-normal.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/direction_light_shader_filter/direction-light.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/direction_light_shader_filter/normal-mask.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/dispersion_shader_filter/dispersion.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/displacement_distort_shader_filter/displacement-distort.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/distortion_collapse_filter/shader.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/edge_light_shader_filter/add-mask.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/edge_light_shader_filter/alpha-gradient.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/edge_light_shader_filter/composite-frag.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/edge_light_shader_filter/convert-frag.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/edge_light_shader_filter/detect-frag.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/edge_light_shader_filter/gaussian-frag.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/frosted_glass_shader_filter/main-shader-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/grey_shader_filter/grey-gradation.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/heat_distortion_filter/heat-distortion.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/kawase_blur_shader_filter/blur-af.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/kawase_blur_shader_filter/blur.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/kawase_blur_shader_filter/mix.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/kawase_blur_shader_filter/simple.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/linear_gradient_blur_shader_filter/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/magnifier_shader_filter/magnifier-shader-with-sdf-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/mask_transition_shader_filter/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/mesa_blur_shader_filter/blur-mesa.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/mesa_blur_shader_filter/direction-blur-mesa.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/mesa_blur_shader_filter/grey-x.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/mesa_blur_shader_filter/mix-mesa.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "filter/mesa_blur_shader_filter/simple.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/motion_blur_shader_filter/motion-blur.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_edge_light/pass-through.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_edge_light/shade-code.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_edge_light/shader.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "filter/sdf_from_image_filter/box-blur-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_from_image_filter/jfa-iteration-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_from_image_filter/shader-string.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_from_image_filter/shader-string_1.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sdf_from_image_filter/shader-string_2.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/sound_wave_filter/sound-wave.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/variable_radius_blur_shader_filter/generate-texture.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/variable_radius_blur_shader_filter/horizontal-blur-masked.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/variable_radius_blur_shader_filter/horizontal-blur.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/variable_radius_blur_shader_filter/vertical-blur-masked.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/variable_radius_blur_shader_filter/vertical-blur.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/water_ripple_filter/mini-recv.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/water_ripple_filter/smrecv.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/water_ripple_filter/smsend.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "filter/water_ripple_filter/ssmutual.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "mask/double_ripple_shader_mask/prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "mask/double_ripple_shader_mask/prog_1.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "mask/frame_gradient_shader_mask/mask.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "mask/pixel_map_shader_mask/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "mask/radial_gradient_shader_mask/prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "mask/radial_gradient_shader_mask/prog_1.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "mask/ripple_shader_mask/prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "mask/ripple_shader_mask/prog_1.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "mask/use_effect_shader_mask/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "mask/wave_disturb_shader_mask/wave-disturbance-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "mask/wave_gradient_shader_mask/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "mask/wave_gradient_shader_mask/prog_1.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/aurora_noise_shader/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/aurora_noise_shader/prog_1.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/aurora_noise_shader/prog_2.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/border_light_shader/prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/border_sdf_shader/border-code.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/circle_flowlight_effect/circle-flowlight-shader-with-mask.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/circle_flowlight_effect/circle-flowlight-shader.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/color_gradient_effect/brightness-shader-code.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/color_gradient_effect/color-gradient-shader-with-mask.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/color_gradient_effect/color-gradient-shader.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/contour_diagonal_flow_light_shader/blend-img-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/contour_diagonal_flow_light_shader/convert-img-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/contour_diagonal_flow_light_shader/flow-light-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/contour_diagonal_flow_light_shader/precalculationformorecurves-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/contour_diagonal_flow_light_shader/sdf-mask-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/frosted_glass_effect/main-shader-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shader/particle_circular_halo_shader/glow-halo-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/particle_circular_halo_shader/main-shader-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/particle_circular_halo_shader/particle-halo-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/particle_circular_halo_shader/single-particle-halo-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/sdf_edge_light_shader/shader.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/spatial_glass_effect/main-shader-prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/spatial_point_light/prog-no-mask.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/spatial_point_light/prog-with-mask.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shader/wavy_ripple_light_shader/prog.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shape/sdf_border_shader/code.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shape/sdf_border_shader/outline-code.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_clip_shader/code.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shape/sdf_color_shader/code.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shape/sdf_distort_op_shader_shape/shader.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_path_shader_shape/clear-inf-shader.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_path_shader_shape/normal-calculation-shader.png",
+      "problem": "fully transparent (transparent_pct=100.0%)"
+    },
+    {
+      "file": "shape/sdf_path_shader_shape/precalculation-for-sdf-shader.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_path_shader_shape/sdf-propagation-shader.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_pixelmap_shader_shape/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_pixelmap_shader_shape/prog_1.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_rrect_shader_shape/rrect-shader-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_rrect_shader_shape/sdf-grad-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_rrect_shader_shape/uniform-rrect-shader-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_rrect_shader_shape/uniform-sdf-grad-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_shadow_shader/code.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_shadow_shader/elevation-code.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_transform_shader_shape/gravity-pull-normal-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_transform_shader_shape/gravity-pull-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_triangle_shader_shape/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_triangle_shader_shape/sdf-grad-prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_union_op_shader_shape/prog.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_union_op_shader_shape/prog_1.png",
+      "problem": "parse error: no pixels decoded"
+    },
+    {
+      "file": "shape/sdf_union_op_shader_shape/prog_2.png",
+      "problem": "parse error: no pixels decoded"
+    }
+  ]
+}

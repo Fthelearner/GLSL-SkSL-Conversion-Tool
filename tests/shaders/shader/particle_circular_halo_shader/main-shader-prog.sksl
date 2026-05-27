@@ -1,0 +1,116 @@
+uniform half2 iResolution;
+uniform shader glowHalo;
+uniform shader particleHalo;
+uniform float globalRadius;   // global radius controlling the overall size of halos
+uniform half2 rotationCenter;  // center of the halo rings, normalized coords (0. - 1.)
+const float DOWN_SAMPLE_SCALE = 4.0;
+
+vec4 fragColor;
+const int NUMBER_OF_SAMPLES = 11;  // Number of samples used for blur effects
+const float NUMBER_OF_SAMPLES_F = 11.;
+const float PI = 3.14159;
+const float PI2 = 6.28318;
+const float C = 0.00001;
+const float S = -0.99999;
+
+// Color stops for the color bar
+const float STOP_POS0 = 0.00;
+const float STOP_POS1 = 0.25;
+const float STOP_POS2 = 0.75;
+const float STOP_POS3 = 0.96;
+const float STOP_POS4 = 1.00;
+
+const half3 STOP_COLOR0 = half3(255.0, 184.0, 191.0) / 255.0;  // FFB8BF
+const half3 STOP_COLOR1 = half3(86.0, 146.0, 255.0) / 255.0;   // 5692FF
+const half3 STOP_COLOR2 = half3(137.0, 240.0, 255.0) / 255.0;  // 89F0FF
+const half3 STOP_COLOR3 = half3(255.0, 200.0, 161.0) / 255.0;  // FFC8A1
+const half3 STOP_COLOR4 = half3(253.0, 237.0, 181.0) / 255.0;  // FFEDB5
+
+const half2 RAND2_A = half2(127.1, 1.7);
+const half2 RAND2_B = half2(269.5, 183.3);
+const float RAND2_MUL = 4258.5453123;
+
+// ****************************** Sub-functions ******************************
+half3 GetColorFromColorbar(half2 pt, float radius)
+{
+    // Map pt.x to the range [0.0, 1.0] for color interpolation
+    float t = (pt.x + radius) / (2.0 * radius);
+    half3 colorValue =
+        step(pt.x, -radius) * STOP_COLOR0 +
+        // Return the first color when pt.x is to the left of the halo
+        step(STOP_POS0, t) * step(t, STOP_POS1) *
+        mix(STOP_COLOR0, STOP_COLOR1,
+            (t - STOP_POS0) / (STOP_POS1 - STOP_POS0)) +  // 0.00 < t <= 0.25
+        step(STOP_POS1, t) * step(t, STOP_POS2) *
+        mix(STOP_COLOR1, STOP_COLOR2,
+            (t - STOP_POS1) / (STOP_POS2 - STOP_POS1)) +  // 0.25 < t <= 0.75
+        step(STOP_POS2, t) * step(t, STOP_POS3) *
+        mix(STOP_COLOR2, STOP_COLOR3,
+            (t - STOP_POS2) / (STOP_POS3 - STOP_POS2)) +  // 0.75 < t <= 0.96
+        step(STOP_POS3, t) * step(t, STOP_POS4) *
+        mix(STOP_COLOR3, STOP_COLOR4,
+            (t - STOP_POS3) / (STOP_POS4 - STOP_POS3)) +  // 0.90 < t <= 1.00
+        step(STOP_POS4, t) * STOP_COLOR4;                 // 1.00 < t
+    return colorValue;
+}
+
+half4 BlendScreen(half4 a, half4 b)
+{
+    return a + b - a * b;
+}
+
+// ****************************** Main Functions ******************************
+vec4 main(vec2 fragCoord)
+{
+    float radius = globalRadius * 2.0;
+    float innerRadiusEdge = 0.5 * radius;
+    float outerRadiusEdge = 1.5 * radius;
+    half4 haloColor = half4(0.0);
+    half4 haloColor2 = half4(0.0);
+    half4 glowColor = half4(0.0);
+
+    vec2 uv = fragCoord / iResolution.xy;
+    vec2 ratioMat = vec2(iResolution.x / iResolution.y, 1.0);
+  	vec2 centerUV = (uv - rotationCenter) * ratioMat * 2.0;
+    float lengthDir = length(centerUV);
+
+  	if (lengthDir < outerRadiusEdge && lengthDir > innerRadiusEdge) {
+        float rSafe = max(globalRadius, 1.0 / max(iResolution.x, iResolution.y));
+
+        const float childRParticle  = 0.5 / DOWN_SAMPLE_SCALE;
+        float s1 = childRParticle / rSafe;
+        vec2 childUV1 = 0.5 + s1 * (uv - rotationCenter);
+        vec2 fc1 = childUV1 * iResolution.xy;
+        haloColor = particleHalo.eval(fc1) * 1.2;
+
+        childUV1 = 0.5 + s1 * (uv - rotationCenter) * 0.85;
+        haloColor2 = particleHalo.eval(childUV1 * iResolution.xy);
+
+        const float childRGlow = 0.5 / DOWN_SAMPLE_SCALE / 1.2;
+        float s2 = childRGlow / rSafe;
+
+        float angle = rSafe * PI2;
+        float c = cos(angle);
+        float s = sin(angle);
+        mat2 rotMat = mat2(c, -s, s, c);
+        vec2 rel = (uv - rotationCenter) * ratioMat;
+        vec2 relRot  = rotMat * rel / ratioMat;
+
+        vec2 childUV2 = 0.5 + s2 * relRot;
+        vec2 fc2  = childUV2 * iResolution.xy;
+        glowColor.xyz = glowHalo.eval(fc2).xyz;
+
+        vec2 centerUVRot = rotMat * centerUV;
+        half3 bgColor = GetColorFromColorbar(centerUVRot, radius);
+
+        vec2 centerUVRot2 = mat2(C, -S, S, C) * centerUV;
+        half3 bgColor2 = GetColorFromColorbar(centerUVRot2, radius * 1.18);
+
+        glowColor.rgb *= bgColor;
+        haloColor.rgb *= bgColor;
+        haloColor2.rgb *= bgColor2;
+    }
+    haloColor = BlendScreen(haloColor, haloColor2);
+    fragColor = max(glowColor, haloColor);
+    return fragColor;
+}

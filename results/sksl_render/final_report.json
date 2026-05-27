@@ -1,0 +1,56 @@
+{
+  "total": 114,
+  "ok": 107,
+  "issues": 7,
+  "issue_details": [
+    {
+      "file": "filter/sdf_edge_light/shader.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    },
+    {
+      "file": "shader/contour_diagonal_flow_light_shader/flow-light-prog.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    },
+    {
+      "file": "shader/particle_circular_halo_shader/main-shader-prog.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    },
+    {
+      "file": "shape/sdf_border_shader/code.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    },
+    {
+      "file": "shape/sdf_clip_shader/code.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    },
+    {
+      "file": "shape/sdf_color_shader/code.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    },
+    {
+      "file": "shape/sdf_path_shader_shape/normal-calculation-shader.png",
+      "problem": "fully transparent, tiny file (3669B)",
+      "size": 3669,
+      "avg_alpha": 0.0,
+      "visible_pct": 0.0
+    }
+  ]
+}

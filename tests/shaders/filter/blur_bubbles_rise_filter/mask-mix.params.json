@@ -1,0 +1,19 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "blur_tex": "assets/blur_level3.png",
+    "original_tex": "assets/input.png",
+    "blur_mask": "assets/blur_mask.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "mixStrength": 0.5,
+    "progress": 0.5
+  }
+}

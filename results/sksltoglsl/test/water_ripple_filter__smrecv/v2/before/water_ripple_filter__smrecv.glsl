@@ -1,0 +1,48 @@
+#version 450 core
+out vec4 FragColor;
+uniform sampler2D image;
+uniform vec2 iResolution;
+uniform float progress;
+uniform float waveCount;
+uniform vec2 rippleCenter;
+const float basicSlope = 0.7;
+const float gAmplSupress = 0.003;
+float waveFreq = 25.0;
+const float wavePropRatio = 2.0;
+const float ampSupArea = 0.45;
+const float intensity = 0.15;
+const float decayExp = 1.5;
+float luminance = 230.0;
+const float highLightExp = 2.5;
+void main() {
+    vec2 fragCoord = gl_FragCoord.xy;
+    float shortEdge = min(iResolution.x, iResolution.y);
+    vec2 uv = fragCoord / iResolution;
+    vec2 uvHomo = fragCoord / shortEdge;
+    vec2 resRatio = iResolution / shortEdge;
+    float progSlope = basicSlope + 0.1 * waveCount;
+    float t = progSlope * progress;
+    waveFreq -= t * 20.0;
+    waveFreq = waveFreq > 15.0 ? waveFreq : 15.0;
+    vec2 waveCenter = rippleCenter * resRatio;
+    float propDis = distance(uvHomo, waveCenter);
+    vec2 v = uvHomo - waveCenter;
+    float ampDecayByT = propDis < 1.3 ? clamp(pow(1.3 - propDis, decayExp), 0.0, 1.0) : 0.0;
+    float ampSupByDis = smoothstep(0.0, ampSupArea, propDis);
+    float _4_dis = propDis - wavePropRatio * t;
+    const float _5_h = 0.001;
+    float _6_d1 = _4_dis - _5_h;
+    float _7_d2 = _4_dis + _5_h;
+    float _8_axisPoint = -6.283 / waveFreq;
+    float _9_waveForm = smoothstep(_8_axisPoint * 2.0, _8_axisPoint, _7_d2) * smoothstep(0.0, _8_axisPoint, _7_d2);
+    float _10_axisPoint = -6.283 / waveFreq;
+    float _11_waveForm = smoothstep(_10_axisPoint * 2.0, _10_axisPoint, _6_d1) * smoothstep(0.0, _10_axisPoint, _6_d1);
+    float hIntense = ((((sin(waveFreq * _7_d2) * _9_waveForm - sin(waveFreq * _6_d1) * _11_waveForm) * 499.999969) * ampDecayByT) * ampSupByDis) * gAmplSupress;
+    vec2 circles = normalize(v) * hIntense;
+    vec3 norm = vec3(circles, hIntense);
+    vec2 expandUV = (uv - intensity * norm.xy) * iResolution;
+    vec3 color = texture(image, (expandUV) / iResolution).xyz;
+    color += luminance * pow(clamp(dot(norm, vec3(0.0, -0.992277861, 0.124034733)), 0.0, 1.0), highLightExp);
+    FragColor = vec4(color, 1.0);
+    return;
+}

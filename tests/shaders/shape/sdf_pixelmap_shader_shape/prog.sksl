@@ -1,0 +1,16 @@
+uniform shader pixelmapShader;
+uniform vec2 pixelmapSize;
+
+vec4 SafeFetch(vec2 fragCoord) {
+    if (fragCoord.x < 0 || fragCoord.x >= pixelmapSize.x || fragCoord.y < 0 || fragCoord.y >= pixelmapSize.y) {
+        return vec4(0.5, 0.5, 0.0, 1);
+    }
+    return pixelmapShader.eval(fragCoord);
+}
+
+half4 main(vec2 fragCoord)
+{
+    // SDF will be mapped from [0, 1] to [-63.5, 64]
+    vec4 pixelmapShape = SafeFetch(fragCoord);
+    return half4(pixelmapShape.xyz, pixelmapShape.a * 127.5 - 63.5);
+}

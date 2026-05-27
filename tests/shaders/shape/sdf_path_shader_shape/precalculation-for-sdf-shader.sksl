@@ -1,0 +1,109 @@
+uniform vec2 iResolution;
+const int CAPACITY = 60;
+const int MAX_CURVES_IN_GRID = 20;
+uniform float u_curveCount;
+uniform vec2 controlPoints[CAPACITY];
+uniform float segmentIndex[MAX_CURVES_IN_GRID];
+uniform shader u_prevD;
+uniform float u_isFirstBatch;
+
+const float INF_1E20 = 1e20;
+const float SQRT3 = 1.7320508;
+
+float sdf_bezier_unsigned_sq(vec2 pos, vec2 A, vec2 B, vec2 C) {
+    const float EPSILON_1E_MINUS_3 = 1e-8;
+    vec2 a = B - A;
+    vec2 b = A - 2.0 * B + C;
+
+    if (dot(b, b) < EPSILON_1E_MINUS_3) {
+        vec2 pa = pos - A;
+        vec2 ba = C - A;
+        float ba2 = dot(ba, ba);
+        if (ba2 < EPSILON_1E_MINUS_3) return dot(pa, pa);
+        float h = clamp(dot(pa, ba) / ba2, 0.0, 1.0);
+        vec2 dvec = pa - h * ba;
+        return dot(dvec, dvec);
+    }
+
+    const float ONE_THIRD = 1.0 / 3.0;
+    vec2 c = a * 2.0;
+    vec2 d = A - pos;
+    float kk = 1.0 / dot(b, b);
+    float kx = kk * dot(a, b);
+    float ky = kk * (2.0 * dot(a, a) + dot(d, b)) * ONE_THIRD;
+    float kz = kk * dot(d, a);
+    float res = 0.0;
+    float p = ky - kx * kx;
+    float q = kx * (2.0 * kx * kx - 3.0 * ky) + kz;
+    float h = q * q + 4.0 * p * p * p;
+
+    if (h >= 0.0) {
+        h = sqrt(h);
+        vec2 x = 0.5 * (vec2(h, -h) - q);
+        vec2 uv = sign(x) * pow(abs(x), vec2(ONE_THIRD));
+        float t = clamp(uv.x + uv.y - kx, 0.0, 1.0);
+        vec2 qv = d + (c + b * t) * t;
+        res = dot(qv, qv);
+    } else {
+        float z = sqrt(-p);
+        float v = acos(q / (p * z * 2.0)) * ONE_THIRD;
+        float m = cos(v);
+        float n = sin(v) * SQRT3;
+
+        float t1 = clamp((m + m) * z - kx, 0.0, 1.0);
+        float t2 = clamp((-n - m) * z - kx, 0.0, 1.0);
+
+        vec2 q1 = d + (c + b * t1) * t1;
+        float d1 = dot(q1, q1);
+        vec2 q2 = d + (c + b * t2) * t2;
+        float d2 = dot(q2, q2);
+
+        res = min(d1, d2);
+    }
+    return res;
+}
+
+float FindClosestBezier(vec2 p, inout vec2 outA, inout vec2 outB, inout vec2 outC) {
+    float minDist = INF_1E20;
+    int curveCount = int(u_curveCount);
+
+    for (int i = 0; i < MAX_CURVES_IN_GRID; i++) {
+        int global_curve_idx = int(segmentIndex[i]);
+        if (global_curve_idx < 0) break;
+
+        vec2 A = controlPoints[i * 3];
+        vec2 B = controlPoints[i * 3 + 1];
+        vec2 C = controlPoints[i * 3 + 2];
+
+        float d = sdf_bezier_unsigned_sq(p, A, B, C);
+        if (d < minDist) {
+            minDist = d;
+        }
+    }
+    return minDist;
+}
+
+float get_sdf_shape(vec2 p) {
+    vec2 A = vec2(0.0);
+    vec2 B = vec2(0.0);
+    vec2 C = vec2(0.0);
+    float min_dist = FindClosestBezier(p, A, B, C);
+    return sqrt(min_dist);
+}
+
+vec4 main(vec2 fragCoord) {
+    vec2 uv = fragCoord / iResolution;
+    float ndcAspect = iResolution.x / iResolution.y;
+    vec2 ndc = vec2(
+        (uv.x * 2.0 - 1.0) * ndcAspect,
+        uv.y * 2.0 - 1.0
+    );
+    float currentD = get_sdf_shape(ndc);
+
+    if (u_isFirstBatch < 1e-3) {
+        float prevD = u_prevD.eval(fragCoord).r;
+        currentD = min(currentD, prevD);
+    }
+
+    return vec4(vec3(currentD), 1.0);
+}

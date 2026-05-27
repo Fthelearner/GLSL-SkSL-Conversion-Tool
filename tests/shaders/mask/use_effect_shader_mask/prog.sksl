@@ -1,0 +1,6 @@
+uniform shader image;
+
+vec4 main(float2 fragCoord)
+{
+    return image.eval(fragCoord);
+}

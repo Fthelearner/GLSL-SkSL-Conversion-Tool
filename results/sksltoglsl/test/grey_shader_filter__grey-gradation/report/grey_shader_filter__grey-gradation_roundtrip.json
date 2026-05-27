@@ -1,0 +1,12 @@
+{
+  "mse": 1987.5475,
+  "psnr": 15.15,
+  "max_pixel_diff": 66,
+  "pixel_diff_percent": 85.19,
+  "total_pixels": 921600,
+  "different_pixels": 785076,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test/grey_shader_filter__grey-gradation/report/grey_shader_filter__grey-gradation_roundtrip_diffmap.png"
+}

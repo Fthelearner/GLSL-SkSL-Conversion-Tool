@@ -1,0 +1,95 @@
+uniform half2 iResolution;
+uniform half randomNoise;
+const half2 rotationCenter = half2(0.5);
+const half DOWN_SAMPLE_SCALE = 4.0;
+
+half4 fragColor;
+// ****************************** Constants ******************************
+const half WIDTH = 0.055;
+const half PI = 3.14159;
+const half PI2 = 6.28318;
+
+const half2 RAND2_A = half2(127.1, 1.7);
+const half2 RAND2_B = half2(269.5, 183.3);
+const half RAND2_MUL = 2358.5453123;
+
+// ****************************** Sub-functions ******************************
+half2 Random2D(half2 st)
+{
+    st = half2(dot(st, RAND2_A), dot(st, RAND2_B));
+    return -1.0 + 2.0 * fract(sin(st) * RAND2_MUL);
+}
+
+half Noise2D(half2 st)
+{
+    half2 i = floor(st);
+    half2 f = fract(st);
+    half2 u = smoothstep(0.0, 1.0, f);
+    return mix(mix(dot(Random2D(i + half2(0.0, 0.0)), f - half2(0.0, 0.0)),
+                   dot(Random2D(i + half2(1.0, 0.0)), f - half2(1.0, 0.0)), u.x),
+               mix(dot(Random2D(i + half2(0.0, 1.0)), f - half2(0.0, 1.0)),
+                   dot(Random2D(i + half2(1.0, 1.0)), f - half2(1.0, 1.0)), u.x),
+               u.y);
+}
+
+half Random1D(half x)
+{
+    return fract(sin(x) * RAND2_MUL);
+}
+
+half Noise1D(half t)
+{
+    half f = fract(t);
+    half u = smoothstep(0.0, 1.0, f);
+    return mix(Random1D(floor(t)), Random1D(floor(t) + 1.0), u);
+}
+
+half2 ShapePerturbation(half2 uv, half noiseVariation, half noiseScale, half noiseStrength)
+{
+    half screenNoise = Noise2D(half2(uv.x - noiseVariation, uv.y + noiseVariation) * noiseScale);
+    return uv + screenNoise * noiseStrength;
+}
+
+half SimpleHaloRingShape(half2 uv,  half radius, half noiseVariation, half haloThickness)
+{
+    uv = ShapePerturbation(uv, noiseVariation, 1.0, radius * 0.6);
+    half2 polarCoords = half2((atan(uv.y, uv.x) + PI) / (2.0 * PI), length(uv));
+    polarCoords.y -= radius;
+    half angularRandomVal = Noise1D((polarCoords.x) * 10.0);
+    // ensure that the radial noise is seamless
+    angularRandomVal = mix(angularRandomVal, 0.5, smoothstep(0.9, 1.0, abs(polarCoords.x * 2.0 - 1.0)));
+    half thickness = mix(haloThickness, haloThickness * 4.0, angularRandomVal);
+    half circleBorder = smoothstep(thickness, thickness * 0.2, abs(polarCoords.y));
+    return clamp(circleBorder, 0.0, 1.0);
+}
+// ****************************** Main Functions ******************************
+half4 main(vec2 fragCoord)
+{
+  	half globalRadius = 0.5 / DOWN_SAMPLE_SCALE;
+    half radius = globalRadius * 2.;
+    half innerRadiusEdge = 0.5 * radius;
+    half outerRadiusEdge = 1.5 * radius;
+    half haloColor = 0.;
+    fragColor = half4(0.0);
+
+    half2 uv = fragCoord.xy / iResolution.xy;
+    half screenRatio = iResolution.x / iResolution.y;
+    uv -= rotationCenter;
+    half2 centeredUVs = uv * 2.0;
+    centeredUVs.x *= screenRatio;
+    half2 directionVector = centeredUVs;
+    half lenDir = length(directionVector);
+    if (lenDir > innerRadiusEdge && lenDir < outerRadiusEdge) {
+        half2 polarCoords =
+        half2((atan(directionVector.y, directionVector.x) + PI) / (2.0 * PI), lenDir);
+
+        if (lenDir >= innerRadiusEdge && lenDir <= outerRadiusEdge) {
+            half particleHaloColor = 0.;
+            half haloRing = SimpleHaloRingShape(directionVector, radius, randomNoise, WIDTH * radius);
+            particleHaloColor += haloRing;
+            haloColor = haloColor + particleHaloColor - haloColor * particleHaloColor;
+        }
+        fragColor = half4(haloColor);
+    }
+    return fragColor;
+}

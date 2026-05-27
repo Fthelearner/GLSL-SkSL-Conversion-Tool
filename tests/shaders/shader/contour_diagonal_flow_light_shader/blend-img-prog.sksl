@@ -1,0 +1,23 @@
+uniform vec2 factorlight;
+uniform vec2 factorhalo;
+uniform vec2 factorprecalc;
+uniform shader precalculationImage;
+uniform shader image1;
+uniform shader image2;
+uniform float lightWeight;
+uniform float haloWeight;
+uniform float blurRadius;
+uniform float headRoom;
+
+vec4 main(vec2 fragCoord)
+{
+    vec4 c1 = image1.eval(fragCoord * factorlight).rgba;
+    vec4 c2 = image2.eval(fragCoord * factorhalo).rgba;
+    float totalWeight = (lightWeight + haloWeight < 1e-5) ? 1.0 : lightWeight + haloWeight;
+    float contourWeight = precalculationImage.eval(fragCoord * factorprecalc).r;
+    contourWeight *= blurRadius / 50.0; // 50.0: default blur radius
+    vec4 blendColor = c1 + c2 * haloWeight * haloWeight / (totalWeight * lightWeight) * contourWeight;
+    vec4 lnValue = log(blendColor + vec4(1.0, 1.0, 1.0, 1.0));
+    vec4 c_out = max(2.0, headRoom) * 2.0 * lnValue / (lnValue + 1);
+    return vec4(c_out.rgb, clamp(c_out.a, 0.0, 1.0));
+}

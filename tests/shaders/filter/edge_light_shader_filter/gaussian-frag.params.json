@@ -1,0 +1,13 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/edge_detect.png"
+  },
+  "uniforms": {
+    "blurDirection": 3.0,
+    "sigma": 3.0
+  }
+}

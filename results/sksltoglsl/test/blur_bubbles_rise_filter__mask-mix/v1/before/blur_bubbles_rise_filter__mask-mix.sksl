@@ -1,0 +1,21 @@
+uniform shader blur_tex;
+uniform shader original_tex;
+uniform shader blur_mask;
+uniform half2 iResolution;
+uniform half mixStrength;
+uniform half progress;
+
+half4 main(float2 fragCoord)
+{
+    half2 uv = fragCoord.xy / iResolution;
+    half2 maskUV = uv - half2(0.0, progress * 0.07);
+
+    half4 maskColor = blur_mask.eval(maskUV * iResolution);
+    half maskValue = maskColor.r;
+
+    half blend = clamp(maskValue * mixStrength, 0.0, 1.0);
+    half4 originColor = original_tex.eval(fragCoord);
+    half4 blurredColor = blur_tex.eval(fragCoord);
+    half3 mixedRgb = mix(originColor.rgb, blurredColor.rgb, blend);
+    return half4(mixedRgb, originColor.a);
+}

@@ -1,0 +1,77 @@
+uniform vec2 centerPos;
+uniform vec2 halfSize;
+uniform vec2 cornerRadiusTL;
+uniform vec2 cornerRadiusTR;
+uniform vec2 cornerRadiusBR;
+uniform vec2 cornerRadiusBL;
+
+const float N_EPS = 1e-6;
+const float N_SCALE = 2048.0;
+
+vec2 safeNorm(vec2 v)
+{
+    return v / max(length(v), N_EPS);
+}
+
+vec2 selectCornerRadius(vec2 p, vec2 radiusTL, vec2 radiusTR, vec2 radiusBR, vec2 radiusBL)
+{
+    float isRight = step(0.0, p.x);
+    float isBottom = step(0.0, p.y);
+    vec2 topRadius = mix(radiusTL, radiusTR, isRight);
+    vec2 bottomRadius = mix(radiusBL, radiusBR, isRight);
+    return mix(topRadius, bottomRadius, isBottom);
+}
+
+float sdEllipse(vec2 p, vec2 r)
+{
+    vec2 safeR = max(r, vec2(N_EPS));
+    vec2 invR = p / safeR;
+    vec2 invR2 = p / max(safeR * safeR, vec2(N_EPS));
+    float k0 = length(invR);
+    float k1 = max(length(invR2), N_EPS);
+    return k0 * (k0 - 1.0) / k1;
+}
+
+vec2 ellipseGrad(vec2 p, vec2 r)
+{
+    vec2 safeR = max(r, vec2(N_EPS));
+    vec2 scaled = p / safeR;
+    float scaledLen = max(length(scaled), N_EPS);
+    return safeNorm(p / max(safeR * safeR * scaledLen, vec2(N_EPS)));
+}
+
+vec3 sdgRRect(vec2 p, vec2 b, vec2 radiusTL, vec2 radiusTR, vec2 radiusBR, vec2 radiusBL)
+{
+    vec2 r = selectCornerRadius(p, radiusTL, radiusTR, radiusBR, radiusBL);
+    vec2 s = sign(p);
+    vec2 local = abs(p);
+    vec2 cornerCenter = b - r;
+    vec2 cornerPos = local - cornerCenter;
+    float useCorner = step(0.0, min(cornerPos.x, cornerPos.y));
+
+    float edgeSd = max(local.x - b.x, local.y - b.y);
+    float cornerSd = sdEllipse(cornerPos, r);
+    float sd = mix(edgeSd, cornerSd, useCorner);
+
+    vec2 edgeDelta = local - b;
+    float pickX = step(edgeDelta.y, edgeDelta.x);
+    vec2 gradEdge = vec2(pickX, 1.0 - pickX);
+    vec2 gradCorner = ellipseGrad(cornerPos, r);
+    vec2 grad = s * mix(gradEdge, gradCorner, useCorner);
+    return vec3(sd, grad);
+}
+
+float EncodeDir(vec2 dir)
+{
+    float xPos = floor(dir.x + N_SCALE);
+    float yPos = floor(dir.y + N_SCALE);
+    return xPos + (yPos / N_SCALE) / 2.0;
+}
+
+vec4 main(float2 fragCoord)
+{
+    vec2 posFromCenter = fragCoord - centerPos;
+    vec3 sdg = sdgRRect(posFromCenter, halfSize, cornerRadiusTL, cornerRadiusTR, cornerRadiusBR, cornerRadiusBL);
+    float packedDir = EncodeDir(posFromCenter);
+    return vec4(sdg.yz, packedDir, sdg.x);
+}

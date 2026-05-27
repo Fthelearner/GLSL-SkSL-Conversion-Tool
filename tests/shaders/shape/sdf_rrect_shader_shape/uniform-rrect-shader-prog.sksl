@@ -1,0 +1,15 @@
+uniform vec2 centerPos;
+uniform vec2 halfSize;
+uniform float radius;
+
+float sdfRRect(in vec2 coord, in vec2 p, in vec2 b, in float r)
+{
+    vec2 d = abs(coord - p) - (b - r);
+    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - r;
+}
+
+half4 main(vec2 fragCoord)
+{
+    float sdf = sdfRRect(fragCoord, centerPos, halfSize, radius);
+    return half4(0, 0, 0, sdf);
+}

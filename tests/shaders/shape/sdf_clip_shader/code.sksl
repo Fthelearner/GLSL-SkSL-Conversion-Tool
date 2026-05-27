@@ -1,0 +1,9 @@
+uniform shader sdfShape;
+
+half4 main(float2 fragCoord)
+{
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    float d = sdfShape.eval(fragCoord).a;
+    color.a = 1.0 - smoothstep(-1.0, 0.0, d);
+    return half4(color);
+}

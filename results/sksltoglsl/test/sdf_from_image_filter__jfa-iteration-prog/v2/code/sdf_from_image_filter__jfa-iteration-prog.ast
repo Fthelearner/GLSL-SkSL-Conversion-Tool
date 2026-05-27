@@ -1,0 +1,451 @@
+results/sksltoglsl/test/sdf_from_image_filter__jfa-iteration-prog/v1/code/sdf_from_image_filter__jfa-iteration-prog.glsl
+Shader version: 450
+0:? Sequence
+0:7  Function Definition: SafeFetch_f4f2(vf2; ( global 4-component vector of float)
+0:7    Function Parameters: 
+0:7      'fragCoord' ( in 2-component vector of float)
+0:8    Sequence
+0:8      Test condition and select ( temp void)
+0:8        Condition
+0:8        logical-or ( temp bool)
+0:8          logical-or ( temp bool)
+0:8            logical-or ( temp bool)
+0:8              Compare Less Than ( temp bool)
+0:8                direct index ( temp float)
+0:8                  'fragCoord' ( in 2-component vector of float)
+0:8                  Constant:
+0:8                    0 (const int)
+0:8                Constant:
+0:8                  0.000000
+0:8              Compare Greater Than ( temp bool)
+0:8                direct index ( temp float)
+0:8                  'fragCoord' ( in 2-component vector of float)
+0:8                  Constant:
+0:8                    0 (const int)
+0:8                direct index ( temp float)
+0:8                  'iResolution' ( uniform 2-component vector of float)
+0:8                  Constant:
+0:8                    0 (const int)
+0:8            Compare Less Than ( temp bool)
+0:8              direct index ( temp float)
+0:8                'fragCoord' ( in 2-component vector of float)
+0:8                Constant:
+0:8                  1 (const int)
+0:8              Constant:
+0:8                0.000000
+0:8          Compare Greater Than ( temp bool)
+0:8            direct index ( temp float)
+0:8              'fragCoord' ( in 2-component vector of float)
+0:8              Constant:
+0:8                1 (const int)
+0:8            direct index ( temp float)
+0:8              'iResolution' ( uniform 2-component vector of float)
+0:8              Constant:
+0:8                1 (const int)
+0:8        true case
+0:9        Sequence
+0:9          Branch: Return with expression
+0:9            Constant:
+0:9              1000000.000000
+0:9              1000000.000000
+0:9              1000000.000000
+0:9              1000000.000000
+0:11      Branch: Return with expression
+0:11        texture ( global 4-component vector of float)
+0:11          'imageInput' ( uniform sampler2D)
+0:11          divide ( temp 2-component vector of float)
+0:11            'fragCoord' ( in 2-component vector of float)
+0:11            'iResolution' ( uniform 2-component vector of float)
+0:13  Function Definition: SearchNeighbors_vf4f2f2(vf4;vf2;vf2; ( global void)
+0:13    Function Parameters: 
+0:13      'O' ( inout 4-component vector of float)
+0:13      'fragCoord' ( in 2-component vector of float)
+0:13      'sampleCoord' ( in 2-component vector of float)
+0:14    Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp 4-component vector of float)
+0:14          'imgSample' ( temp 4-component vector of float)
+0:14          Function Call: SafeFetch_f4f2(vf2; ( global 4-component vector of float)
+0:14            'sampleCoord' ( in 2-component vector of float)
+0:15      Sequence
+0:15        move second child to first child ( temp 4-component vector of float)
+0:15          'a' ( temp 4-component vector of float)
+0:15          Construct vec4 ( temp 4-component vector of float)
+0:15            add ( temp 2-component vector of float)
+0:15              vector-scale ( temp 2-component vector of float)
+0:15                subtract ( temp 2-component vector of float)
+0:15                  vector-scale ( temp 2-component vector of float)
+0:15                    vector swizzle ( temp 2-component vector of float)
+0:15                      'imgSample' ( temp 4-component vector of float)
+0:15                      Sequence
+0:15                        Constant:
+0:15                          0 (const int)
+0:15                        Constant:
+0:15                          1 (const int)
+0:15                    Constant:
+0:15                      2.000000
+0:15                  Constant:
+0:15                    1.000000
+0:15                'spreadFactor' ( uniform float)
+0:15              'sampleCoord' ( in 2-component vector of float)
+0:15            add ( temp 2-component vector of float)
+0:15              vector-scale ( temp 2-component vector of float)
+0:15                subtract ( temp 2-component vector of float)
+0:15                  vector-scale ( temp 2-component vector of float)
+0:15                    vector swizzle ( temp 2-component vector of float)
+0:15                      'imgSample' ( temp 4-component vector of float)
+0:15                      Sequence
+0:15                        Constant:
+0:15                          2 (const int)
+0:15                        Constant:
+0:15                          3 (const int)
+0:15                    Constant:
+0:15                      2.000000
+0:15                  Constant:
+0:15                    1.000000
+0:15                'spreadFactor' ( uniform float)
+0:15              'sampleCoord' ( in 2-component vector of float)
+0:16      Test condition and select ( temp void)
+0:16        Condition
+0:16        logical-and ( temp bool)
+0:16          logical-and ( temp bool)
+0:16            logical-and ( temp bool)
+0:16              Compare Less Than ( temp bool)
+0:16                direct index ( temp float)
+0:16                  'imgSample' ( temp 4-component vector of float)
+0:16                  Constant:
+0:16                    0 (const int)
+0:16                Constant:
+0:16                  1.000000
+0:16              Compare Less Than ( temp bool)
+0:16                direct index ( temp float)
+0:16                  'imgSample' ( temp 4-component vector of float)
+0:16                  Constant:
+0:16                    1 (const int)
+0:16                Constant:
+0:16                  1.000000
+0:16            Compare Greater Than ( temp bool)
+0:16              direct index ( temp float)
+0:16                'imgSample' ( temp 4-component vector of float)
+0:16                Constant:
+0:16                  0 (const int)
+0:16              Constant:
+0:16                0.000000
+0:16          Compare Greater Than ( temp bool)
+0:16            direct index ( temp float)
+0:16              'imgSample' ( temp 4-component vector of float)
+0:16              Constant:
+0:16                1 (const int)
+0:16            Constant:
+0:16              0.000000
+0:16        true case
+0:17        Sequence
+0:17          Sequence
+0:17            move second child to first child ( temp 2-component vector of float)
+0:17              'diffA' ( temp 2-component vector of float)
+0:17              subtract ( temp 2-component vector of float)
+0:17                'fragCoord' ( in 2-component vector of float)
+0:17                vector swizzle ( temp 2-component vector of float)
+0:17                  'a' ( temp 4-component vector of float)
+0:17                  Sequence
+0:17                    Constant:
+0:17                      0 (const int)
+0:17                    Constant:
+0:17                      1 (const int)
+0:18          Sequence
+0:18            move second child to first child ( temp 2-component vector of float)
+0:18              'diffO' ( temp 2-component vector of float)
+0:18              subtract ( temp 2-component vector of float)
+0:18                vector swizzle ( temp 2-component vector of float)
+0:18                  'O' ( inout 4-component vector of float)
+0:18                  Sequence
+0:18                    Constant:
+0:18                      0 (const int)
+0:18                    Constant:
+0:18                      1 (const int)
+0:18                'fragCoord' ( in 2-component vector of float)
+0:19          move second child to first child ( temp 2-component vector of float)
+0:19            vector swizzle ( temp 2-component vector of float)
+0:19              'O' ( inout 4-component vector of float)
+0:19              Sequence
+0:19                Constant:
+0:19                  0 (const int)
+0:19                Constant:
+0:19                  1 (const int)
+0:19            Test condition and select ( temp 2-component vector of float)
+0:19              Condition
+0:19              Compare Less Than ( temp bool)
+0:19                dot-product ( global float)
+0:19                  'diffA' ( temp 2-component vector of float)
+0:19                  'diffA' ( temp 2-component vector of float)
+0:19                dot-product ( global float)
+0:19                  'diffO' ( temp 2-component vector of float)
+0:19                  'diffO' ( temp 2-component vector of float)
+0:19              true case
+0:19              vector swizzle ( temp 2-component vector of float)
+0:19                'a' ( temp 4-component vector of float)
+0:19                Sequence
+0:19                  Constant:
+0:19                    0 (const int)
+0:19                  Constant:
+0:19                    1 (const int)
+0:19              false case
+0:19              vector swizzle ( temp 2-component vector of float)
+0:19                'O' ( inout 4-component vector of float)
+0:19                Sequence
+0:19                  Constant:
+0:19                    0 (const int)
+0:19                  Constant:
+0:19                    1 (const int)
+0:21      Test condition and select ( temp void)
+0:21        Condition
+0:21        logical-and ( temp bool)
+0:21          logical-and ( temp bool)
+0:21            logical-and ( temp bool)
+0:21              Compare Less Than ( temp bool)
+0:21                direct index ( temp float)
+0:21                  'imgSample' ( temp 4-component vector of float)
+0:21                  Constant:
+0:21                    2 (const int)
+0:21                Constant:
+0:21                  1.000000
+0:21              Compare Less Than ( temp bool)
+0:21                direct index ( temp float)
+0:21                  'imgSample' ( temp 4-component vector of float)
+0:21                  Constant:
+0:21                    3 (const int)
+0:21                Constant:
+0:21                  1.000000
+0:21            Compare Greater Than ( temp bool)
+0:21              direct index ( temp float)
+0:21                'imgSample' ( temp 4-component vector of float)
+0:21                Constant:
+0:21                  2 (const int)
+0:21              Constant:
+0:21                0.000000
+0:21          Compare Greater Than ( temp bool)
+0:21            direct index ( temp float)
+0:21              'imgSample' ( temp 4-component vector of float)
+0:21              Constant:
+0:21                3 (const int)
+0:21            Constant:
+0:21              0.000000
+0:21        true case
+0:22        Sequence
+0:22          Sequence
+0:22            move second child to first child ( temp 2-component vector of float)
+0:22              'diffA' ( temp 2-component vector of float)
+0:22              subtract ( temp 2-component vector of float)
+0:22                'fragCoord' ( in 2-component vector of float)
+0:22                vector swizzle ( temp 2-component vector of float)
+0:22                  'a' ( temp 4-component vector of float)
+0:22                  Sequence
+0:22                    Constant:
+0:22                      2 (const int)
+0:22                    Constant:
+0:22                      3 (const int)
+0:23          Sequence
+0:23            move second child to first child ( temp 2-component vector of float)
+0:23              'diffO' ( temp 2-component vector of float)
+0:23              subtract ( temp 2-component vector of float)
+0:23                vector swizzle ( temp 2-component vector of float)
+0:23                  'O' ( inout 4-component vector of float)
+0:23                  Sequence
+0:23                    Constant:
+0:23                      2 (const int)
+0:23                    Constant:
+0:23                      3 (const int)
+0:23                'fragCoord' ( in 2-component vector of float)
+0:24          move second child to first child ( temp 2-component vector of float)
+0:24            vector swizzle ( temp 2-component vector of float)
+0:24              'O' ( inout 4-component vector of float)
+0:24              Sequence
+0:24                Constant:
+0:24                  2 (const int)
+0:24                Constant:
+0:24                  3 (const int)
+0:24            Test condition and select ( temp 2-component vector of float)
+0:24              Condition
+0:24              Compare Less Than ( temp bool)
+0:24                dot-product ( global float)
+0:24                  'diffA' ( temp 2-component vector of float)
+0:24                  'diffA' ( temp 2-component vector of float)
+0:24                dot-product ( global float)
+0:24                  'diffO' ( temp 2-component vector of float)
+0:24                  'diffO' ( temp 2-component vector of float)
+0:24              true case
+0:24              vector swizzle ( temp 2-component vector of float)
+0:24                'a' ( temp 4-component vector of float)
+0:24                Sequence
+0:24                  Constant:
+0:24                    2 (const int)
+0:24                  Constant:
+0:24                    3 (const int)
+0:24              false case
+0:24              vector swizzle ( temp 2-component vector of float)
+0:24                'O' ( inout 4-component vector of float)
+0:24                Sequence
+0:24                  Constant:
+0:24                    2 (const int)
+0:24                  Constant:
+0:24                    3 (const int)
+0:27  Function Definition: main( ( global void)
+0:27    Function Parameters: 
+0:28    Sequence
+0:28      Sequence
+0:28        move second child to first child ( temp 2-component vector of float)
+0:28          'fragCoord' ( temp 2-component vector of float)
+0:28          vector swizzle ( temp 2-component vector of float)
+0:28            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:28            Sequence
+0:28              Constant:
+0:28                0 (const int)
+0:28              Constant:
+0:28                1 (const int)
+0:29      Sequence
+0:29        move second child to first child ( temp 4-component vector of float)
+0:29          'O' ( temp 4-component vector of float)
+0:29          texture ( global 4-component vector of float)
+0:29            'imageInput' ( uniform sampler2D)
+0:29            divide ( temp 2-component vector of float)
+0:29              'fragCoord' ( temp 2-component vector of float)
+0:29              'iResolution' ( uniform 2-component vector of float)
+0:30      move second child to first child ( temp 4-component vector of float)
+0:30        'O' ( temp 4-component vector of float)
+0:30        Construct vec4 ( temp 4-component vector of float)
+0:30          add ( temp 2-component vector of float)
+0:30            vector-scale ( temp 2-component vector of float)
+0:30              subtract ( temp 2-component vector of float)
+0:30                vector-scale ( temp 2-component vector of float)
+0:30                  vector swizzle ( temp 2-component vector of float)
+0:30                    'O' ( temp 4-component vector of float)
+0:30                    Sequence
+0:30                      Constant:
+0:30                        0 (const int)
+0:30                      Constant:
+0:30                        1 (const int)
+0:30                  Constant:
+0:30                    2.000000
+0:30                Constant:
+0:30                  1.000000
+0:30              'spreadFactor' ( uniform float)
+0:30            'fragCoord' ( temp 2-component vector of float)
+0:30          add ( temp 2-component vector of float)
+0:30            vector-scale ( temp 2-component vector of float)
+0:30              subtract ( temp 2-component vector of float)
+0:30                vector-scale ( temp 2-component vector of float)
+0:30                  vector swizzle ( temp 2-component vector of float)
+0:30                    'O' ( temp 4-component vector of float)
+0:30                    Sequence
+0:30                      Constant:
+0:30                        2 (const int)
+0:30                      Constant:
+0:30                        3 (const int)
+0:30                  Constant:
+0:30                    2.000000
+0:30                Constant:
+0:30                  1.000000
+0:30              'spreadFactor' ( uniform float)
+0:30            'fragCoord' ( temp 2-component vector of float)
+0:31      Function Call: SearchNeighbors_vf4f2f2(vf4;vf2;vf2; ( global void)
+0:31        'O' ( temp 4-component vector of float)
+0:31        'fragCoord' ( temp 2-component vector of float)
+0:31        add ( temp 2-component vector of float)
+0:31          'fragCoord' ( temp 2-component vector of float)
+0:31          vector-scale ( temp 2-component vector of float)
+0:31            'jfaRadius' ( uniform float)
+0:31            Constant:
+0:31              0.000000
+0:31              -1.000000
+0:32      Function Call: SearchNeighbors_vf4f2f2(vf4;vf2;vf2; ( global void)
+0:32        'O' ( temp 4-component vector of float)
+0:32        'fragCoord' ( temp 2-component vector of float)
+0:32        add ( temp 2-component vector of float)
+0:32          'fragCoord' ( temp 2-component vector of float)
+0:32          vector-scale ( temp 2-component vector of float)
+0:32            'jfaRadius' ( uniform float)
+0:32            Constant:
+0:32              0.000000
+0:32              1.000000
+0:33      Function Call: SearchNeighbors_vf4f2f2(vf4;vf2;vf2; ( global void)
+0:33        'O' ( temp 4-component vector of float)
+0:33        'fragCoord' ( temp 2-component vector of float)
+0:33        add ( temp 2-component vector of float)
+0:33          'fragCoord' ( temp 2-component vector of float)
+0:33          vector-scale ( temp 2-component vector of float)
+0:33            'jfaRadius' ( uniform float)
+0:33            Constant:
+0:33              -1.000000
+0:33              0.000000
+0:34      Function Call: SearchNeighbors_vf4f2f2(vf4;vf2;vf2; ( global void)
+0:34        'O' ( temp 4-component vector of float)
+0:34        'fragCoord' ( temp 2-component vector of float)
+0:34        add ( temp 2-component vector of float)
+0:34          'fragCoord' ( temp 2-component vector of float)
+0:34          vector-scale ( temp 2-component vector of float)
+0:34            'jfaRadius' ( uniform float)
+0:34            Constant:
+0:34              1.000000
+0:34              0.000000
+0:35      move second child to first child ( temp 4-component vector of float)
+0:35        'O' ( temp 4-component vector of float)
+0:35        Construct vec4 ( temp 4-component vector of float)
+0:35          clamp ( global 2-component vector of float)
+0:35            vector-scale ( temp 2-component vector of float)
+0:35              add ( temp 2-component vector of float)
+0:35                divide ( temp 2-component vector of float)
+0:35                  subtract ( temp 2-component vector of float)
+0:35                    vector swizzle ( temp 2-component vector of float)
+0:35                      'O' ( temp 4-component vector of float)
+0:35                      Sequence
+0:35                        Constant:
+0:35                          0 (const int)
+0:35                        Constant:
+0:35                          1 (const int)
+0:35                    'fragCoord' ( temp 2-component vector of float)
+0:35                  'spreadFactor' ( uniform float)
+0:35                Constant:
+0:35                  1.000000
+0:35              Constant:
+0:35                0.500000
+0:35            Constant:
+0:35              0.000000
+0:35              0.000000
+0:35            Constant:
+0:35              1.000000
+0:35              1.000000
+0:35          clamp ( global 2-component vector of float)
+0:35            vector-scale ( temp 2-component vector of float)
+0:35              add ( temp 2-component vector of float)
+0:35                divide ( temp 2-component vector of float)
+0:35                  subtract ( temp 2-component vector of float)
+0:35                    vector swizzle ( temp 2-component vector of float)
+0:35                      'O' ( temp 4-component vector of float)
+0:35                      Sequence
+0:35                        Constant:
+0:35                          2 (const int)
+0:35                        Constant:
+0:35                          3 (const int)
+0:35                    'fragCoord' ( temp 2-component vector of float)
+0:35                  'spreadFactor' ( uniform float)
+0:35                Constant:
+0:35                  1.000000
+0:35              Constant:
+0:35                0.500000
+0:35            Constant:
+0:35              0.000000
+0:35              0.000000
+0:35            Constant:
+0:35              1.000000
+0:35              1.000000
+0:36      move second child to first child ( temp 4-component vector of float)
+0:36        'FragColor' ( out 4-component vector of float)
+0:36        'O' ( temp 4-component vector of float)
+0:37      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'jfaRadius' ( uniform float)
+0:?     'spreadFactor' ( uniform float)
+0:?     'imageInput' ( uniform sampler2D)
+

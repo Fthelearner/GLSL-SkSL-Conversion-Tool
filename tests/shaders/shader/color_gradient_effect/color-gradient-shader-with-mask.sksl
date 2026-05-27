@@ -1,0 +1,83 @@
+// Complete combined shader: COLOR_GRADIENT_SHADER_WITH_MASK_HEAD + COMMN + WITH_MASK_END
+// Array uniforms replaced with individual uniforms for render compatibility
+uniform half2 iResolution;
+uniform half4 blend_c0; uniform half4 blend_c1; uniform half4 blend_c2; uniform half4 blend_c3;
+uniform half4 blend_c4; uniform half4 blend_c5; uniform half4 blend_c6; uniform half4 blend_c7;
+uniform half4 blend_c8; uniform half4 blend_c9; uniform half4 blend_c10; uniform half4 blend_c11;
+uniform half2 gradient_p0; uniform half2 gradient_p1; uniform half2 gradient_p2; uniform half2 gradient_p3;
+uniform half2 gradient_p4; uniform half2 gradient_p5; uniform half2 gradient_p6; uniform half2 gradient_p7;
+uniform half2 gradient_p8; uniform half2 gradient_p9; uniform half2 gradient_p10; uniform half2 gradient_p11;
+uniform half gradient_s0; uniform half gradient_s1; uniform half gradient_s2; uniform half gradient_s3;
+uniform half gradient_s4; uniform half gradient_s5; uniform half gradient_s6; uniform half gradient_s7;
+uniform half gradient_s8; uniform half gradient_s9; uniform half gradient_s10; uniform half gradient_s11;
+uniform half factor0; uniform half factor1; uniform half factor2; uniform half factor3;
+uniform half factor4; uniform half factor5; uniform half factor6; uniform half factor7;
+uniform half factor8; uniform half factor9; uniform half factor10; uniform half factor11;
+uniform shader maskImageShader;
+
+float calWeight(in half2 uv, in half2 pos, in half strength, in half f)
+{
+    float a = 15.5;
+    float d = a / (distance(uv, pos) * strength + a);
+    d *= d;
+    d *= d;
+    d *= d;
+    d *= d;
+    return f * d;
+}
+
+half4 interpolate(in half2 uv)
+{
+    float weightSum = 0.0;
+
+    float w0 = calWeight(uv, gradient_p0, gradient_s0, factor0);
+    weightSum += w0;
+    float w1 = calWeight(uv, gradient_p1, gradient_s1, factor1);
+    weightSum += w1;
+    float w2 = calWeight(uv, gradient_p2, gradient_s2, factor2);
+    weightSum += w2;
+    float w3 = calWeight(uv, gradient_p3, gradient_s3, factor3);
+    weightSum += w3;
+    float w4 = calWeight(uv, gradient_p4, gradient_s4, factor4);
+    weightSum += w4;
+    float w5 = calWeight(uv, gradient_p5, gradient_s5, factor5);
+    weightSum += w5;
+    float w6 = calWeight(uv, gradient_p6, gradient_s6, factor6);
+    weightSum += w6;
+    float w7 = calWeight(uv, gradient_p7, gradient_s7, factor7);
+    weightSum += w7;
+    float w8 = calWeight(uv, gradient_p8, gradient_s8, factor8);
+    weightSum += w8;
+    float w9 = calWeight(uv, gradient_p9, gradient_s9, factor9);
+    weightSum += w9;
+    float w10 = calWeight(uv, gradient_p10, gradient_s10, factor10);
+    weightSum += w10;
+    float w11 = calWeight(uv, gradient_p11, gradient_s11, factor11);
+    weightSum += w11;
+
+    half4 result = half4(0.0);
+    result += blend_c0 * w0 + blend_c1 * w1 + blend_c2 * w2 + blend_c3 * w3 +
+        blend_c4 * w4 + blend_c5 * w5 + blend_c6 * w6 + blend_c7 * w7 +
+        blend_c8 * w8 + blend_c9 * w9 + blend_c10 * w10 + blend_c11 * w11;
+    result /= weightSum;
+    return result;
+}
+
+half3 screenSpaceDither(half2 vScreenPos, float colorDepth)
+{
+    vec3 dither = vec3(dot(vec2(171.0, 231.0), vScreenPos.xy));
+    dither.rgb = fract(dither.rgb / vec3(103.0, 71.0, 97.0));
+    return half3(dither.rgb / colorDepth);
+}
+
+half4 main(vec2 fragCoord)
+{
+    half maskValue = maskImageShader.eval(fragCoord).a;
+    if (maskValue < 0.0) {
+        return half4(0.0);
+    }
+    half2 uv = fragCoord / iResolution.xy;
+    half4 sum = interpolate(uv);
+    sum.rgb += screenSpaceDither(fragCoord, 50.0).rgb;
+    return half4(sum.rgb, 1.0) * sum.a * maskValue;
+}

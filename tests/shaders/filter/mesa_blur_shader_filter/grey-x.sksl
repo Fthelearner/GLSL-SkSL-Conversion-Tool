@@ -1,0 +1,26 @@
+uniform shader imageShader;
+uniform float coefficient1;
+uniform float coefficient2;
+
+float calculateT_y(float rgb) {
+    if (rgb > 127.5) { rgb = 255 - rgb; }
+    float A = 106.5;    // 3 * b - 3 * c + d;
+    float B = -93;      // 3 * (c - 2 * b);
+    float p = 0.816240163988;                   // (3 * A * C - pow(B, 2)) / (3 * pow(A, 2));
+    float s1 = rgb / 213.0 - 0.5 * 0.262253485943;    // -rgb/A - B*C/(3*pow(A,2)) + 2*pow(B,3)/(27*pow(A,3))
+    float s2 = sqrt(s1 * s1 + pow(p / 3, 3));
+    float res = pow((s1 + s2), 1.0 / 3) - pow((s2 - s1), 1.0 / 3) - (B / (3 * A));
+    return min(res, 1.0);
+}
+
+float calculateGreyAdjustY(float rgb) {
+    float t_r = calculateT_y(rgb);
+    return (rgb < 127.5) ? (coefficient1 * pow((1 - t_r), 3)) : (-coefficient2 * pow((1 - t_r), 3));
+}
+
+vec4 main(vec2 drawing_coord) {
+    vec3 color = imageShader.eval(drawing_coord).rgb;
+    float Y = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) * 255;
+    float dY = calculateGreyAdjustY(Y) / 255.0;
+    return vec4(color+dY, 1.0);
+}

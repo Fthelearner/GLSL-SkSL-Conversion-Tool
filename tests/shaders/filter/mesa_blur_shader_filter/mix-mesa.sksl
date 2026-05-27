@@ -1,0 +1,15 @@
+uniform shader blurredInput;
+uniform float inColorFactor;
+
+highp float random(float2 xy) {
+    float t = dot(xy, float2(78.233, 12.9898));
+    return fract(sin(t) * 43758.5453);
+}
+
+half4 main(float2 xy) {
+    highp float noiseGranularity = inColorFactor / 255.0;
+    half4 finalColor = blurredInput.eval(xy);
+    float noise  = mix(-noiseGranularity, noiseGranularity, random(xy));
+    finalColor.rgb += noise;
+    return finalColor;
+}

@@ -1,0 +1,4 @@
+uniform shader imageInput;
+half4 main(float2 xy) {
+    return imageInput.eval(xy);
+}

@@ -1,0 +1,4 @@
+const float INF_1E4 = 1e4;
+    vec4 main(vec2 fragCoord) {
+        return vec4(vec3(INF_1E4), 1.0);
+}

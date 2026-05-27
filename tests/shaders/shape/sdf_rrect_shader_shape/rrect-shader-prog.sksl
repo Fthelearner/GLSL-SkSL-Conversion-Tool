@@ -1,0 +1,45 @@
+uniform vec2 centerPos;
+uniform vec2 halfSize;
+uniform vec2 cornerRadiusTL;
+uniform vec2 cornerRadiusTR;
+uniform vec2 cornerRadiusBR;
+uniform vec2 cornerRadiusBL;
+
+vec2 selectCornerRadius(vec2 p, vec2 radiusTL, vec2 radiusTR, vec2 radiusBR, vec2 radiusBL)
+{
+    float isRight = step(0.0, p.x);
+    float isBottom = step(0.0, p.y);
+    vec2 topRadius = mix(radiusTL, radiusTR, isRight);
+    vec2 bottomRadius = mix(radiusBL, radiusBR, isRight);
+    return mix(topRadius, bottomRadius, isBottom);
+}
+
+float sdEllipse(vec2 p, vec2 r)
+{
+    const float EPS = 1e-6;
+    vec2 safeR = max(r, vec2(EPS));
+    vec2 invR = p / safeR;
+    vec2 invR2 = p / max(safeR * safeR, vec2(EPS));
+    float k0 = length(invR);
+    float k1 = max(length(invR2), EPS);
+    return k0 * (k0 - 1.0) / k1;
+}
+
+float sdfRRect(in vec2 coord, in vec2 p, in vec2 b, in vec2 radiusTL, in vec2 radiusTR,
+    in vec2 radiusBR, in vec2 radiusBL)
+{
+    vec2 local = abs(coord - p);
+    vec2 radius = selectCornerRadius(coord - p, radiusTL, radiusTR, radiusBR, radiusBL);
+    vec2 cornerPos = local - (b - radius);
+    if (cornerPos.x >= 0.0 && cornerPos.y >= 0.0) {
+        return sdEllipse(cornerPos, radius);
+    }
+    return max(local.x - b.x, local.y - b.y);
+}
+
+half4 main(vec2 fragCoord)
+{
+    float sdf = sdfRRect(fragCoord, centerPos, halfSize, cornerRadiusTL, cornerRadiusTR, cornerRadiusBR,
+        cornerRadiusBL);
+    return half4(0, 0, 0, sdf);
+}

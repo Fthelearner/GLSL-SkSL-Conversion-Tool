@@ -1,0 +1,54 @@
+// ----- wave parameters -----
+uniform vec2 clickPos;
+uniform float processTime;
+uniform float waveLength;
+uniform float reflectRatio;
+uniform float waveWidth;
+uniform float waveHeight;
+uniform float waveDown;
+
+const float PI = 3.14159265358979;
+float FastSin(float x)
+{
+    x = x < PI / 2. ? x : PI - x;
+    return x * (1. - (1. / 6.) * x * x); // Taylor for sin(x)
+}
+
+float FastCos(float x)
+{
+    if (x < PI / 2.) {
+        float x2 = x * x;
+        return 1. - 0.5 * x2 + (1. / 24.) * x2 * x2;
+    }
+    else {
+        x = PI - x;
+        float x2 = x * x;
+        return - (1. - 0.5 * x2 + (1. / 24.) * x2 * x2);
+    }
+}
+
+// distortion for wave
+vec4 main(vec2 fragCoord)
+{
+    float radius = processTime * waveLength;
+    vec2 centerVec = fragCoord.xy - clickPos;
+    float d = length(centerVec);
+    float rl = d - radius; // ring length
+    if (clickPos.x >= 0 && abs(rl) < 2.0 * waveWidth - 1e-5) {
+        float rate = processTime > waveDown ? (1.0 - processTime) / (1.0 - waveDown + 1e-5) : 1.;
+        float height = waveHeight * rate;
+        float uniformRl = abs(rl) * PI / 2.0 / waveWidth;
+        float tantheta1 = height * FastSin(uniformRl) * PI / waveWidth + 1e-6;
+        float tantheta0 = 1.0 / tantheta1;
+        float sintheta2 = tantheta1 / sqrt(tantheta1 * tantheta1 + 1.0) / reflectRatio;
+        float tantheta2 = sintheta2 / sqrt(1. - sintheta2 * sintheta2);
+        float slop = (tantheta0 + tantheta2) / (1. - tantheta0 * tantheta2);
+        float relativeHeight = (FastCos(uniformRl) + 1.0);
+        float detx = (-height * relativeHeight) / slop;
+        detx = rl > 0. ? detx : -detx;
+        // move pixel
+        vec2 normal = d > 1e-4 ? normalize(centerVec) : vec2(0., 1.);
+        return vec4(normal * detx, relativeHeight / 2. * rate, 1.);
+    }
+    return vec4(0., 0., 0., 1.);
+}

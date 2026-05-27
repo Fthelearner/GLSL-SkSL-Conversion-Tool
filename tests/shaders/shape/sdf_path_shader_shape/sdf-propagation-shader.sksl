@@ -1,0 +1,40 @@
+uniform vec2 iResolution;
+uniform float u_step;
+uniform shader u_sdfTex;
+uniform shader u_maskTex;
+
+const float INF_1E4 = 1e4;
+const float EPSILON_1E_MINUS_3 = 0.001;
+
+float sampleSdf(vec2 baseUv, vec2 offset) {
+    vec2 sampleUv = baseUv + offset / iResolution.xy;
+    float sdf = u_sdfTex.eval(sampleUv * iResolution).r;
+    if (sdf < INF_1E4 - EPSILON_1E_MINUS_3) {
+        float ndcOffset = length(offset) * (2.0 / iResolution.y);
+        return sdf + ndcOffset;
+    }
+    return INF_1E4;
+}
+
+vec4 main(vec2 fragCoord) {
+    vec2 uv = fragCoord / iResolution.xy;
+
+    float mask = u_maskTex.eval(fragCoord).r;
+    float currentSdf = u_sdfTex.eval(fragCoord).r;
+    if (mask < 1.0 || currentSdf < INF_1E4 - EPSILON_1E_MINUS_3) {
+        return vec4(vec3(currentSdf), 1.0);
+    }
+
+    float step = u_step;
+    float minSdf = currentSdf;
+    minSdf = min(minSdf, sampleSdf(uv, vec2(-step, -step)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(0.0, -step)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(step, -step)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(-step, 0.0)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(step, 0.0)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(-step, step)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(0.0, step)));
+    minSdf = min(minSdf, sampleSdf(uv, vec2(step, step)));
+
+    return vec4(minSdf);
+}

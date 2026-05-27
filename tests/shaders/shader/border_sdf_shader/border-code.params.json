@@ -1,0 +1,21 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "sdfShape": "assets/input.png"
+  },
+  "uniforms": {
+    "u_color": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "u_width": 4.0,
+    "u_isOutline": 0.0,
+    "u_dashWidth": 10.0,
+    "u_dashGap": 5.0
+  }
+}

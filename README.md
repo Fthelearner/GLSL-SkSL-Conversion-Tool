@@ -121,8 +121,8 @@ bash tests/runner.sh fulltest tests/frag/curve.frag --output results/glsltosksl/
 # 只跑闭环对比（v1/before vs v2/after）
 bash tests/runner.sh fulltest tests/frag/curve.frag --output results/glsltosksl/test2 --stage report
 
-# GPU 模式：SkSL 跳过 CPU，直接走 GPU 渲染（消除 CPU/GPU 后端差异）
-bash tests/runner.sh fulltest tests/frag/purple_cloud.frag --output results/glsltosksl/test2 --gpu
+# CPU 模式：强制 SkSL 走 CPU RuntimeEffect 渲染（默认已走 GPU）
+bash tests/runner.sh fulltest tests/frag/purple_cloud.frag --output results/glsltosksl/test2 --cpu
 ```
 
 **输出目录结构**（`<output>/<shader_name>/`）：
@@ -276,8 +276,8 @@ python3 tools/shader_preview.py --sksl tests/shaders/water_ripple.sksl | ffplay 
 | linear_gradient_blend | 3.33% | 3.33% | 精度容差 |
 | variable_radius_blur_approx | 6.54% | 6.54% | 精度容差 |
 | picture_blur | — | 14.0% (maxΔ=9) | 精度容差 |
-| purple_cloud | — | 0% (`--gpu`) | GPU 模式下消除 |
+| purple_cloud | — | 0% | GPU 默认模式 |
 | curve | — | 0% | 自动 GPU fallback |
 | spread | — | 9.52% | 程序化噪声 |
 
-> 所有跨语言差异均源于 CPU RuntimeEffect 与 GPU OpenGL 的浮点精度 / 数学库实现差异，转换链路本身语义正确（闭环为证）。对数值敏感着色器可使用 `--gpu` 标志消除差异。
+> 所有跨语言差异均源于 CPU RuntimeEffect 与 GPU OpenGL 的浮点精度 / 数学库实现差异，转换链路本身语义正确（闭环为证）。SkSL 渲染默认使用 GPU 路径消除后端差异，如需 CPU 渲染可使用 `--cpu` 标志。

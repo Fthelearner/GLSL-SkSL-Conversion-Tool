@@ -1,0 +1,157 @@
+results/sksltoglsl/test/motion_blur_shader_filter__motion-blur/v1/code/motion_blur_shader_filter__motion-blur.glsl
+Shader version: 450
+0:? Sequence
+0:9  Function Definition: main( ( global void)
+0:9    Function Parameters: 
+0:10    Sequence
+0:10      Sequence
+0:10        move second child to first child ( temp 2-component vector of float)
+0:10          'coord' ( temp 2-component vector of float)
+0:10          vector swizzle ( temp 2-component vector of float)
+0:10            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:10            Sequence
+0:10              Constant:
+0:10                0 (const int)
+0:10              Constant:
+0:10                1 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp 2-component vector of float)
+0:11          'scaleSizeStep' ( temp 2-component vector of float)
+0:11          vector-scale ( temp 2-component vector of float)
+0:11            divide ( temp 2-component vector of float)
+0:11              subtract ( temp 2-component vector of float)
+0:11                'scaleSize' ( uniform 2-component vector of float)
+0:11                Constant:
+0:11                  1.000000
+0:11              'sampleCount' ( uniform float)
+0:11            'radius' ( uniform float)
+0:12      Sequence
+0:12        move second child to first child ( temp 2-component vector of float)
+0:12          'rectOffsetStep' ( temp 2-component vector of float)
+0:12          vector-scale ( temp 2-component vector of float)
+0:12            divide ( temp 2-component vector of float)
+0:12              'rectOffset' ( uniform 2-component vector of float)
+0:12              'sampleCount' ( uniform float)
+0:12            'radius' ( uniform float)
+0:13      Sequence
+0:13        move second child to first child ( temp 2-component vector of float)
+0:13          'samplingOffset' ( temp 2-component vector of float)
+0:13          add ( temp 2-component vector of float)
+0:13            component-wise multiply ( temp 2-component vector of float)
+0:13              subtract ( temp 2-component vector of float)
+0:13                'coord' ( temp 2-component vector of float)
+0:13                'scaleAnchor' ( uniform 2-component vector of float)
+0:13              'scaleSizeStep' ( temp 2-component vector of float)
+0:13            'rectOffsetStep' ( temp 2-component vector of float)
+0:14      Sequence
+0:14        move second child to first child ( temp 4-component vector of float)
+0:14          'color' ( temp 4-component vector of float)
+0:14          vector-scale ( temp 4-component vector of float)
+0:14            texture ( global 4-component vector of float)
+0:14              'srcImageShader' ( uniform sampler2D)
+0:14              divide ( temp 2-component vector of float)
+0:14                'coord' ( temp 2-component vector of float)
+0:14                Convert int to float ( temp 2-component vector of float)
+0:14                  textureSize ( global 2-component vector of int)
+0:14                    'srcImageShader' ( uniform sampler2D)
+0:14                    Constant:
+0:14                      0 (const int)
+0:14            Constant:
+0:14              0.110000
+0:15      Sequence
+0:15        move second child to first child ( temp float)
+0:15          'remainingWeight' ( temp float)
+0:15          Constant:
+0:15            0.890000
+0:16      Sequence
+0:16        move second child to first child ( temp float)
+0:16          'baseWeight' ( temp float)
+0:16          divide ( temp float)
+0:16            component-wise multiply ( temp float)
+0:16              'remainingWeight' ( temp float)
+0:16              Constant:
+0:16                2.000000
+0:16            add ( temp float)
+0:16              'sampleCount' ( uniform float)
+0:16              Constant:
+0:16                1.000000
+0:17      Sequence
+0:17        move second child to first child ( temp float)
+0:17          'weightStep' ( temp float)
+0:17          divide ( temp float)
+0:17            'baseWeight' ( temp float)
+0:17            'sampleCount' ( uniform float)
+0:18      Sequence
+0:18        move second child to first child ( temp float)
+0:18          'weight' ( temp float)
+0:18          'baseWeight' ( temp float)
+0:19      Sequence
+0:19        move second child to first child ( temp int)
+0:19          'sampleCountInt' ( temp int)
+0:19          Convert float to int ( temp int)
+0:19            'sampleCount' ( uniform float)
+0:20      Sequence
+0:20        Sequence
+0:20          move second child to first child ( temp int)
+0:20            'i' ( temp int)
+0:20            Constant:
+0:20              0 (const int)
+0:20        Loop with condition tested first
+0:20          Loop Condition
+0:20          Compare Less Than ( temp bool)
+0:20            'i' ( temp int)
+0:20            Constant:
+0:20              50 (const int)
+0:20          Loop Body
+0:21          Sequence
+0:21            Test condition and select ( temp void)
+0:21              Condition
+0:21              Compare Greater Than or Equal ( temp bool)
+0:21                'i' ( temp int)
+0:21                'sampleCountInt' ( temp int)
+0:21              true case
+0:21              Branch: Break
+0:22            Sequence
+0:22              move second child to first child ( temp 2-component vector of float)
+0:22                'offsetCoord' ( temp 2-component vector of float)
+0:22                add ( temp 2-component vector of float)
+0:22                  'coord' ( temp 2-component vector of float)
+0:22                  vector-scale ( temp 2-component vector of float)
+0:22                    'samplingOffset' ( temp 2-component vector of float)
+0:22                    Convert int to float ( temp float)
+0:22                      add ( temp int)
+0:22                        'i' ( temp int)
+0:22                        Constant:
+0:22                          1 (const int)
+0:23            add second child into first child ( temp 4-component vector of float)
+0:23              'color' ( temp 4-component vector of float)
+0:23              vector-scale ( temp 4-component vector of float)
+0:23                texture ( global 4-component vector of float)
+0:23                  'srcImageShader' ( uniform sampler2D)
+0:23                  divide ( temp 2-component vector of float)
+0:23                    'offsetCoord' ( temp 2-component vector of float)
+0:23                    Convert int to float ( temp 2-component vector of float)
+0:23                      textureSize ( global 2-component vector of int)
+0:23                        'srcImageShader' ( uniform sampler2D)
+0:23                        Constant:
+0:23                          0 (const int)
+0:23                'weight' ( temp float)
+0:24            subtract second child into first child ( temp float)
+0:24              'weight' ( temp float)
+0:24              'weightStep' ( temp float)
+0:20          Loop Terminal Expression
+0:20          Post-Increment ( temp int)
+0:20            'i' ( temp int)
+0:26      move second child to first child ( temp 4-component vector of float)
+0:26        'FragColor' ( out 4-component vector of float)
+0:26        'color' ( temp 4-component vector of float)
+0:27      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'srcImageShader' ( uniform sampler2D)
+0:?     'scaleAnchor' ( uniform 2-component vector of float)
+0:?     'scaleSize' ( uniform 2-component vector of float)
+0:?     'rectOffset' ( uniform 2-component vector of float)
+0:?     'radius' ( uniform float)
+0:?     'sampleCount' ( uniform float)
+

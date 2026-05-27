@@ -1,0 +1,443 @@
+results/sksltoglsl/test/direction_light_shader_filter__direction-light/v1/code/direction_light_shader_filter__direction-light.glsl
+Shader version: 450
+0:? Sequence
+0:13  Function Definition: pow2_ff(f1; ( global float)
+0:13    Function Parameters: 
+0:13      'x' ( in float)
+0:14    Sequence
+0:14      Branch: Return with expression
+0:14        component-wise multiply ( temp float)
+0:14          'x' ( in float)
+0:14          'x' ( in float)
+0:16  Function Definition: RoughnessToAlpha_ff(f1; ( global float)
+0:16    Function Parameters: 
+0:16      'roughness' ( in float)
+0:?     Sequence
+0:18      Branch: Return with expression
+0:18        clamp ( global float)
+0:18          Function Call: pow2_ff(f1; ( global float)
+0:18            'roughness' ( in float)
+0:18          Constant:
+0:18            0.007921
+0:18          Constant:
+0:18            1.000000
+0:20  Function Definition: DistributionGGX_fff(f1;f1; ( global float)
+0:20    Function Parameters: 
+0:20      'roughness' ( in float)
+0:20      'cosNToH' ( in float)
+0:21    Sequence
+0:21      Sequence
+0:21        move second child to first child ( temp float)
+0:21          'alpha' ( temp float)
+0:21          Function Call: RoughnessToAlpha_ff(f1; ( global float)
+0:21            'roughness' ( in float)
+0:22      Sequence
+0:22        move second child to first child ( temp float)
+0:22          'alpha2' ( temp float)
+0:22          Function Call: pow2_ff(f1; ( global float)
+0:22            'alpha' ( temp float)
+0:23      Sequence
+0:23        move second child to first child ( temp float)
+0:23          'f' ( temp float)
+0:23          add ( temp float)
+0:23            component-wise multiply ( temp float)
+0:23              subtract ( temp float)
+0:23                component-wise multiply ( temp float)
+0:23                  'cosNToH' ( in float)
+0:23                  'alpha2' ( temp float)
+0:23                'cosNToH' ( in float)
+0:23              'cosNToH' ( in float)
+0:23            Constant:
+0:23              1.000000
+0:24      Branch: Return with expression
+0:24        component-wise multiply ( temp float)
+0:24          divide ( temp float)
+0:24            'alpha2' ( temp float)
+0:24            Function Call: pow2_ff(f1; ( global float)
+0:24              'f' ( temp float)
+0:24          Constant:
+0:24            0.318310
+0:26  Function Definition: VisibilitySmithGGXCorrelatedApprox_ffff(f1;f1;f1; ( global float)
+0:26    Function Parameters: 
+0:26      'roughness' ( in float)
+0:26      'cosNToV' ( in float)
+0:26      'cosNToL' ( in float)
+0:27    Sequence
+0:27      Sequence
+0:27        move second child to first child ( temp float)
+0:27          'alpha' ( temp float)
+0:27          Function Call: RoughnessToAlpha_ff(f1; ( global float)
+0:27            'roughness' ( in float)
+0:28      Sequence
+0:28        move second child to first child ( temp float)
+0:28          'termV' ( temp float)
+0:28          component-wise multiply ( temp float)
+0:28            'cosNToL' ( in float)
+0:28            add ( temp float)
+0:28              component-wise multiply ( temp float)
+0:28                'cosNToV' ( in float)
+0:28                subtract ( temp float)
+0:28                  Constant:
+0:28                    1.000000
+0:28                  'alpha' ( temp float)
+0:28              'alpha' ( temp float)
+0:29      Sequence
+0:29        move second child to first child ( temp float)
+0:29          'termL' ( temp float)
+0:29          component-wise multiply ( temp float)
+0:29            'cosNToV' ( in float)
+0:29            add ( temp float)
+0:29              component-wise multiply ( temp float)
+0:29                'cosNToL' ( in float)
+0:29                subtract ( temp float)
+0:29                  Constant:
+0:29                    1.000000
+0:29                  'alpha' ( temp float)
+0:29              'alpha' ( temp float)
+0:30      Branch: Return with expression
+0:30        divide ( temp float)
+0:30          Constant:
+0:30            0.500000
+0:30          add ( temp float)
+0:30            'termV' ( temp float)
+0:30            'termL' ( temp float)
+0:32  Function Definition: FresnelSchlick_f3f3f(vf3;f1; ( global 3-component vector of float)
+0:32    Function Parameters: 
+0:32      'F0' ( in 3-component vector of float)
+0:32      'cosVToH' ( in float)
+0:33    Sequence
+0:33      Sequence
+0:33        move second child to first child ( temp float)
+0:33          'f' ( temp float)
+0:33          pow ( global float)
+0:33            subtract ( temp float)
+0:33              Constant:
+0:33                1.000000
+0:33              'cosVToH' ( in float)
+0:33            Constant:
+0:33              5.000000
+0:34      Branch: Return with expression
+0:34        add ( temp 3-component vector of float)
+0:34          component-wise multiply ( temp float)
+0:34            clamp ( global float)
+0:34              component-wise multiply ( temp float)
+0:34                Constant:
+0:34                  50.000000
+0:34                direct index ( temp float)
+0:34                  'F0' ( in 3-component vector of float)
+0:34                  Constant:
+0:34                    1 (const int)
+0:34              Constant:
+0:34                0.000000
+0:34              Constant:
+0:34                1.000000
+0:34            'f' ( temp float)
+0:34          vector-scale ( temp 3-component vector of float)
+0:34            subtract ( temp float)
+0:34              Constant:
+0:34                1.000000
+0:34              'f' ( temp float)
+0:34            'F0' ( in 3-component vector of float)
+0:36  Function Definition: scatter_f4f3f3f3f(vf3;vf3;vf3;f1; ( global 4-component vector of float)
+0:36    Function Parameters: 
+0:36      'pos' ( in 3-component vector of float)
+0:36      'displacementNormal' ( in 3-component vector of float)
+0:36      'shadingNormal' ( in 3-component vector of float)
+0:36      'eta' ( in float)
+0:37    Sequence
+0:37      Sequence
+0:37        move second child to first child ( temp 3-component vector of float)
+0:37          'viewDir' ( temp 3-component vector of float)
+0:37          Constant:
+0:37            0.000000
+0:37            0.000000
+0:37            1.000000
+0:38      Sequence
+0:38        move second child to first child ( temp 3-component vector of float)
+0:38          'lightDir' ( temp 3-component vector of float)
+0:38          normalize ( global 3-component vector of float)
+0:38            'lightDirection' ( uniform 3-component vector of float)
+0:39      Sequence
+0:39        move second child to first child ( temp float)
+0:39          'cosNToL' ( temp float)
+0:39          dot-product ( global float)
+0:39            'shadingNormal' ( in 3-component vector of float)
+0:39            'lightDir' ( temp 3-component vector of float)
+0:40      Test condition and select ( temp void)
+0:40        Condition
+0:40        Compare Less Than or Equal ( temp bool)
+0:40          'cosNToL' ( temp float)
+0:40          Constant:
+0:40            0.000000
+0:40        true case
+0:40        Branch: Return with expression
+0:40          Constant:
+0:40            0.000000
+0:40            0.000000
+0:40            0.000000
+0:40            0.000000
+0:41      Sequence
+0:41        move second child to first child ( temp 3-component vector of float)
+0:41          'halfDir' ( temp 3-component vector of float)
+0:41          normalize ( global 3-component vector of float)
+0:41            add ( temp 3-component vector of float)
+0:41              'viewDir' ( temp 3-component vector of float)
+0:41              'lightDir' ( temp 3-component vector of float)
+0:42      Sequence
+0:42        move second child to first child ( temp float)
+0:42          'cosNToV' ( temp float)
+0:42          clamp ( global float)
+0:42            dot-product ( global float)
+0:42              'shadingNormal' ( in 3-component vector of float)
+0:42              'viewDir' ( temp 3-component vector of float)
+0:42            Constant:
+0:42              0.000000
+0:42            Constant:
+0:42              1.000000
+0:43      Sequence
+0:43        move second child to first child ( temp float)
+0:43          'cosNToH' ( temp float)
+0:43          clamp ( global float)
+0:43            dot-product ( global float)
+0:43              'shadingNormal' ( in 3-component vector of float)
+0:43              'halfDir' ( temp 3-component vector of float)
+0:43            Constant:
+0:43              0.000000
+0:43            Constant:
+0:43              1.000000
+0:44      Sequence
+0:44        move second child to first child ( temp float)
+0:44          'cosVToH' ( temp float)
+0:44          clamp ( global float)
+0:44            dot-product ( global float)
+0:44              'viewDir' ( temp 3-component vector of float)
+0:44              'halfDir' ( temp 3-component vector of float)
+0:44            Constant:
+0:44              0.000000
+0:44            Constant:
+0:44              1.000000
+0:45      Sequence
+0:45        move second child to first child ( temp float)
+0:45          'distribution' ( temp float)
+0:45          Function Call: DistributionGGX_fff(f1;f1; ( global float)
+0:45            Constant:
+0:45              0.500000
+0:45            'cosNToH' ( temp float)
+0:46      Sequence
+0:46        move second child to first child ( temp float)
+0:46          'visibility' ( temp float)
+0:46          Function Call: VisibilitySmithGGXCorrelatedApprox_ffff(f1;f1;f1; ( global float)
+0:46            Constant:
+0:46              0.500000
+0:46            'cosNToV' ( temp float)
+0:46            'cosNToL' ( temp float)
+0:47      Sequence
+0:47        move second child to first child ( temp 3-component vector of float)
+0:47          'albedo' ( temp 3-component vector of float)
+0:47          vector swizzle ( temp 3-component vector of float)
+0:47            texture ( global 4-component vector of float)
+0:47              'image' ( uniform sampler2D)
+0:47              divide ( temp 2-component vector of float)
+0:47                vector swizzle ( temp 2-component vector of float)
+0:47                  'pos' ( in 3-component vector of float)
+0:47                  Sequence
+0:47                    Constant:
+0:47                      0 (const int)
+0:47                    Constant:
+0:47                      1 (const int)
+0:47                'iResolution' ( uniform 2-component vector of float)
+0:47            Sequence
+0:47              Constant:
+0:47                0 (const int)
+0:47              Constant:
+0:47                1 (const int)
+0:47              Constant:
+0:47                2 (const int)
+0:48      Sequence
+0:48        move second child to first child ( temp 3-component vector of float)
+0:48          'diffuseColor' ( temp 3-component vector of float)
+0:48          mix ( global 3-component vector of float)
+0:48            'albedo' ( temp 3-component vector of float)
+0:48            Constant:
+0:48              0.000000
+0:48              0.000000
+0:48              0.000000
+0:48            Constant:
+0:48              0.500000
+0:48              0.500000
+0:48              0.500000
+0:49      Sequence
+0:49        move second child to first child ( temp 3-component vector of float)
+0:49          'specularColor' ( temp 3-component vector of float)
+0:49          mix ( global 3-component vector of float)
+0:49            Constant:
+0:49              0.032000
+0:49              0.032000
+0:49              0.032000
+0:49            'albedo' ( temp 3-component vector of float)
+0:49            Constant:
+0:49              0.500000
+0:49              0.500000
+0:49              0.500000
+0:50      Sequence
+0:50        move second child to first child ( temp 3-component vector of float)
+0:50          'fresnel' ( temp 3-component vector of float)
+0:50          Function Call: FresnelSchlick_f3f3f(vf3;f1; ( global 3-component vector of float)
+0:50            'specularColor' ( temp 3-component vector of float)
+0:50            'cosVToH' ( temp float)
+0:51      Sequence
+0:51        move second child to first child ( temp 3-component vector of float)
+0:51          'reflectedColor' ( temp 3-component vector of float)
+0:51          component-wise multiply ( temp 3-component vector of float)
+0:51            vector-scale ( temp 3-component vector of float)
+0:51              vector-scale ( temp 3-component vector of float)
+0:51                component-wise multiply ( temp float)
+0:51                  'distribution' ( temp float)
+0:51                  'visibility' ( temp float)
+0:51                'fresnel' ( temp 3-component vector of float)
+0:51              'cosNToL' ( temp float)
+0:51            vector swizzle ( temp 3-component vector of float)
+0:51              'lightColor' ( uniform 4-component vector of float)
+0:51              Sequence
+0:51                Constant:
+0:51                  0 (const int)
+0:51                Constant:
+0:51                  1 (const int)
+0:51                Constant:
+0:51                  2 (const int)
+0:52      Sequence
+0:52        move second child to first child ( temp 3-component vector of float)
+0:52          'refractedColor' ( temp 3-component vector of float)
+0:52          component-wise multiply ( temp 3-component vector of float)
+0:52            vector-scale ( temp 3-component vector of float)
+0:52              'diffuseColor' ( temp 3-component vector of float)
+0:52              'cosNToL' ( temp float)
+0:52            vector swizzle ( temp 3-component vector of float)
+0:52              'lightColor' ( uniform 4-component vector of float)
+0:52              Sequence
+0:52                Constant:
+0:52                  0 (const int)
+0:52                Constant:
+0:52                  1 (const int)
+0:52                Constant:
+0:52                  2 (const int)
+0:53      Branch: Return with expression
+0:53        Construct vec4 ( temp 4-component vector of float)
+0:53          vector-scale ( temp 3-component vector of float)
+0:53            add ( temp 3-component vector of float)
+0:53              'reflectedColor' ( temp 3-component vector of float)
+0:53              'refractedColor' ( temp 3-component vector of float)
+0:53            'lightIntensity' ( uniform float)
+0:53          Constant:
+0:53            1.000000
+0:55  Function Definition: main( ( global void)
+0:55    Function Parameters: 
+0:56    Sequence
+0:56      Sequence
+0:56        move second child to first child ( temp 2-component vector of float)
+0:56          'fragCoord' ( temp 2-component vector of float)
+0:56          vector swizzle ( temp 2-component vector of float)
+0:56            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:56            Sequence
+0:56              Constant:
+0:56                0 (const int)
+0:56              Constant:
+0:56                1 (const int)
+0:57      Sequence
+0:57        move second child to first child ( temp 3-component vector of float)
+0:57          'pos' ( temp 3-component vector of float)
+0:57          Construct vec3 ( temp 3-component vector of float)
+0:57            'fragCoord' ( temp 2-component vector of float)
+0:57            Constant:
+0:57              20.000000
+0:58      Sequence
+0:58        move second child to first child ( temp 3-component vector of float)
+0:58          'tempNormalValue' ( temp 3-component vector of float)
+0:58          vector swizzle ( temp 3-component vector of float)
+0:58            texture ( global 4-component vector of float)
+0:58              'mask' ( uniform sampler2D)
+0:58              divide ( temp 2-component vector of float)
+0:58                'fragCoord' ( temp 2-component vector of float)
+0:58                'iResolution' ( uniform 2-component vector of float)
+0:58            Sequence
+0:58              Constant:
+0:58                0 (const int)
+0:58              Constant:
+0:58                1 (const int)
+0:58              Constant:
+0:58                2 (const int)
+0:59      Sequence
+0:59        move second child to first child ( temp 3-component vector of float)
+0:59          'normal' ( temp 3-component vector of float)
+0:59          normalize ( global 3-component vector of float)
+0:59            subtract ( temp 3-component vector of float)
+0:59              vector-scale ( temp 3-component vector of float)
+0:59                'tempNormalValue' ( temp 3-component vector of float)
+0:59                Constant:
+0:59                  2.000000
+0:59              Constant:
+0:59                1.000000
+0:60      Test condition and select ( temp void)
+0:60        Condition
+0:60        all ( global bool)
+0:60          Compare Less Than ( global 3-component vector of bool)
+0:60            Absolute value ( global 3-component vector of float)
+0:60              'tempNormalValue' ( temp 3-component vector of float)
+0:60            Constant:
+0:60              1.0000000000000e-06
+0:60              1.0000000000000e-06
+0:60              1.0000000000000e-06
+0:60        true case
+0:61        Sequence
+0:61          move second child to first child ( temp 3-component vector of float)
+0:61            'normal' ( temp 3-component vector of float)
+0:61            Constant:
+0:61              0.000000
+0:61              0.000000
+0:61              1.000000
+0:63      Sequence
+0:63        move second child to first child ( temp 3-component vector of float)
+0:63          'displacementNormal' ( temp 3-component vector of float)
+0:63          normalize ( global 3-component vector of float)
+0:63            component-wise multiply ( temp 3-component vector of float)
+0:63              Constant:
+0:63                0.787402
+0:63                0.787402
+0:63                0.500000
+0:63              'normal' ( temp 3-component vector of float)
+0:64      Sequence
+0:64        move second child to first child ( temp 3-component vector of float)
+0:64          'shadingNormal' ( temp 3-component vector of float)
+0:64          normalize ( global 3-component vector of float)
+0:64            component-wise multiply ( temp 3-component vector of float)
+0:64              Constant:
+0:64                0.787402
+0:64                0.787402
+0:64                10.000000
+0:64              'normal' ( temp 3-component vector of float)
+0:65      move second child to first child ( temp 4-component vector of float)
+0:65        'FragColor' ( out 4-component vector of float)
+0:65        Function Call: scatter_f4f3f3f3f(vf3;vf3;vf3;f1; ( global 4-component vector of float)
+0:65          'pos' ( temp 3-component vector of float)
+0:65          'displacementNormal' ( temp 3-component vector of float)
+0:65          'shadingNormal' ( temp 3-component vector of float)
+0:65          Constant:
+0:65            0.200000
+0:66      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'image' ( uniform sampler2D)
+0:?     'mask' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'lightDirection' ( uniform 3-component vector of float)
+0:?     'lightColor' ( uniform 4-component vector of float)
+0:?     'lightIntensity' ( uniform float)
+0:?     'piInv' ( const float)
+0:?       0.318310
+0:?     'eta' ( const float)
+0:?       0.200000
+0:?     'roughness' ( const float)
+0:?       0.500000
+0:?     'metal' ( const float)
+0:?       0.500000
+

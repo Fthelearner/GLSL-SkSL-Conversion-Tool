@@ -1,0 +1,29 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "sdfShader": "assets/sdf_rrect.png",
+    "lightMaskShader": "assets/light_mask.png"
+  },
+  "uniforms": {
+    "lightColor": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "bloomIntensityCutoff": 0.3,
+    "maxIntensity": 1.0,
+    "maxBloomIntensity": 0.6,
+    "bloomFalloffPow": 2.0,
+    "minBorderWidth": 2.0,
+    "borderWidthDelta": 8.0,
+    "innerBorderBloomWidth": 4.0,
+    "outerBorderBloomWidth": 12.0,
+    "invInnerBorderBloomWidth": 0.25,
+    "invOuterBorderBloomWidth": 0.0833,
+    "enableBloom": 1.0
+  }
+}

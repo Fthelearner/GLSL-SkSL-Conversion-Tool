@@ -1,0 +1,118 @@
+uniform half2 iResolution;
+const half2 rotationCenter = half2(0.5);
+const float DOWN_SAMPLE_SCALE = 4.0;
+
+vec4 fragColor;
+const float PI = 3.14159;
+const float PI2 = 6.28318;
+
+const half2 RAND2_A = half2(127.1, 1.7);
+const half2 RAND2_B = half2(269.5, 183.3);
+const float RAND2_MUL = 4258.5453123;
+// ****************************** Sub-functions ******************************
+half2 Random2D(half2 st)
+{
+    st = half2(dot(st, RAND2_A), dot(st, RAND2_B));
+    return -1.0 + 2.0 * fract(sin(st) * RAND2_MUL);
+}
+
+float Noise2D(half2 st)
+{
+    half2 i = floor(st);
+    half2 f = fract(st);
+    half2 u = smoothstep(0.0, 1.0, f);
+    return mix(mix(dot(Random2D(i + half2(0.0, 0.0)), f - half2(0.0, 0.0)),
+                   dot(Random2D(i + half2(1.0, 0.0)), f - half2(1.0, 0.0)), u.x),
+               mix(dot(Random2D(i + half2(0.0, 1.0)), f - half2(0.0, 1.0)),
+                   dot(Random2D(i + half2(1.0, 1.0)), f - half2(1.0, 1.0)), u.x),
+               u.y);
+}
+
+float Random1D(float x)
+{
+    return fract(sin(x) * RAND2_MUL);
+}
+
+float Noise1D(float t)
+{
+    float f = fract(t);
+    float u = smoothstep(0.0, 1.0, f);
+    return mix(Random1D(floor(t)), Random1D(floor(t) + 1.0), u);
+}
+
+float CentralAmbienceHaloBorder(half2 uv, half2 polarCoords, float radius, float animationTime,
+    float rotationTimeScale, float noiseScale, float noiseDisplacement)
+{
+    polarCoords.x = fract((polarCoords.x - animationTime * 4.0) - (polarCoords.y * 0.8));
+    float screenNoise = Noise2D(half2(uv + (animationTime * rotationTimeScale)) * noiseScale);
+    float angularRandomVal = Noise1D((polarCoords.x) * 10.0);
+    angularRandomVal = mix(angularRandomVal, 0.2, smoothstep(0.5, 0.8, abs(polarCoords.x * 2.0 - 1.0)));
+    radius += (screenNoise * noiseDisplacement);
+    polarCoords.y -= radius;
+    float thickness = mix(0.01, 0.035, angularRandomVal);
+    float circleBorder = smoothstep(thickness * radius, 0.0, abs(polarCoords.y));
+    circleBorder *= smoothstep(0.1, 1.0, angularRandomVal);
+    circleBorder *= screenNoise * 0.5 + 0.5;
+    return circleBorder;
+}
+
+float CentralAmbienceHaloGlow(half2 polarCoords, float animationTime, float radius, float glowRadius,
+    float glowExposure)
+{
+    polarCoords.x = fract(((polarCoords.x - animationTime * 4.0) - (polarCoords.y * 0.8)));
+    float angularRandomVal = Noise1D(polarCoords.x * 10.);
+    angularRandomVal = mix(angularRandomVal, 0.2, smoothstep(0.5, 0.8, abs(polarCoords.x * 2.0 - 1.0)));
+    polarCoords.y -= radius;
+    float circleBorderGlow = smoothstep(glowRadius, 0.0, abs(polarCoords.y)) * glowExposure;
+    return circleBorderGlow;
+}
+
+float BlendScreen(float a, float b)
+{
+    return a + b - a * b;
+}
+
+half4 BlendScreen(half4 a, half4 b)
+{
+    return a + b - a * b;
+}
+
+// ****************************** Main Functions ******************************
+vec4 main(vec2 fragCoord)
+{
+    float globalRadius = 0.5 / DOWN_SAMPLE_SCALE;
+    float radius = globalRadius * 2.0;
+    float innerRadiusEdge = 0.5 * radius;
+    float outerRadiusEdge = 1.35 * radius;
+    float glowColor = 0.;
+    float solidColor = 0.0;
+
+    half2 uv = fragCoord.xy / iResolution.xy;
+    uv -= rotationCenter;
+    float screenRatio = iResolution.x / iResolution.y;
+    half2 centeredUVs = uv * 2.0 ;
+    centeredUVs.x *= screenRatio;
+    half2 directionVector = centeredUVs;
+    float lenDirVec = length(directionVector);
+    half2 polarCoords =
+        half2((atan(directionVector.y, directionVector.x) + PI) / (2.0 * PI), lenDirVec);
+
+    if (lenDirVec > innerRadiusEdge && lenDirVec < outerRadiusEdge) {
+        float ambienceHaloBorder = CentralAmbienceHaloBorder(directionVector, polarCoords, radius * 0.82,
+            globalRadius * 0.1, 1.0, 1.25, 0.05) * 2.5;
+        ambienceHaloBorder = clamp(ambienceHaloBorder, 0., 1.);
+        solidColor = BlendScreen(solidColor, ambienceHaloBorder);
+        ambienceHaloBorder = CentralAmbienceHaloBorder(directionVector, polarCoords, radius * 0.95,
+            globalRadius * 0.25, 1.0, 0.25, 0.05);
+        solidColor = BlendScreen(solidColor, ambienceHaloBorder);
+        ambienceHaloBorder = CentralAmbienceHaloBorder(directionVector, polarCoords, radius,
+            globalRadius * 0.35, 1.0, 0.25, 0.05);
+        solidColor = BlendScreen(solidColor, ambienceHaloBorder);
+        float glow = CentralAmbienceHaloGlow(polarCoords, 1.0, radius * 0.83, 0.2 * radius,
+            0.4) * 1.2;
+        glowColor = BlendScreen(glowColor, glow);  // Add a glow circle
+    }
+
+    fragColor = BlendScreen(half4(half3(solidColor), 0.0), half4(glowColor));
+    return fragColor;
+}

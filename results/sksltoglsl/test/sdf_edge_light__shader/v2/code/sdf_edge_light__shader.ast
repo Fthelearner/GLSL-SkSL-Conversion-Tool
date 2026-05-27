@@ -1,0 +1,226 @@
+results/sksltoglsl/test/sdf_edge_light__shader/v1/code/sdf_edge_light__shader.glsl
+Shader version: 450
+0:? Sequence
+0:17  Function Definition: main( ( global void)
+0:17    Function Parameters: 
+0:18    Sequence
+0:18      Sequence
+0:18        move second child to first child ( temp 2-component vector of float)
+0:18          'fragCoord' ( temp 2-component vector of float)
+0:18          vector swizzle ( temp 2-component vector of float)
+0:18            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:18            Sequence
+0:18              Constant:
+0:18                0 (const int)
+0:18              Constant:
+0:18                1 (const int)
+0:19      Sequence
+0:19        move second child to first child ( temp float)
+0:19          'lightMaskValue' ( temp float)
+0:19          direct index ( temp float)
+0:19            texture ( global 4-component vector of float)
+0:19              'lightMaskShader' ( uniform sampler2D)
+0:19              divide ( temp 2-component vector of float)
+0:19                'fragCoord' ( temp 2-component vector of float)
+0:19                'iResolution' ( uniform 2-component vector of float)
+0:19            Constant:
+0:19              0 (const int)
+0:20      Sequence
+0:20        move second child to first child ( temp 4-component vector of float)
+0:20          'sdfMapSample' ( temp 4-component vector of float)
+0:20          vector-scale ( temp 4-component vector of float)
+0:20            subtract ( temp 4-component vector of float)
+0:20              vector-scale ( temp 4-component vector of float)
+0:20                texture ( global 4-component vector of float)
+0:20                  'sdfImageShader' ( uniform sampler2D)
+0:20                  divide ( temp 2-component vector of float)
+0:20                    'fragCoord' ( temp 2-component vector of float)
+0:20                    'iResolution' ( uniform 2-component vector of float)
+0:20                Constant:
+0:20                  2.000000
+0:20              Constant:
+0:20                1.000000
+0:20                1.000000
+0:20                1.000000
+0:20                1.000000
+0:20            'spreadFactor' ( uniform float)
+0:21      Sequence
+0:21        move second child to first child ( temp 4-component vector of float)
+0:21          'blurredSdfMapSample' ( temp 4-component vector of float)
+0:21          vector-scale ( temp 4-component vector of float)
+0:21            subtract ( temp 4-component vector of float)
+0:21              vector-scale ( temp 4-component vector of float)
+0:21                texture ( global 4-component vector of float)
+0:21                  'blurredSdfImageShader' ( uniform sampler2D)
+0:21                  divide ( temp 2-component vector of float)
+0:21                    'fragCoord' ( temp 2-component vector of float)
+0:21                    'iResolution' ( uniform 2-component vector of float)
+0:21                Constant:
+0:21                  2.000000
+0:21              Constant:
+0:21                1.000000
+0:21                1.000000
+0:21                1.000000
+0:21                1.000000
+0:21            'spreadFactor' ( uniform float)
+0:22      Sequence
+0:22        move second child to first child ( temp float)
+0:22          '_2_bloomBorder' ( temp float)
+0:22          subtract ( temp float)
+0:22            Constant:
+0:22              1.000000
+0:22            step ( global float)
+0:22              'outerBorderBloomWidth' ( uniform float)
+0:22              direct index ( temp float)
+0:22                'sdfMapSample' ( temp 4-component vector of float)
+0:22                Constant:
+0:22                  3 (const int)
+0:23      multiply second child into first child ( temp float)
+0:23        '_2_bloomBorder' ( temp float)
+0:23        step ( global float)
+0:23          Negate value ( temp float)
+0:23            'innerBorderBloomWidth' ( uniform float)
+0:23          direct index ( temp float)
+0:23            'sdfMapSample' ( temp 4-component vector of float)
+0:23            Constant:
+0:23              3 (const int)
+0:24      Sequence
+0:24        move second child to first child ( temp float)
+0:24          '_3_edgeThickness' ( temp float)
+0:24          add ( temp float)
+0:24            component-wise multiply ( temp float)
+0:24              smoothstep ( global float)
+0:24                Constant:
+0:24                  0.000000
+0:24                Constant:
+0:24                  1.000000
+0:24                'lightMaskValue' ( temp float)
+0:24              subtract ( temp float)
+0:24                'maxBorderWidth' ( uniform float)
+0:24                'minBorderWidth' ( uniform float)
+0:24            'minBorderWidth' ( uniform float)
+0:25      Sequence
+0:25        move second child to first child ( temp float)
+0:25          '_4_thinBorder' ( temp float)
+0:25          component-wise multiply ( temp float)
+0:25            subtract ( temp float)
+0:25              Constant:
+0:25                1.000000
+0:25              smoothstep ( global float)
+0:25                Constant:
+0:25                  0.000000
+0:25                '_3_edgeThickness' ( temp float)
+0:25                direct index ( temp float)
+0:25                  'sdfMapSample' ( temp 4-component vector of float)
+0:25                  Constant:
+0:25                    3 (const int)
+0:25            smoothstep ( global float)
+0:25              Negate value ( temp float)
+0:25                '_3_edgeThickness' ( temp float)
+0:25              Constant:
+0:25                0.000000
+0:25              direct index ( temp float)
+0:25                'sdfMapSample' ( temp 4-component vector of float)
+0:25                Constant:
+0:25                  3 (const int)
+0:26      Sequence
+0:26        move second child to first child ( temp float)
+0:26          '_5_dNorm' ( temp float)
+0:26          divide ( temp float)
+0:26            Absolute value ( global float)
+0:26              direct index ( temp float)
+0:26                'blurredSdfMapSample' ( temp 4-component vector of float)
+0:26                Constant:
+0:26                  3 (const int)
+0:26            Test condition and select ( temp float)
+0:26              Condition
+0:26              Compare Greater Than ( temp bool)
+0:26                direct index ( temp float)
+0:26                  'blurredSdfMapSample' ( temp 4-component vector of float)
+0:26                  Constant:
+0:26                    3 (const int)
+0:26                Constant:
+0:26                  0.000000
+0:26              true case
+0:26              'outerBorderBloomWidth' ( uniform float)
+0:26              false case
+0:26              'innerBorderBloomWidth' ( uniform float)
+0:27      Sequence
+0:27        move second child to first child ( temp float)
+0:27          '_6_falloff' ( temp float)
+0:27          max ( global float)
+0:27            divide ( temp float)
+0:27              subtract ( temp float)
+0:27                Constant:
+0:27                  1.000000
+0:27                '_5_dNorm' ( temp float)
+0:27              pow ( global float)
+0:27                add ( temp float)
+0:27                  Constant:
+0:27                    1.000000
+0:27                  '_5_dNorm' ( temp float)
+0:27                'bloomFalloffPow' ( uniform float)
+0:27            Constant:
+0:27              0.000000
+0:28      Sequence
+0:28        move second child to first child ( temp float)
+0:28          '_7_b' ( temp float)
+0:28          component-wise multiply ( temp float)
+0:28            component-wise multiply ( temp float)
+0:28              'lightMaskValue' ( temp float)
+0:28              'maxIntensity' ( uniform float)
+0:28            add ( temp float)
+0:28              '_4_thinBorder' ( temp float)
+0:28              component-wise multiply ( temp float)
+0:28                component-wise multiply ( temp float)
+0:28                  smoothstep ( global float)
+0:28                    'bloomIntensityCutoff' ( uniform float)
+0:28                    Constant:
+0:28                      1.000000
+0:28                    'lightMaskValue' ( temp float)
+0:28                  '_2_bloomBorder' ( temp float)
+0:28                component-wise multiply ( temp float)
+0:28                  'maxBloomIntensity' ( uniform float)
+0:28                  '_6_falloff' ( temp float)
+0:29      Sequence
+0:29        move second child to first child ( temp 3-component vector of float)
+0:29          'rgb' ( temp 3-component vector of float)
+0:29          vector-scale ( temp 3-component vector of float)
+0:29            'lightColor' ( uniform 3-component vector of float)
+0:29            '_7_b' ( temp float)
+0:30      Sequence
+0:30        move second child to first child ( temp float)
+0:30          'alpha' ( temp float)
+0:30          clamp ( global float)
+0:30            component-wise multiply ( temp float)
+0:30              length ( global float)
+0:30                'rgb' ( temp 3-component vector of float)
+0:30              Constant:
+0:30                3.000000
+0:30            Constant:
+0:30              0.000000
+0:30            Constant:
+0:30              1.000000
+0:31      move second child to first child ( temp 4-component vector of float)
+0:31        'FragColor' ( out 4-component vector of float)
+0:31        Construct vec4 ( temp 4-component vector of float)
+0:31          'rgb' ( temp 3-component vector of float)
+0:31          'alpha' ( temp float)
+0:32      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'sdfImageShader' ( uniform sampler2D)
+0:?     'blurredSdfImageShader' ( uniform sampler2D)
+0:?     'lightMaskShader' ( uniform sampler2D)
+0:?     'spreadFactor' ( uniform float)
+0:?     'lightColor' ( uniform 3-component vector of float)
+0:?     'bloomIntensityCutoff' ( uniform float)
+0:?     'maxIntensity' ( uniform float)
+0:?     'maxBloomIntensity' ( uniform float)
+0:?     'bloomFalloffPow' ( uniform float)
+0:?     'minBorderWidth' ( uniform float)
+0:?     'maxBorderWidth' ( uniform float)
+0:?     'innerBorderBloomWidth' ( uniform float)
+0:?     'outerBorderBloomWidth' ( uniform float)
+

@@ -1,0 +1,19 @@
+uniform half2 iResolution;
+uniform half2 centerPos;
+uniform half rippleRadius;
+uniform half rippleWidth;
+uniform half widthCenterOffset;
+
+half4 main(vec2 fragCoord)
+{
+    half2 uv = fragCoord.xy/iResolution.xy;
+    half screenRatio = iResolution.x/iResolution.y;
+    // Mask Info
+    half2 MaskCenterUVs = uv - centerPos;
+    MaskCenterUVs.x *= screenRatio;
+    half offsetWidth = rippleWidth * widthCenterOffset;
+    half uvDistance = length(MaskCenterUVs) - rippleRadius;
+    half maskAlpha = smoothstep(rippleWidth, offsetWidth, uvDistance) *
+                     smoothstep(-rippleWidth, offsetWidth, uvDistance);
+    return half4(maskAlpha);
+}

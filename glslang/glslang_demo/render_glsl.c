@@ -253,6 +253,7 @@ int main(int argc, char** argv) {
     const char* frag_path = NULL;
     const char* out_path = NULL;
     int w = WIN_W, h = WIN_H;
+    int raw_out = 0;
 
     TexArg textures[MAX_TEXTURES];
     int ntex = 0;
@@ -282,6 +283,9 @@ int main(int argc, char** argv) {
                 nrawtex++;
             }
             i += 2;
+        } else if (strcmp(argv[i], "--raw") == 0) {
+            raw_out = 1;
+            i++;
         } else if (strcmp(argv[i], "--rgatex") == 0 && i + 2 < argc) {
             if (n_rgbatex < MAX_TEXTURES) {
                 strncpy(rgba_textures[n_rgbatex].name, argv[i+1], 63);
@@ -301,6 +305,7 @@ int main(int argc, char** argv) {
             printf("  --texture name path   Load PPM texture (RGB only, no alpha)\n");
             printf("  --rgatex name path    Load raw RGBA texture (preserves alpha)\n");
             printf("  --rawtex name         Use nearest-neighbor for named texture\n");
+            printf("  --raw                 Output raw RGBA (with alpha) instead of PPM\n");
             printf("  --uniform name v...   Set uniform (1-4 float values)\n");
             printf("  --itime value         Set iTime uniform (overrides Shadertoy default)\n");
             printf("  --help, -h            Show this help\n");
@@ -579,11 +584,10 @@ int main(int argc, char** argv) {
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glFinish();
 
-    // Read pixels
+    // Read pixels (bottom-to-top from OpenGL)
     unsigned char* pixels = malloc(w * h * 4);
     glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-    // Write PPM (P6 binary format). Use stdout when out_path is "-".
     FILE* out;
     if (strcmp(out_path, "-") == 0) {
         out = stdout;
@@ -591,13 +595,23 @@ int main(int argc, char** argv) {
         out = fopen(out_path, "wb");
     }
     if (out) {
-        fprintf(out, "P6\n%d %d\n255\n", w, h);
-        for (int y = 0; y < h; y++) {
-            for (int x = 0; x < w; x++) {
-                int idx = (y * w + x) * 4;
-                fputc(pixels[idx + 0], out);
-                fputc(pixels[idx + 1], out);
-                fputc(pixels[idx + 2], out);
+        if (raw_out) {
+            // Raw RGBA: [4B width][4B height][RGBA top-to-bottom]
+            int32_t wh[2] = {w, h};
+            fwrite(wh, 4, 2, out);
+            for (int y = h - 1; y >= 0; y--) {
+                fwrite(pixels + y * w * 4, 1, w * 4, out);
+            }
+        } else {
+            // PPM P6 (RGB only, bottom-to-top as OpenGL gives)
+            fprintf(out, "P6\n%d %d\n255\n", w, h);
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int idx = (y * w + x) * 4;
+                    fputc(pixels[idx + 0], out);
+                    fputc(pixels[idx + 1], out);
+                    fputc(pixels[idx + 2], out);
+                }
             }
         }
         fflush(out);

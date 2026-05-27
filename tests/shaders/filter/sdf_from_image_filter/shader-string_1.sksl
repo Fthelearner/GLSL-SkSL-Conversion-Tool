@@ -1,0 +1,14 @@
+uniform shader imageInput;
+
+half4 main(vec2 fragCoord) {
+	half4 O = half4(0.0);
+
+    vec4 imageSample = imageInput.eval(fragCoord);
+	vec2 xy = imageSample.xy * 2.0 - 1.0;
+	vec2 zw = imageSample.zw * 2.0 - 1.0;
+
+	O.a = length(xy) - length(zw);
+	O.a = (O.a + 1.0) / 2.0;
+    O.a = clamp(O.a, 0.0, 1.0);
+	return O;
+}

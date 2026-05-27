@@ -25,9 +25,57 @@ def main():
                         help="Uniform: name=value (repeatable, comma-sep for vec)")
     parser.add_argument("--raw", action="append", default=[],
                         help="Child names to use makeRawShader for (repeatable)")
+    parser.add_argument("--child-sksl", action="append", default=[],
+                        help="Child SkSL shader: name=path.sksl (repeatable)")
+    parser.add_argument("--params", default=None,
+                        help="Path to .params.json file (auto-loads textures and uniforms)")
     parser.add_argument("--width", type=int, default=1280)
     parser.add_argument("--height", type=int, default=720)
     args = parser.parse_args()
+
+    # Auto-load from .params.json if specified
+    if args.params:
+        import json as _json
+        params_path = Path(args.params)
+        if not params_path.exists():
+            print(f"ERROR: params file not found: {args.params}", file=sys.stderr)
+            return 1
+        with open(params_path) as f:
+            cfg = _json.load(f)
+        # Apply dimensions from params if not overridden by CLI defaults
+        dims = cfg.get("dimensions", {})
+        if dims.get("width") and args.width == 1280:
+            args.width = dims["width"]
+        if dims.get("height") and args.height == 720:
+            args.height = dims["height"]
+        # Load textures (resolve paths relative to tests/ dir)
+        tests_dir = params_path.parent
+        while tests_dir.name != 'tests' and tests_dir != tests_dir.parent:
+            tests_dir = tests_dir.parent
+        assets_dir = tests_dir / "assets"
+        def _resolve_tex(path_str):
+            for base in [params_path.parent, tests_dir, assets_dir]:
+                cand = base / path_str
+                if cand.exists():
+                    return str(cand)
+            cand = assets_dir / Path(path_str).name
+            if cand.exists():
+                return str(cand)
+            return path_str  # fallback, will error later
+        for name, val in cfg.get("textures", {}).items():
+            if isinstance(val, str):
+                args.texture.append(f"{name}={_resolve_tex(val)}")
+            elif isinstance(val, dict):
+                if val.get("raw"):
+                    path = val.get("path", "")
+                    args.texture.append(f"{name}={_resolve_tex(path)}")
+                    args.raw.append(name)
+        # Load uniforms
+        for name, val in cfg.get("uniforms", {}).items():
+            if isinstance(val, list):
+                args.uniform.append(f"{name}={','.join(str(v) for v in val)}")
+            else:
+                args.uniform.append(f"{name}={val}")
 
     # Auto-defaults for common Shadertoy uniforms when not explicitly set
     if "iResolution" not in [u.partition("=")[0] for u in args.uniform]:
@@ -76,6 +124,25 @@ def main():
 
     raw_child_names = frozenset(args.raw)
 
+    # Build child_sksl dict from --child-sksl name=path.sksl
+    child_sksl = {}
+    for c in args.child_sksl:
+        if "=" not in c:
+            print(f"ERROR: --child-sksl must be name=path.sksl, got '{c}'", file=sys.stderr)
+            return 1
+        cname, _, cpath = c.partition("=")
+        csrc = Path(cpath).read_text(encoding="utf-8")
+        # Check for an optional .params.json alongside the child sksl
+        child_params = Path(cpath).with_suffix(".params.json")
+        child_uniforms = {}
+        if child_params.exists():
+            import json as _json
+            with open(child_params) as f:
+                cfg = _json.load(f)
+            for k, v in cfg.get("uniforms", {}).items():
+                child_uniforms[k] = v if isinstance(v, list) else float(v)
+        child_sksl[cname] = (csrc, child_uniforms)
+
     request = ShaderRenderRequest(
         shader_path=Path(args.sksl),
         output_path=Path(args.output),
@@ -83,6 +150,7 @@ def main():
         child_images=child_images,
         uniforms=uniforms,
         raw_child_names=raw_child_names,
+        child_sksl=child_sksl if child_sksl else None,
     )
 
     try:

@@ -1,0 +1,30 @@
+uniform shader srcImageShader;
+uniform float2 scaleAnchor;
+uniform float2 scaleSize;
+uniform float2 rectOffset;
+uniform float radius;
+uniform float sampleCount;
+
+half4 main(float2 coord)
+{
+    float2 scaleSizeStep = (scaleSize - 1.0) / sampleCount * radius;
+    float2 rectOffsetStep = rectOffset / sampleCount * radius;
+    float2 samplingOffset = (coord - scaleAnchor) * scaleSizeStep + rectOffsetStep;
+
+    half4 color = srcImageShader.eval(coord) * 0.11;
+
+    float remainingWeight = 0.89;
+    float baseWeight = remainingWeight * 2.0 / (sampleCount + 1.0);
+    float weightStep = baseWeight / sampleCount;
+    float weight = baseWeight;
+    int sampleCountInt = int(sampleCount);
+
+    for (int i = 0; i < 50; i++) {
+        if (i >= sampleCountInt) break;
+        float2 offsetCoord = coord + samplingOffset * float(i + 1);
+        color += srcImageShader.eval(offsetCoord) * weight;
+        weight -= weightStep;
+    }
+
+    return color;
+}

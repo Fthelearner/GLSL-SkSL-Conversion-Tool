@@ -1,0 +1,463 @@
+results/sksltoglsl/test/heat_distortion_filter__heat-distortion/v1/code/heat_distortion_filter__heat-distortion.glsl
+Shader version: 450
+0:? Sequence
+0:9  Function Definition: perlinNoise_hh2(vf2; ( global float)
+0:9    Function Parameters: 
+0:9      'p' ( in 2-component vector of float)
+0:10    Sequence
+0:10      Sequence
+0:10        move second child to first child ( temp 2-component vector of float)
+0:10          'i' ( temp 2-component vector of float)
+0:10          Floor ( global 2-component vector of float)
+0:10            'p' ( in 2-component vector of float)
+0:11      Sequence
+0:11        move second child to first child ( temp 2-component vector of float)
+0:11          'f' ( temp 2-component vector of float)
+0:11          Fraction ( global 2-component vector of float)
+0:11            'p' ( in 2-component vector of float)
+0:12      Sequence
+0:12        move second child to first child ( temp 2-component vector of float)
+0:12          'u' ( temp 2-component vector of float)
+0:12          component-wise multiply ( temp 2-component vector of float)
+0:12            component-wise multiply ( temp 2-component vector of float)
+0:12              'f' ( temp 2-component vector of float)
+0:12              'f' ( temp 2-component vector of float)
+0:12            subtract ( temp 2-component vector of float)
+0:12              Constant:
+0:12                3.000000
+0:12              vector-scale ( temp 2-component vector of float)
+0:12                Constant:
+0:12                  2.000000
+0:12                'f' ( temp 2-component vector of float)
+0:13      Sequence
+0:13        move second child to first child ( temp float)
+0:13          '_0_angle' ( temp float)
+0:13          component-wise multiply ( temp float)
+0:13            Fraction ( global float)
+0:13              component-wise multiply ( temp float)
+0:13                sine ( global float)
+0:13                  dot-product ( global float)
+0:13                    'i' ( temp 2-component vector of float)
+0:13                    Constant:
+0:13                      12.989800
+0:13                      78.233000
+0:13                Constant:
+0:13                  43758.546900
+0:13            Constant:
+0:13              6.283185
+0:14      Sequence
+0:14        move second child to first child ( temp 2-component vector of float)
+0:14          'grad00' ( temp 2-component vector of float)
+0:14          Construct vec2 ( temp 2-component vector of float)
+0:14            cosine ( global float)
+0:14              '_0_angle' ( temp float)
+0:14            sine ( global float)
+0:14              '_0_angle' ( temp float)
+0:15      Sequence
+0:15        move second child to first child ( temp float)
+0:15          '_1_angle' ( temp float)
+0:15          component-wise multiply ( temp float)
+0:15            Fraction ( global float)
+0:15              component-wise multiply ( temp float)
+0:15                sine ( global float)
+0:15                  dot-product ( global float)
+0:15                    add ( temp 2-component vector of float)
+0:15                      'i' ( temp 2-component vector of float)
+0:15                      Constant:
+0:15                        1.000000
+0:15                        0.000000
+0:15                    Constant:
+0:15                      12.989800
+0:15                      78.233000
+0:15                Constant:
+0:15                  43758.546900
+0:15            Constant:
+0:15              6.283185
+0:16      Sequence
+0:16        move second child to first child ( temp 2-component vector of float)
+0:16          'grad10' ( temp 2-component vector of float)
+0:16          Construct vec2 ( temp 2-component vector of float)
+0:16            cosine ( global float)
+0:16              '_1_angle' ( temp float)
+0:16            sine ( global float)
+0:16              '_1_angle' ( temp float)
+0:17      Sequence
+0:17        move second child to first child ( temp float)
+0:17          '_2_angle' ( temp float)
+0:17          component-wise multiply ( temp float)
+0:17            Fraction ( global float)
+0:17              component-wise multiply ( temp float)
+0:17                sine ( global float)
+0:17                  dot-product ( global float)
+0:17                    add ( temp 2-component vector of float)
+0:17                      'i' ( temp 2-component vector of float)
+0:17                      Constant:
+0:17                        0.000000
+0:17                        1.000000
+0:17                    Constant:
+0:17                      12.989800
+0:17                      78.233000
+0:17                Constant:
+0:17                  43758.546900
+0:17            Constant:
+0:17              6.283185
+0:18      Sequence
+0:18        move second child to first child ( temp 2-component vector of float)
+0:18          'grad01' ( temp 2-component vector of float)
+0:18          Construct vec2 ( temp 2-component vector of float)
+0:18            cosine ( global float)
+0:18              '_2_angle' ( temp float)
+0:18            sine ( global float)
+0:18              '_2_angle' ( temp float)
+0:19      Sequence
+0:19        move second child to first child ( temp float)
+0:19          '_3_angle' ( temp float)
+0:19          component-wise multiply ( temp float)
+0:19            Fraction ( global float)
+0:19              component-wise multiply ( temp float)
+0:19                sine ( global float)
+0:19                  dot-product ( global float)
+0:19                    add ( temp 2-component vector of float)
+0:19                      'i' ( temp 2-component vector of float)
+0:19                      Constant:
+0:19                        1.000000
+0:19                        1.000000
+0:19                    Constant:
+0:19                      12.989800
+0:19                      78.233000
+0:19                Constant:
+0:19                  43758.546900
+0:19            Constant:
+0:19              6.283185
+0:20      Sequence
+0:20        move second child to first child ( temp 2-component vector of float)
+0:20          'grad11' ( temp 2-component vector of float)
+0:20          Construct vec2 ( temp 2-component vector of float)
+0:20            cosine ( global float)
+0:20              '_3_angle' ( temp float)
+0:20            sine ( global float)
+0:20              '_3_angle' ( temp float)
+0:21      Sequence
+0:21        move second child to first child ( temp 2-component vector of float)
+0:21          'd00' ( temp 2-component vector of float)
+0:21          'f' ( temp 2-component vector of float)
+0:22      Sequence
+0:22        move second child to first child ( temp 2-component vector of float)
+0:22          'd10' ( temp 2-component vector of float)
+0:22          subtract ( temp 2-component vector of float)
+0:22            'f' ( temp 2-component vector of float)
+0:22            Constant:
+0:22              1.000000
+0:22              0.000000
+0:23      Sequence
+0:23        move second child to first child ( temp 2-component vector of float)
+0:23          'd01' ( temp 2-component vector of float)
+0:23          subtract ( temp 2-component vector of float)
+0:23            'f' ( temp 2-component vector of float)
+0:23            Constant:
+0:23              0.000000
+0:23              1.000000
+0:24      Sequence
+0:24        move second child to first child ( temp 2-component vector of float)
+0:24          'd11' ( temp 2-component vector of float)
+0:24          subtract ( temp 2-component vector of float)
+0:24            'f' ( temp 2-component vector of float)
+0:24            Constant:
+0:24              1.000000
+0:24              1.000000
+0:25      Sequence
+0:25        move second child to first child ( temp float)
+0:25          'dot00' ( temp float)
+0:25          dot-product ( global float)
+0:25            'grad00' ( temp 2-component vector of float)
+0:25            'd00' ( temp 2-component vector of float)
+0:26      Sequence
+0:26        move second child to first child ( temp float)
+0:26          'dot10' ( temp float)
+0:26          dot-product ( global float)
+0:26            'grad10' ( temp 2-component vector of float)
+0:26            'd10' ( temp 2-component vector of float)
+0:27      Sequence
+0:27        move second child to first child ( temp float)
+0:27          'dot01' ( temp float)
+0:27          dot-product ( global float)
+0:27            'grad01' ( temp 2-component vector of float)
+0:27            'd01' ( temp 2-component vector of float)
+0:28      Sequence
+0:28        move second child to first child ( temp float)
+0:28          'dot11' ( temp float)
+0:28          dot-product ( global float)
+0:28            'grad11' ( temp 2-component vector of float)
+0:28            'd11' ( temp 2-component vector of float)
+0:29      Branch: Return with expression
+0:29        add ( temp float)
+0:29          component-wise multiply ( temp float)
+0:29            mix ( global float)
+0:29              mix ( global float)
+0:29                'dot00' ( temp float)
+0:29                'dot10' ( temp float)
+0:29                direct index ( temp float)
+0:29                  'u' ( temp 2-component vector of float)
+0:29                  Constant:
+0:29                    0 (const int)
+0:29              mix ( global float)
+0:29                'dot01' ( temp float)
+0:29                'dot11' ( temp float)
+0:29                direct index ( temp float)
+0:29                  'u' ( temp 2-component vector of float)
+0:29                  Constant:
+0:29                    0 (const int)
+0:29              direct index ( temp float)
+0:29                'u' ( temp 2-component vector of float)
+0:29                Constant:
+0:29                  1 (const int)
+0:29            Constant:
+0:29              0.500000
+0:29          Constant:
+0:29            0.500000
+0:31  Function Definition: main( ( global void)
+0:31    Function Parameters: 
+0:32    Sequence
+0:32      Sequence
+0:32        move second child to first child ( temp 2-component vector of float)
+0:32          'fragCoord' ( temp 2-component vector of float)
+0:32          vector swizzle ( temp 2-component vector of float)
+0:32            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:32            Sequence
+0:32              Constant:
+0:32                0 (const int)
+0:32              Constant:
+0:32                1 (const int)
+0:33      Sequence
+0:33        move second child to first child ( temp 2-component vector of float)
+0:33          'uv' ( temp 2-component vector of float)
+0:33          divide ( temp 2-component vector of float)
+0:33            'fragCoord' ( temp 2-component vector of float)
+0:33            'iResolution' ( uniform 2-component vector of float)
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          'time' ( temp float)
+0:34          'progress' ( uniform float)
+0:39      Sequence
+0:39        move second child to first child ( temp float)
+0:39          '_4_freq' ( temp float)
+0:39          Constant:
+0:39            1.000000
+0:40      Sequence
+0:40        move second child to first child ( temp float)
+0:40          '_5_value' ( temp float)
+0:40          Constant:
+0:40            0.000000
+0:41      Sequence
+0:41        move second child to first child ( temp float)
+0:41          '_6_amp' ( temp float)
+0:41          Constant:
+0:41            1.000000
+0:45      Sequence
+0:45        Sequence
+0:45          move second child to first child ( temp int)
+0:45            '_10_i' ( temp int)
+0:45            Constant:
+0:45              0 (const int)
+0:45        Loop with condition tested first
+0:45          Loop Condition
+0:45          Compare Less Than ( temp bool)
+0:45            '_10_i' ( temp int)
+0:45            Constant:
+0:45              4 (const int)
+0:45          Loop Body
+0:46          Sequence
+0:46            add second child into first child ( temp float)
+0:46              '_5_value' ( temp float)
+0:46              component-wise multiply ( temp float)
+0:46                Absolute value ( global float)
+0:46                  subtract ( temp float)
+0:46                    component-wise multiply ( temp float)
+0:46                      Function Call: perlinNoise_hh2(vf2; ( global float)
+0:46                        vector-scale ( temp 2-component vector of float)
+0:46                          add ( temp 2-component vector of float)
+0:46                            vector-scale ( temp 2-component vector of float)
+0:46                              vector-scale ( temp 2-component vector of float)
+0:46                                'uv' ( temp 2-component vector of float)
+0:46                                'noiseScale' ( uniform float)
+0:46                              Constant:
+0:46                                2.000000
+0:46                            Construct vec2 ( temp 2-component vector of float)
+0:46                              component-wise multiply ( temp float)
+0:46                                'time' ( temp float)
+0:46                                Constant:
+0:46                                  0.400000
+0:46                              Constant:
+0:46                                0.000000
+0:46                          '_4_freq' ( temp float)
+0:46                      Constant:
+0:46                        2.000000
+0:46                    Constant:
+0:46                      1.000000
+0:46                '_6_amp' ( temp float)
+0:47            multiply second child into first child ( temp float)
+0:47              '_4_freq' ( temp float)
+0:47              Constant:
+0:47                2.000000
+0:48            multiply second child into first child ( temp float)
+0:48              '_6_amp' ( temp float)
+0:48              Constant:
+0:48                0.500000
+0:45          Loop Terminal Expression
+0:45          Pre-Increment ( temp int)
+0:45            '_10_i' ( temp int)
+0:50      Sequence
+0:50        move second child to first child ( temp float)
+0:50          'turb' ( temp float)
+0:50          '_5_value' ( temp float)
+0:51      Sequence
+0:51        move second child to first child ( temp float)
+0:51          'rise' ( temp float)
+0:51          add ( temp float)
+0:51            component-wise multiply ( temp float)
+0:51              sine ( global float)
+0:51                add ( temp float)
+0:51                  component-wise multiply ( temp float)
+0:51                    direct index ( temp float)
+0:51                      'uv' ( temp 2-component vector of float)
+0:51                      Constant:
+0:51                        1 (const int)
+0:51                    Constant:
+0:51                      15.000000
+0:51                  'time' ( temp float)
+0:51              Constant:
+0:51                0.500000
+0:51            Constant:
+0:51              0.500000
+0:52      Sequence
+0:52        move second child to first child ( temp 2-component vector of float)
+0:52          'distortion' ( temp 2-component vector of float)
+0:52          Construct vec2 ( temp 2-component vector of float)
+0:52            subtract ( temp float)
+0:52              component-wise multiply ( temp float)
+0:52                Function Call: perlinNoise_hh2(vf2; ( global float)
+0:52                  add ( temp 2-component vector of float)
+0:52                    vector-scale ( temp 2-component vector of float)
+0:52                      vector-scale ( temp 2-component vector of float)
+0:52                        'uv' ( temp 2-component vector of float)
+0:52                        'noiseScale' ( uniform float)
+0:52                      Constant:
+0:52                        3.000000
+0:52                    Construct vec2 ( temp 2-component vector of float)
+0:52                      component-wise multiply ( temp float)
+0:52                        component-wise multiply ( temp float)
+0:52                          'time' ( temp float)
+0:52                          Constant:
+0:52                            0.400000
+0:52                        Constant:
+0:52                          0.600000
+0:52                      Constant:
+0:52                        0.000000
+0:52                Constant:
+0:52                  0.020000
+0:52              Constant:
+0:52                0.010000
+0:52            component-wise multiply ( temp float)
+0:52              add ( temp float)
+0:52                component-wise multiply ( temp float)
+0:52                  'turb' ( temp float)
+0:52                  subtract ( temp float)
+0:52                    Constant:
+0:52                      1.000000
+0:52                    'riseWeight' ( uniform float)
+0:52                component-wise multiply ( temp float)
+0:52                  'rise' ( temp float)
+0:52                  'riseWeight' ( uniform float)
+0:52              Constant:
+0:52                0.030000
+0:53      Sequence
+0:53        move second child to first child ( temp 2-component vector of float)
+0:53          'detailDistort' ( temp 2-component vector of float)
+0:53          Construct vec2 ( temp 2-component vector of float)
+0:53            component-wise multiply ( temp float)
+0:53              Function Call: perlinNoise_hh2(vf2; ( global float)
+0:53                add ( temp 2-component vector of float)
+0:53                  vector-scale ( temp 2-component vector of float)
+0:53                    vector-scale ( temp 2-component vector of float)
+0:53                      'uv' ( temp 2-component vector of float)
+0:53                      'noiseScale' ( uniform float)
+0:53                    Constant:
+0:53                      10.000000
+0:53                  Construct vec2 ( temp 2-component vector of float)
+0:53                    Constant:
+0:53                      0.000000
+0:53                    component-wise multiply ( temp float)
+0:53                      component-wise multiply ( temp float)
+0:53                        'time' ( temp float)
+0:53                        Constant:
+0:53                          0.400000
+0:53                      Constant:
+0:53                        2.400000
+0:53              Constant:
+0:53                0.005000
+0:53            component-wise multiply ( temp float)
+0:53              Function Call: perlinNoise_hh2(vf2; ( global float)
+0:53                add ( temp 2-component vector of float)
+0:53                  vector-scale ( temp 2-component vector of float)
+0:53                    vector-scale ( temp 2-component vector of float)
+0:53                      'uv' ( temp 2-component vector of float)
+0:53                      'noiseScale' ( uniform float)
+0:53                    Constant:
+0:53                      8.000000
+0:53                  Construct vec2 ( temp 2-component vector of float)
+0:53                    component-wise multiply ( temp float)
+0:53                      component-wise multiply ( temp float)
+0:53                        'time' ( temp float)
+0:53                        Constant:
+0:53                          0.400000
+0:53                      Constant:
+0:53                        1.800000
+0:53                    Constant:
+0:53                      0.000000
+0:53              Constant:
+0:53                0.005000
+0:54      add second child into first child ( temp 2-component vector of float)
+0:54        'distortion' ( temp 2-component vector of float)
+0:54        'detailDistort' ( temp 2-component vector of float)
+0:55      Sequence
+0:55        move second child to first child ( temp 2-component vector of float)
+0:55          'distortedUV' ( temp 2-component vector of float)
+0:55          clamp ( global 2-component vector of float)
+0:55            add ( temp 2-component vector of float)
+0:55              'uv' ( temp 2-component vector of float)
+0:55              vector-scale ( temp 2-component vector of float)
+0:55                'distortion' ( temp 2-component vector of float)
+0:55                'intensity' ( uniform float)
+0:55            Constant:
+0:55              0.001000
+0:55              0.001000
+0:55            Constant:
+0:55              0.999000
+0:55              0.999000
+0:56      Sequence
+0:56        move second child to first child ( temp 4-component vector of float)
+0:56          'finalColor' ( temp 4-component vector of float)
+0:56          texture ( global 4-component vector of float)
+0:56            'image' ( uniform sampler2D)
+0:56            divide ( temp 2-component vector of float)
+0:56              component-wise multiply ( temp 2-component vector of float)
+0:56                'distortedUV' ( temp 2-component vector of float)
+0:56                'iResolution' ( uniform 2-component vector of float)
+0:56              Convert int to float ( temp 2-component vector of float)
+0:56                textureSize ( global 2-component vector of int)
+0:56                  'image' ( uniform sampler2D)
+0:56                  Constant:
+0:56                    0 (const int)
+0:57      move second child to first child ( temp 4-component vector of float)
+0:57        'FragColor' ( out 4-component vector of float)
+0:57        'finalColor' ( temp 4-component vector of float)
+0:58      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'image' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'progress' ( uniform float)
+0:?     'intensity' ( uniform float)
+0:?     'noiseScale' ( uniform float)
+0:?     'riseWeight' ( uniform float)
+

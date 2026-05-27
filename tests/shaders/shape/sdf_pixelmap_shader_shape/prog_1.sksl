@@ -1,0 +1,27 @@
+uniform shader pixelmapShader;
+uniform vec2 pixelmapSize;
+
+vec4 SafeFetch(vec2 fragCoord) {
+    if (fragCoord.x < 0 || fragCoord.x >= pixelmapSize.x || fragCoord.y < 0 || fragCoord.y >= pixelmapSize.y) {
+        return vec4(0.5, 0.5, 0.0, 1);
+    }
+    return pixelmapShader.eval(fragCoord);
+}
+
+uniform vec2 centerPos;
+const float N_SCALE = 2048.0;
+
+float EncodeDir(vec2 dir)
+{
+    float xPos = floor(dir.x + N_SCALE);
+    float yPos = floor(dir.y + N_SCALE);
+    return xPos + (yPos / N_SCALE) / 2.0;
+}
+
+vec4 main(vec2 fragCoord)
+{
+    // Gradient(rg channel) will be mapped from [0, 1] to [-1, 1]
+    // SDF(a channel) will be mapped from [0, 1] to [-63.5, 64]
+    vec4 pixelmapShape = SafeFetch(fragCoord);
+    return half4(pixelmapShape.xy * 2 - 1, EncodeDir(fragCoord - centerPos), pixelmapShape.a * 127.5 - 63.5);
+}

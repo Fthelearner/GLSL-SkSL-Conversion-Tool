@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "metadata": {
+    "source_program_kind": "kRuntimeShader",
+    "shader_stage": "kFragment",
+    "glsl_dialect": "kOpenGLCore",
+    "glsl_version": 400,
+    "runtime_effect_mode": true,
+    "use_rt_flip": true,
+    "use_fragcoord_workaround": false
+  },
+  "entries": [
+    {
+      "kind": "variable_type",
+      "helper_key": "runtime_effect_child",
+      "variable_name": "blur_tex",
+      "sksl_type": "shader",
+      "glsl_type": "sampler2D"
+    },
+    {
+      "kind": "variable_type",
+      "helper_key": "runtime_effect_child",
+      "variable_name": "original_tex",
+      "sksl_type": "shader",
+      "glsl_type": "sampler2D"
+    },
+    {
+      "kind": "variable_type",
+      "helper_key": "runtime_effect_child",
+      "variable_name": "blur_mask",
+      "sksl_type": "shader",
+      "glsl_type": "sampler2D"
+    },
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "blur_mask",
+      "sksl_method": "eval",
+      "glsl_function": "texture",
+      "child_type": "kShader"
+    },
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "original_tex",
+      "sksl_method": "eval",
+      "glsl_function": "texture",
+      "child_type": "kShader"
+    },
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "blur_tex",
+      "sksl_method": "eval",
+      "glsl_function": "texture",
+      "child_type": "kShader"
+    }
+  ]
+}

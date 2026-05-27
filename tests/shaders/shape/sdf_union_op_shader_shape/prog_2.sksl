@@ -1,0 +1,17 @@
+uniform float spacing;
+uniform shader left;
+uniform shader right;
+
+vec4 sdgSmoothUnion(vec4 d1, vec4 d2, float k)
+{
+    k *= 4.0;
+    float h = max(k - abs(d1.a - d2.a), 0.0) / (2.0 * k);
+    return vec4(mix(d1.xyz, d2.xyz, (d1.a < d2.a) ? h : 1.0 - h), min(d1.a, d2.a) - h * h * k);
+}
+
+half4 main(vec2 fragCoord)
+{
+    vec4 leftShape = left.eval(fragCoord);
+    vec4 rightShape = right.eval(fragCoord);
+    return sdgSmoothUnion(leftShape, rightShape, spacing);
+}

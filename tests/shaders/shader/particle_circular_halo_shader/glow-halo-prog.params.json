@@ -1,0 +1,12 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ]
+  }
+}

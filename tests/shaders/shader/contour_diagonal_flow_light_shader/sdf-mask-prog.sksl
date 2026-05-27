@@ -1,0 +1,16 @@
+uniform shader precalculationImage;
+
+float DecodeFloat(vec2 rg)
+{
+    return rg.x + rg.y / 255.0; // 255.0 = maximum value representable in 8-bit channel
+}
+
+vec4 main(vec2 fragCoord)
+{
+    float sdf = DecodeFloat(precalculationImage.eval(fragCoord).rg) * 3.0; // 3.0: decode the sdf
+    float contourWeight = exp(-sdf * 20.0); // 20.0: the greater, the thinner core
+    if (precalculationImage.eval(fragCoord).a < 0.5) { // 0.5: discard the transparent pixels
+        contourWeight = 0.0;
+    }
+    return vec4(contourWeight, 0.0, 0.0, 1.0);
+}

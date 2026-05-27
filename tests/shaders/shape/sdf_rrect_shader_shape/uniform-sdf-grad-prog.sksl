@@ -1,0 +1,42 @@
+uniform vec2 centerPos;
+uniform vec2 halfSize;
+uniform float radius;
+
+const float N_EPS = 1e-6;
+const float N_SCALE = 2048.0;
+
+vec2 safeNorm(vec2 v)
+{
+    return v / max(length(v), N_EPS);
+}
+
+vec3 sdgRRect(vec2 p, vec2 b, float r)
+{
+    vec2 s = sign(p);
+    vec2 w = abs(p) - b + r;
+    float g = max(w.x, w.y);
+    vec2 q = max(w, 0.0);
+    float l = length(q);
+    float outside = step(0.0, g);
+    float sd = mix(g, l, outside) - r;
+    float pickX = step(w.y, w.x);
+    vec2 gradIn = vec2(pickX, 1.0 - pickX);
+    vec2 gradOut = safeNorm(q);
+    vec2 grad = s * mix(gradIn, gradOut, outside);
+    return vec3(sd, grad);
+}
+
+float EncodeDir(vec2 dir)
+{
+    float xPos = floor(dir.x + N_SCALE);
+    float yPos = floor(dir.y + N_SCALE);
+    return xPos + (yPos / N_SCALE) / 2.0;
+}
+
+vec4 main(float2 fragCoord)
+{
+    vec2 posFromCenter = fragCoord - centerPos;
+    vec3 sdg = sdgRRect(posFromCenter, halfSize, radius);
+    float packedDir = EncodeDir(posFromCenter);
+    return vec4(sdg.yz, packedDir, sdg.x);
+}

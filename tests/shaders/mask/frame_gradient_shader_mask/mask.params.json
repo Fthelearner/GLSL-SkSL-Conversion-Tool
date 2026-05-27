@@ -1,0 +1,52 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "innerBezierCoeff": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "outerBezierCoeff": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "innerFrameWidth": 0.02,
+    "outerFrameWidth": 0.02,
+    "invInnerFrameWidth": 50.0,
+    "invOuterFrameWidth": 50.0,
+    "boxHalfSize": [
+      0.3,
+      0.2
+    ],
+    "clampedCornerRadius": 0.05,
+    "rectPos": [
+      0.0,
+      0.0
+    ],
+    "localBasis0": [
+      1.0,
+      0.0
+    ],
+    "localBasis1": [
+      1.0,
+      0.0
+    ],
+    "axialFeatherStrength": 0.5,
+    "axialEnable": 0.0,
+    "axialCoordWeights": [
+      0.5,
+      0.5
+    ],
+    "axialInvSpan": 2.0,
+    "axialRiseEnd": 0.2,
+    "axialFallStart": 0.8
+  }
+}

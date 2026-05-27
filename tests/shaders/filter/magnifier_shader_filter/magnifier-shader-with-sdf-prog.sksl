@@ -1,0 +1,120 @@
+uniform shader imageShader;
+uniform shader sdfShader;
+uniform half2 iResolution;
+
+uniform half factor;
+uniform half2 zoomOffset;
+uniform half borderSize;
+uniform half4 borderColor;
+uniform half shadowSize;
+uniform half shadowStrength;
+
+const half2 boxPos = half2(0.5, 0.5);
+const half3 incident = half3(0.0, 0.0, -1.0);
+const half aa = 1.0;
+const half dispScale = 0.5;
+const half dispersion = 0.15;
+const half index = 1.5;
+const half thickness = 8.0;
+const half baseHeight = 64.0;
+
+// 常量预计算（编译期计算，无运行时开销）
+const half thicknessSq = thickness * thickness;
+const half invIndex = 1.0 / index;
+const half invIndexSubDisp = 1.0 / (index - dispersion);
+const half invIndexAddDisp = 1.0 / (index + dispersion);
+const half minNdotV = 0.05;
+
+half height(half sd)
+{
+    if (sd >= 0.0) return 0.0;
+    if (sd < -thickness) return thickness;
+    half x = thickness + sd;
+    return sqrt(thicknessSq - x * x); // 用预计算平方
+}
+
+half4 bg(half2 uv)
+{
+    return imageShader.eval(uv * iResolution);
+}
+
+half4 getRefractColor(half2 fragCoord, half3 normal, half h)
+{
+    half2 res = iResolution.xy;
+    half3 refr = refract(incident, normal, invIndex); // 预计算除法
+    half ndotv = max(dot(incident, refr), minNdotV);
+    half refractLen = (h + baseHeight) / ndotv;
+
+    half2 uv = (fragCoord + refr.xy * refractLen) / res;
+    uv = (uv - boxPos + zoomOffset) / factor + boxPos;
+    return bg(uv);
+}
+
+half4 getDispColor(half2 fragCoord, half3 normal, half refractLen)
+{
+    half2 res = iResolution.xy;
+
+    half3 refrR = refract(incident, normal, invIndexSubDisp);
+    half3 refrB = refract(incident, normal, invIndexAddDisp);
+
+    half2 uvR = (fragCoord + refrR.xy*refractLen)/res;
+    half2 uvB = (fragCoord + refrB.xy*refractLen)/res;
+
+    uvR = (uvR - boxPos + zoomOffset)/factor + boxPos;
+    uvB = (uvB - boxPos + zoomOffset)/factor + boxPos;
+
+    return half4(bg(uvR).r, 0.0, bg(uvB).b, 1.0);
+}
+
+half4 main(float2 fragCoord)
+{
+    half4 sdfTex = sdfShader.eval(fragCoord);
+    // PNG stores [0,1]; un-remap: SDF distance and normal direction
+    half rawDist = (sdfTex.a - 0.5) * 600.0;
+    half4 sdfResult = half4(sdfTex.xy * 2.0 - 1.0, sdfTex.z, rawDist);
+    half sd = rawDist * dispScale;
+
+    // 1. 阴影
+    half shadow = 1.0 - smoothstep(0.0, shadowSize, rawDist);
+    half4 fragColor = half4(0.0, 0.0, 0.0, shadow * shadowStrength);
+
+    // 2. 只在内部计算
+    if (sd < 0.0)
+    {
+        if (sd < -thickness)
+        {
+            half2 uv = fragCoord / iResolution.xy;
+            half2 zoomUV = (uv - boxPos + zoomOffset) / factor + boxPos;
+            return bg(zoomUV);
+        }
+        half shapeMask = 1.0 - smoothstep(-aa, aa, sd);
+        half2 preNormal = normalize(sdfResult.xy);
+        half nc = clamp((thickness + sd) / thickness, 0.0, 1.0);
+        half3 normal = normalize(half3(preNormal * nc, sqrt(1.0 - nc * nc)));
+
+        half h = height(sd);
+        fragColor = getRefractColor(fragCoord, normal, h);
+
+        // 色散只在边缘计算
+        half edgeFactor = smoothstep(-15.0, 0.0, sd);
+        if (edgeFactor > 0.001)
+        {
+            half3 refr = refract(incident, normal, invIndex);
+            half ndotv = max(dot(incident, refr), minNdotV);
+            half refractLen = (h + baseHeight) / ndotv;
+            half4 dispColor = getDispColor(fragCoord, normal, refractLen);
+            dispColor.g = fragColor.g;
+            fragColor = mix(fragColor, dispColor, edgeFactor);
+        }
+
+        fragColor *= shapeMask;
+    }
+
+    // 3. 边框
+    half border = smoothstep(-borderSize, -borderSize + aa, rawDist) * smoothstep(aa, 0.0, rawDist);
+    fragColor = mix(fragColor, half4(borderColor.rgb, 1.0), border * borderColor.a);
+
+    // Composite lens effect onto background (for standalone PNG rendering)
+    half4 bgColor = bg(fragCoord / iResolution);
+    return mix(bgColor, fragColor, fragColor.a);
+}

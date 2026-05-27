@@ -1,0 +1,413 @@
+results/sksltoglsl/test/color_gradient_shader_filter__with-mask/v1/code/color_gradient_shader_filter__with-mask.glsl
+Shader version: 450
+0:? Sequence
+0:42  Function Definition: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:42    Function Parameters: 
+0:42      'uv' ( in 2-component vector of float)
+0:42      'positions' ( in 2-component vector of float)
+0:42      'strength' ( in float)
+0:43    Sequence
+0:43      multiply second child into first child ( temp float)
+0:43        direct index ( temp float)
+0:43          'positions' ( in 2-component vector of float)
+0:43          Constant:
+0:43            0 (const int)
+0:43        divide ( temp float)
+0:43          direct index ( temp float)
+0:43            'iResolution' ( uniform 2-component vector of float)
+0:43            Constant:
+0:43              0 (const int)
+0:43          direct index ( temp float)
+0:43            'iResolution' ( uniform 2-component vector of float)
+0:43            Constant:
+0:43              1 (const int)
+0:44      Sequence
+0:44        move second child to first child ( temp 2-component vector of float)
+0:44          'dist' ( temp 2-component vector of float)
+0:44          subtract ( temp 2-component vector of float)
+0:44            'uv' ( in 2-component vector of float)
+0:44            'positions' ( in 2-component vector of float)
+0:45      Sequence
+0:45        move second child to first child ( temp float)
+0:45          'weight' ( temp float)
+0:45          divide ( temp float)
+0:45            'strength' ( in float)
+0:45            add ( temp float)
+0:45              dot-product ( global float)
+0:45                'dist' ( temp 2-component vector of float)
+0:45                'dist' ( temp 2-component vector of float)
+0:45              Constant:
+0:45                0.000100
+0:46      Branch: Return with expression
+0:46        'weight' ( temp float)
+0:48  Function Definition: main( ( global void)
+0:48    Function Parameters: 
+0:49    Sequence
+0:49      Sequence
+0:49        move second child to first child ( temp 2-component vector of float)
+0:49          'fragCoord' ( temp 2-component vector of float)
+0:49          vector swizzle ( temp 2-component vector of float)
+0:49            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:49            Sequence
+0:49              Constant:
+0:49                0 (const int)
+0:49              Constant:
+0:49                1 (const int)
+0:50      Sequence
+0:50        move second child to first child ( temp 2-component vector of float)
+0:50          'uv' ( temp 2-component vector of float)
+0:50          divide ( temp 2-component vector of float)
+0:50            'fragCoord' ( temp 2-component vector of float)
+0:50            'iResolution' ( uniform 2-component vector of float)
+0:51      Sequence
+0:51        move second child to first child ( temp float)
+0:51          'screenRatio' ( temp float)
+0:51          divide ( temp float)
+0:51            direct index ( temp float)
+0:51              'iResolution' ( uniform 2-component vector of float)
+0:51              Constant:
+0:51                0 (const int)
+0:51            direct index ( temp float)
+0:51              'iResolution' ( uniform 2-component vector of float)
+0:51              Constant:
+0:51                1 (const int)
+0:52      multiply second child into first child ( temp float)
+0:52        direct index ( temp float)
+0:52          'uv' ( temp 2-component vector of float)
+0:52          Constant:
+0:52            0 (const int)
+0:52        'screenRatio' ( temp float)
+0:53      Sequence
+0:53        move second child to first child ( temp float)
+0:53          'totalWeight' ( temp float)
+0:53          Constant:
+0:53            0.000000
+0:54      Sequence
+0:54        move second child to first child ( temp 4-component vector of float)
+0:54          'blendColor' ( temp 4-component vector of float)
+0:54          Constant:
+0:54            0.000000
+0:54            0.000000
+0:54            0.000000
+0:54            0.000000
+0:55      Sequence
+0:55        move second child to first child ( temp 4-component vector of float)
+0:55          'finalColor' ( temp 4-component vector of float)
+0:55          Constant:
+0:55            0.000000
+0:55            0.000000
+0:55            0.000000
+0:55            0.000000
+0:56      Sequence
+0:56        move second child to first child ( temp float)
+0:56          'maskValue' ( temp float)
+0:56          direct index ( temp float)
+0:56            texture ( global 4-component vector of float)
+0:56              'maskImageShader' ( uniform sampler2D)
+0:56              divide ( temp 2-component vector of float)
+0:56                'fragCoord' ( temp 2-component vector of float)
+0:56                Convert int to float ( temp 2-component vector of float)
+0:56                  textureSize ( global 2-component vector of int)
+0:56                    'maskImageShader' ( uniform sampler2D)
+0:56                    Constant:
+0:56                      0 (const int)
+0:56            Constant:
+0:56              3 (const int)
+0:57      Test condition and select ( temp void)
+0:57        Condition
+0:57        Compare Greater Than ( temp bool)
+0:57          'maskValue' ( temp float)
+0:57          Constant:
+0:57            0.000000
+0:57        true case
+0:58        Sequence
+0:58          Sequence
+0:58            move second child to first child ( temp float)
+0:58              'w0' ( temp float)
+0:58              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:58                'uv' ( temp 2-component vector of float)
+0:58                'position0' ( uniform 2-component vector of float)
+0:58                'strength0' ( uniform float)
+0:59          add second child into first child ( temp float)
+0:59            'totalWeight' ( temp float)
+0:59            'w0' ( temp float)
+0:60          add second child into first child ( temp 4-component vector of float)
+0:60            'blendColor' ( temp 4-component vector of float)
+0:60            vector-scale ( temp 4-component vector of float)
+0:60              'color0' ( uniform 4-component vector of float)
+0:60              'w0' ( temp float)
+0:61          Sequence
+0:61            move second child to first child ( temp float)
+0:61              'w1' ( temp float)
+0:61              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:61                'uv' ( temp 2-component vector of float)
+0:61                'position1' ( uniform 2-component vector of float)
+0:61                'strength1' ( uniform float)
+0:62          add second child into first child ( temp float)
+0:62            'totalWeight' ( temp float)
+0:62            'w1' ( temp float)
+0:63          add second child into first child ( temp 4-component vector of float)
+0:63            'blendColor' ( temp 4-component vector of float)
+0:63            vector-scale ( temp 4-component vector of float)
+0:63              'color1' ( uniform 4-component vector of float)
+0:63              'w1' ( temp float)
+0:64          Sequence
+0:64            move second child to first child ( temp float)
+0:64              'w2' ( temp float)
+0:64              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:64                'uv' ( temp 2-component vector of float)
+0:64                'position2' ( uniform 2-component vector of float)
+0:64                'strength2' ( uniform float)
+0:65          add second child into first child ( temp float)
+0:65            'totalWeight' ( temp float)
+0:65            'w2' ( temp float)
+0:66          add second child into first child ( temp 4-component vector of float)
+0:66            'blendColor' ( temp 4-component vector of float)
+0:66            vector-scale ( temp 4-component vector of float)
+0:66              'color2' ( uniform 4-component vector of float)
+0:66              'w2' ( temp float)
+0:67          Sequence
+0:67            move second child to first child ( temp float)
+0:67              'w3' ( temp float)
+0:67              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:67                'uv' ( temp 2-component vector of float)
+0:67                'position3' ( uniform 2-component vector of float)
+0:67                'strength3' ( uniform float)
+0:68          add second child into first child ( temp float)
+0:68            'totalWeight' ( temp float)
+0:68            'w3' ( temp float)
+0:69          add second child into first child ( temp 4-component vector of float)
+0:69            'blendColor' ( temp 4-component vector of float)
+0:69            vector-scale ( temp 4-component vector of float)
+0:69              'color3' ( uniform 4-component vector of float)
+0:69              'w3' ( temp float)
+0:70          Sequence
+0:70            move second child to first child ( temp float)
+0:70              'w4' ( temp float)
+0:70              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:70                'uv' ( temp 2-component vector of float)
+0:70                'position4' ( uniform 2-component vector of float)
+0:70                'strength4' ( uniform float)
+0:71          add second child into first child ( temp float)
+0:71            'totalWeight' ( temp float)
+0:71            'w4' ( temp float)
+0:72          add second child into first child ( temp 4-component vector of float)
+0:72            'blendColor' ( temp 4-component vector of float)
+0:72            vector-scale ( temp 4-component vector of float)
+0:72              'color4' ( uniform 4-component vector of float)
+0:72              'w4' ( temp float)
+0:73          Sequence
+0:73            move second child to first child ( temp float)
+0:73              'w5' ( temp float)
+0:73              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:73                'uv' ( temp 2-component vector of float)
+0:73                'position5' ( uniform 2-component vector of float)
+0:73                'strength5' ( uniform float)
+0:74          add second child into first child ( temp float)
+0:74            'totalWeight' ( temp float)
+0:74            'w5' ( temp float)
+0:75          add second child into first child ( temp 4-component vector of float)
+0:75            'blendColor' ( temp 4-component vector of float)
+0:75            vector-scale ( temp 4-component vector of float)
+0:75              'color5' ( uniform 4-component vector of float)
+0:75              'w5' ( temp float)
+0:76          Sequence
+0:76            move second child to first child ( temp float)
+0:76              'w6' ( temp float)
+0:76              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:76                'uv' ( temp 2-component vector of float)
+0:76                'position6' ( uniform 2-component vector of float)
+0:76                'strength6' ( uniform float)
+0:77          add second child into first child ( temp float)
+0:77            'totalWeight' ( temp float)
+0:77            'w6' ( temp float)
+0:78          add second child into first child ( temp 4-component vector of float)
+0:78            'blendColor' ( temp 4-component vector of float)
+0:78            vector-scale ( temp 4-component vector of float)
+0:78              'color6' ( uniform 4-component vector of float)
+0:78              'w6' ( temp float)
+0:79          Sequence
+0:79            move second child to first child ( temp float)
+0:79              'w7' ( temp float)
+0:79              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:79                'uv' ( temp 2-component vector of float)
+0:79                'position7' ( uniform 2-component vector of float)
+0:79                'strength7' ( uniform float)
+0:80          add second child into first child ( temp float)
+0:80            'totalWeight' ( temp float)
+0:80            'w7' ( temp float)
+0:81          add second child into first child ( temp 4-component vector of float)
+0:81            'blendColor' ( temp 4-component vector of float)
+0:81            vector-scale ( temp 4-component vector of float)
+0:81              'color7' ( uniform 4-component vector of float)
+0:81              'w7' ( temp float)
+0:82          Sequence
+0:82            move second child to first child ( temp float)
+0:82              'w8' ( temp float)
+0:82              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:82                'uv' ( temp 2-component vector of float)
+0:82                'position8' ( uniform 2-component vector of float)
+0:82                'strength8' ( uniform float)
+0:83          add second child into first child ( temp float)
+0:83            'totalWeight' ( temp float)
+0:83            'w8' ( temp float)
+0:84          add second child into first child ( temp 4-component vector of float)
+0:84            'blendColor' ( temp 4-component vector of float)
+0:84            vector-scale ( temp 4-component vector of float)
+0:84              'color8' ( uniform 4-component vector of float)
+0:84              'w8' ( temp float)
+0:85          Sequence
+0:85            move second child to first child ( temp float)
+0:85              'w9' ( temp float)
+0:85              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:85                'uv' ( temp 2-component vector of float)
+0:85                'position9' ( uniform 2-component vector of float)
+0:85                'strength9' ( uniform float)
+0:86          add second child into first child ( temp float)
+0:86            'totalWeight' ( temp float)
+0:86            'w9' ( temp float)
+0:87          add second child into first child ( temp 4-component vector of float)
+0:87            'blendColor' ( temp 4-component vector of float)
+0:87            vector-scale ( temp 4-component vector of float)
+0:87              'color9' ( uniform 4-component vector of float)
+0:87              'w9' ( temp float)
+0:88          Sequence
+0:88            move second child to first child ( temp float)
+0:88              'w10' ( temp float)
+0:88              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:88                'uv' ( temp 2-component vector of float)
+0:88                'position10' ( uniform 2-component vector of float)
+0:88                'strength10' ( uniform float)
+0:89          add second child into first child ( temp float)
+0:89            'totalWeight' ( temp float)
+0:89            'w10' ( temp float)
+0:90          add second child into first child ( temp 4-component vector of float)
+0:90            'blendColor' ( temp 4-component vector of float)
+0:90            vector-scale ( temp 4-component vector of float)
+0:90              'color10' ( uniform 4-component vector of float)
+0:90              'w10' ( temp float)
+0:91          Sequence
+0:91            move second child to first child ( temp float)
+0:91              'w11' ( temp float)
+0:91              Function Call: blendMultipleColorsByDistance_hh2h2h(vf2;vf2;f1; ( global float)
+0:91                'uv' ( temp 2-component vector of float)
+0:91                'position11' ( uniform 2-component vector of float)
+0:91                'strength11' ( uniform float)
+0:92          add second child into first child ( temp float)
+0:92            'totalWeight' ( temp float)
+0:92            'w11' ( temp float)
+0:93          add second child into first child ( temp 4-component vector of float)
+0:93            'blendColor' ( temp 4-component vector of float)
+0:93            vector-scale ( temp 4-component vector of float)
+0:93              'color11' ( uniform 4-component vector of float)
+0:93              'w11' ( temp float)
+0:94          move second child to first child ( temp 4-component vector of float)
+0:94            'finalColor' ( temp 4-component vector of float)
+0:94            divide ( temp 4-component vector of float)
+0:94              'blendColor' ( temp 4-component vector of float)
+0:94              'totalWeight' ( temp float)
+0:95          multiply second child into first child ( temp float)
+0:95            direct index ( temp float)
+0:95              'finalColor' ( temp 4-component vector of float)
+0:95              Constant:
+0:95                3 (const int)
+0:95            'maskValue' ( temp float)
+0:97      move second child to first child ( temp 3-component vector of float)
+0:97        vector swizzle ( temp 3-component vector of float)
+0:97          'finalColor' ( temp 4-component vector of float)
+0:97          Sequence
+0:97            Constant:
+0:97              0 (const int)
+0:97            Constant:
+0:97              1 (const int)
+0:97            Constant:
+0:97              2 (const int)
+0:97        mix ( global 3-component vector of float)
+0:97          vector swizzle ( temp 3-component vector of float)
+0:97            texture ( global 4-component vector of float)
+0:97              'srcImageShader' ( uniform sampler2D)
+0:97              divide ( temp 2-component vector of float)
+0:97                'fragCoord' ( temp 2-component vector of float)
+0:97                Convert int to float ( temp 2-component vector of float)
+0:97                  textureSize ( global 2-component vector of int)
+0:97                    'srcImageShader' ( uniform sampler2D)
+0:97                    Constant:
+0:97                      0 (const int)
+0:97            Sequence
+0:97              Constant:
+0:97                0 (const int)
+0:97              Constant:
+0:97                1 (const int)
+0:97              Constant:
+0:97                2 (const int)
+0:97          vector swizzle ( temp 3-component vector of float)
+0:97            'finalColor' ( temp 4-component vector of float)
+0:97            Sequence
+0:97              Constant:
+0:97                0 (const int)
+0:97              Constant:
+0:97                1 (const int)
+0:97              Constant:
+0:97                2 (const int)
+0:97          Construct vec3 ( temp 3-component vector of float)
+0:97            direct index ( temp float)
+0:97              'finalColor' ( temp 4-component vector of float)
+0:97              Constant:
+0:97                3 (const int)
+0:98      move second child to first child ( temp 4-component vector of float)
+0:98        'FragColor' ( out 4-component vector of float)
+0:98        Construct vec4 ( temp 4-component vector of float)
+0:98          vector swizzle ( temp 3-component vector of float)
+0:98            'finalColor' ( temp 4-component vector of float)
+0:98            Sequence
+0:98              Constant:
+0:98                0 (const int)
+0:98              Constant:
+0:98                1 (const int)
+0:98              Constant:
+0:98                2 (const int)
+0:98          Constant:
+0:98            1.000000
+0:99      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'srcImageShader' ( uniform sampler2D)
+0:?     'maskImageShader' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'color0' ( uniform 4-component vector of float)
+0:?     'color1' ( uniform 4-component vector of float)
+0:?     'color2' ( uniform 4-component vector of float)
+0:?     'color3' ( uniform 4-component vector of float)
+0:?     'color4' ( uniform 4-component vector of float)
+0:?     'color5' ( uniform 4-component vector of float)
+0:?     'color6' ( uniform 4-component vector of float)
+0:?     'color7' ( uniform 4-component vector of float)
+0:?     'color8' ( uniform 4-component vector of float)
+0:?     'color9' ( uniform 4-component vector of float)
+0:?     'color10' ( uniform 4-component vector of float)
+0:?     'color11' ( uniform 4-component vector of float)
+0:?     'position0' ( uniform 2-component vector of float)
+0:?     'position1' ( uniform 2-component vector of float)
+0:?     'position2' ( uniform 2-component vector of float)
+0:?     'position3' ( uniform 2-component vector of float)
+0:?     'position4' ( uniform 2-component vector of float)
+0:?     'position5' ( uniform 2-component vector of float)
+0:?     'position6' ( uniform 2-component vector of float)
+0:?     'position7' ( uniform 2-component vector of float)
+0:?     'position8' ( uniform 2-component vector of float)
+0:?     'position9' ( uniform 2-component vector of float)
+0:?     'position10' ( uniform 2-component vector of float)
+0:?     'position11' ( uniform 2-component vector of float)
+0:?     'strength0' ( uniform float)
+0:?     'strength1' ( uniform float)
+0:?     'strength2' ( uniform float)
+0:?     'strength3' ( uniform float)
+0:?     'strength4' ( uniform float)
+0:?     'strength5' ( uniform float)
+0:?     'strength6' ( uniform float)
+0:?     'strength7' ( uniform float)
+0:?     'strength8' ( uniform float)
+0:?     'strength9' ( uniform float)
+0:?     'strength10' ( uniform float)
+0:?     'strength11' ( uniform float)
+

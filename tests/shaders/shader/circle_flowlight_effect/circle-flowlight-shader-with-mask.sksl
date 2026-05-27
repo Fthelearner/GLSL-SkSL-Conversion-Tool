@@ -1,0 +1,89 @@
+uniform shader maskImageShader;
+uniform half2 iResolution;
+uniform half4 color0; uniform half4 color1; uniform half4 color2; uniform half4 color3;
+uniform half4 rotationFrequency;
+uniform half4 rotationAmplitude;
+uniform half4 rotationSeed;
+uniform half4 gradientX;
+uniform half4 gradientY;
+uniform half progress;
+uniform half strength0; uniform half strength1; uniform half strength2; uniform half strength3;
+uniform half distortStrength;
+uniform half blendGradient;
+
+float randWave(float frequency, float amplitude, float time, float seed)
+{
+    return amplitude * sin(dot(vec2(time, seed), vec2(frequency, 78.233)));
+}
+
+vec4 colorGradient(vec2 fragPos, float radius, float timeValue)
+{
+    vec4 colorOne = color0;
+    vec4 colorTwo = color1;
+    vec4 colorThree = color2;
+    vec4 colorFour = color3;
+
+    if (radius >= 1.0) {
+        return vec4(0.0);
+    }
+
+    float freqTime = -2.0 * timeValue;
+    mat2 rotationMatrix = mat2(cos(freqTime), sin(freqTime), -sin(freqTime), cos(freqTime));
+    vec2 gradientPos[4];
+
+    float wave = randWave(rotationFrequency.x, rotationAmplitude.x, timeValue, rotationSeed.x);
+    vec2 tempPos = rotationMatrix * (vec2(gradientX.x, gradientY.x) * 2.0 - 1.0);
+    gradientPos[0] = (tempPos + wave * normalize(tempPos)) * 0.5 + 0.5;
+
+    wave = randWave(rotationFrequency.y, rotationAmplitude.y, timeValue, rotationSeed.y);
+    tempPos = rotationMatrix * (vec2(gradientX.y, gradientY.y) * 2.0 - 1.0);
+    gradientPos[1] = (tempPos + wave * normalize(tempPos)) * 0.5 + 0.5;
+
+    wave = randWave(rotationFrequency.z, rotationAmplitude.z, timeValue, rotationSeed.z);
+    tempPos = rotationMatrix * (vec2(gradientX.z, gradientY.z) * 2.0 - 1.0);
+    gradientPos[2] = (tempPos + wave * normalize(tempPos)) * 0.5 + 0.5;
+
+    wave = randWave(rotationFrequency.w, rotationAmplitude.w, timeValue, rotationSeed.w);
+    tempPos = rotationMatrix * (vec2(gradientX.w, gradientY.w) * 2.0 - 1.0);
+    gradientPos[3] = (tempPos + wave * normalize(tempPos)) * 0.5 + 0.5;
+
+    float distorted_radius = pow(radius, distortStrength);
+    vec2 fragPosNew = fragPos / radius * distorted_radius;
+    vec2 gradientUV = fragPosNew * 0.5 + 0.5;
+    float gradientTotalWeight = 0.0;
+    vec4 gradientInterpColor = vec4(0.0);
+
+    float distance0 = max(0.01, length(gradientUV - gradientPos[0]));
+    float weight0 = strength0 / pow(distance0, blendGradient);
+    gradientInterpColor += weight0 * colorOne;
+    gradientTotalWeight += weight0;
+
+    float distance1 = max(0.01, length(gradientUV - gradientPos[1]));
+    float weight1 = strength1 / pow(distance1, blendGradient);
+    gradientInterpColor += weight1 * colorTwo;
+    gradientTotalWeight += weight1;
+
+    float distance2 = max(0.01, length(gradientUV - gradientPos[2]));
+    float weight2 = strength2 / pow(distance2, blendGradient);
+    gradientInterpColor += weight2 * colorThree;
+    gradientTotalWeight += weight2;
+
+    float distance3 = max(0.01, length(gradientUV - gradientPos[3]));
+    float weight3 = strength3 / pow(distance3, blendGradient);
+    gradientInterpColor += weight3 * colorFour;
+    gradientTotalWeight += weight3;
+
+    gradientInterpColor = pow(gradientInterpColor / gradientTotalWeight, vec4(1.0 / 2.2));
+    return gradientInterpColor;
+}
+
+half4 main(vec2 fragCoord) {
+    half maskValue = maskImageShader.eval(fragCoord).a;
+    if (maskValue < 0.01) {
+        return half4(0.0);
+    }
+    vec2 fragPos = fragCoord.xy / iResolution.xy * 2.0 - 1.0;
+    float radius = length(fragPos);
+    vec4 gradient_color = colorGradient(fragPos, radius, progress);
+    return half4(gradient_color.rgb, gradient_color.a * maskValue);
+}

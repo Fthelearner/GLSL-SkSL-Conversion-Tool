@@ -1,0 +1,35 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "sdfShape": "assets/sdf_rrect.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "ambientColor": [
+      0.0,
+      0.0,
+      0.0,
+      0.04
+    ],
+    "ambientBlurRadius": 50.0,
+    "ambientOutset": 2.0,
+    "spotColor": [
+      0.0,
+      0.0,
+      0.0,
+      0.3
+    ],
+    "spotBlurRadius": 10.0,
+    "isFilled": 0.0,
+    "shadowOffset": [
+      4.0,
+      4.0
+    ]
+  }
+}

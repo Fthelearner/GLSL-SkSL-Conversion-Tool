@@ -1,0 +1,10 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png",
+    "composeImage": "assets/blur_bg.png"
+  }
+}

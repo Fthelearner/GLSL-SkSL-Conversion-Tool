@@ -1,0 +1,23 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png"
+  },
+  "uniforms": {
+    "dst": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+    ],
+    "fillPixel": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "precalculationImage": "assets/sdf_rrect.png",
+    "image1": "assets/blur_edge.png",
+    "image2": "assets/blur_level1.png"
+  },
+  "uniforms": {
+    "factorlight": [
+      1.0,
+      1.0
+    ],
+    "factorhalo": [
+      1.0,
+      1.0
+    ],
+    "factorprecalc": [
+      1.0,
+      1.0
+    ],
+    "lightWeight": 0.8,
+    "haloWeight": 0.4,
+    "blurRadius": 2.0,
+    "headRoom": 1.0
+  }
+}

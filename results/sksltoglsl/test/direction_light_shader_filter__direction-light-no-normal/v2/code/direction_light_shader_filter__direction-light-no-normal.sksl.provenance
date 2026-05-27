@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "metadata": {
+    "source_program_kind": "kRuntimeShader",
+    "shader_stage": "kFragment",
+    "glsl_dialect": "kOpenGLCore",
+    "glsl_version": 400,
+    "runtime_effect_mode": true,
+    "use_rt_flip": true,
+    "use_fragcoord_workaround": false
+  },
+  "entries": [
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "image",
+      "sksl_method": "eval",
+      "glsl_function": "texture"
+    },
+    {
+      "kind": "builtin_variable",
+      "helper_key": "entry_point_transform",
+      "sksl_name": "FragColor",
+      "glsl_name": "out vec4 fragColor"
+    },
+    {
+      "kind": "builtin_variable",
+      "helper_key": "fragcoord_setup",
+      "sksl_name": "sk_FragCoord",
+      "glsl_name": "gl_FragCoord"
+    }
+  ]
+}

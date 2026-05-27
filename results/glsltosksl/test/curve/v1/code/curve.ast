@@ -1,0 +1,280 @@
+/home/user/project/results/t5/tmp/curve_with_version.frag
+Shader version: 330
+0:? Sequence
+0:18  Function Definition: map(vf2; ( global float)
+0:18    Function Parameters: 
+0:18      'p' ( in 2-component vector of float)
+0:19    Sequence
+0:19      Sequence
+0:19        move second child to first child ( temp 2-component vector of float)
+0:19          'offset' ( temp 2-component vector of float)
+0:19          Construct vec2 ( temp 2-component vector of float)
+0:19            sine ( global float)
+0:19              add ( temp float)
+0:19                direct index ( temp float)
+0:19                  'p' ( in 2-component vector of float)
+0:19                  Constant:
+0:19                    1 (const int)
+0:19                cosine ( global float)
+0:19                  direct index ( temp float)
+0:19                    'p' ( in 2-component vector of float)
+0:19                    Constant:
+0:19                      0 (const int)
+0:19            cosine ( global float)
+0:19              add ( temp float)
+0:19                direct index ( temp float)
+0:19                  'p' ( in 2-component vector of float)
+0:19                  Constant:
+0:19                    0 (const int)
+0:19                sine ( global float)
+0:19                  direct index ( temp float)
+0:19                    'p' ( in 2-component vector of float)
+0:19                    Constant:
+0:19                      1 (const int)
+0:20      Branch: Return with expression
+0:20        component-wise multiply ( temp float)
+0:20          add ( temp float)
+0:20            sine ( global float)
+0:20              add ( temp float)
+0:20                direct index ( temp float)
+0:20                  'p' ( in 2-component vector of float)
+0:20                  Constant:
+0:20                    0 (const int)
+0:20                direct index ( temp float)
+0:20                  'offset' ( temp 2-component vector of float)
+0:20                  Constant:
+0:20                    0 (const int)
+0:20            cosine ( global float)
+0:20              add ( temp float)
+0:20                direct index ( temp float)
+0:20                  'p' ( in 2-component vector of float)
+0:20                  Constant:
+0:20                    1 (const int)
+0:20                direct index ( temp float)
+0:20                  'offset' ( temp 2-component vector of float)
+0:20                  Constant:
+0:20                    1 (const int)
+0:20          Constant:
+0:20            0.500000
+0:24  Function Definition: mainImage(vf4;vf2; ( global void)
+0:24    Function Parameters: 
+0:24      'fragColor' ( out 4-component vector of float)
+0:24      'fragCoord' ( in 2-component vector of float)
+0:27    Sequence
+0:27      Sequence
+0:27        move second child to first child ( temp 2-component vector of float)
+0:27          'uv' ( temp 2-component vector of float)
+0:27          divide ( temp 2-component vector of float)
+0:27            subtract ( temp 2-component vector of float)
+0:27              'fragCoord' ( in 2-component vector of float)
+0:27              vector-scale ( temp 2-component vector of float)
+0:27                Constant:
+0:27                  0.500000
+0:27                vector swizzle ( temp 2-component vector of float)
+0:27                  'iResolution' ( uniform 3-component vector of float)
+0:27                  Sequence
+0:27                    Constant:
+0:27                      0 (const int)
+0:27                    Constant:
+0:27                      1 (const int)
+0:27            direct index ( temp float)
+0:27              'iResolution' ( uniform 3-component vector of float)
+0:27              Constant:
+0:27                1 (const int)
+0:31      Sequence
+0:31        move second child to first child ( temp 3-component vector of float)
+0:31          'ro' ( temp 3-component vector of float)
+0:31          Construct vec3 ( temp 3-component vector of float)
+0:31            Constant:
+0:31              0.000000
+0:31            Constant:
+0:31              3.000000
+0:31            'iTime' ( uniform float)
+0:32      Sequence
+0:32        move second child to first child ( temp 3-component vector of float)
+0:32          'rd' ( temp 3-component vector of float)
+0:32          normalize ( global 3-component vector of float)
+0:32            Construct vec3 ( temp 3-component vector of float)
+0:32              direct index ( temp float)
+0:32                'uv' ( temp 2-component vector of float)
+0:32                Constant:
+0:32                  0 (const int)
+0:32              subtract ( temp float)
+0:32                direct index ( temp float)
+0:32                  'uv' ( temp 2-component vector of float)
+0:32                  Constant:
+0:32                    1 (const int)
+0:32                Constant:
+0:32                  0.500000
+0:32              Constant:
+0:32                1.000000
+0:35      Sequence
+0:35        move second child to first child ( temp float)
+0:35          't' ( temp float)
+0:35          Constant:
+0:35            0.000000
+0:36      Sequence
+0:36        move second child to first child ( temp 3-component vector of float)
+0:36          'p' ( temp 3-component vector of float)
+0:36          Constant:
+0:36            0.000000
+0:36            0.000000
+0:36            0.000000
+0:37      Sequence
+0:37        Sequence
+0:37          move second child to first child ( temp int)
+0:37            'i' ( temp int)
+0:37            Constant:
+0:37              0 (const int)
+0:37        Loop with condition tested first
+0:37          Loop Condition
+0:37          Compare Less Than ( temp bool)
+0:37            'i' ( temp int)
+0:37            Constant:
+0:37              100 (const int)
+0:37          Loop Body
+0:38          Sequence
+0:38            move second child to first child ( temp 3-component vector of float)
+0:38              'p' ( temp 3-component vector of float)
+0:38              add ( temp 3-component vector of float)
+0:38                'ro' ( temp 3-component vector of float)
+0:38                vector-scale ( temp 3-component vector of float)
+0:38                  'rd' ( temp 3-component vector of float)
+0:38                  't' ( temp float)
+0:39            Sequence
+0:39              move second child to first child ( temp float)
+0:39                'h' ( temp float)
+0:39                subtract ( temp float)
+0:39                  direct index ( temp float)
+0:39                    'p' ( temp 3-component vector of float)
+0:39                    Constant:
+0:39                      1 (const int)
+0:39                  Function Call: map(vf2; ( global float)
+0:39                    vector swizzle ( temp 2-component vector of float)
+0:39                      'p' ( temp 3-component vector of float)
+0:39                      Sequence
+0:39                        Constant:
+0:39                          0 (const int)
+0:39                        Constant:
+0:39                          2 (const int)
+0:41            Test condition and select ( temp void)
+0:41              Condition
+0:41              logical-or ( temp bool)
+0:41                Compare Less Than ( temp bool)
+0:41                  'h' ( temp float)
+0:41                  Constant:
+0:41                    0.001000
+0:41                Compare Greater Than ( temp bool)
+0:41                  't' ( temp float)
+0:41                  Constant:
+0:41                    20.000000
+0:41              true case
+0:41              Branch: Break
+0:42            add second child into first child ( temp float)
+0:42              't' ( temp float)
+0:42              component-wise multiply ( temp float)
+0:42                'h' ( temp float)
+0:42                Constant:
+0:42                  0.500000
+0:37          Loop Terminal Expression
+0:37          Post-Increment ( temp int)
+0:37            'i' ( temp int)
+0:46      Sequence
+0:46        move second child to first child ( temp 3-component vector of float)
+0:46          'col' ( temp 3-component vector of float)
+0:46          Constant:
+0:46            1.000000
+0:46            1.000000
+0:46            1.000000
+0:48      Test condition and select ( temp void)
+0:48        Condition
+0:48        Compare Less Than ( temp bool)
+0:48          't' ( temp float)
+0:48          Constant:
+0:48            20.000000
+0:48        true case
+0:50        Sequence
+0:50          Sequence
+0:50            move second child to first child ( temp float)
+0:50              'height' ( temp float)
+0:50              direct index ( temp float)
+0:50                'p' ( temp 3-component vector of float)
+0:50                Constant:
+0:50                  1 (const int)
+0:53          Sequence
+0:53            move second child to first child ( temp float)
+0:53              'lines' ( temp float)
+0:53              Fraction ( global float)
+0:53                component-wise multiply ( temp float)
+0:53                  'height' ( temp float)
+0:53                  Constant:
+0:53                    10.000000
+0:57          Sequence
+0:57            move second child to first child ( temp float)
+0:57              'thickness' ( temp float)
+0:57              component-wise multiply ( temp float)
+0:57                fwidth ( global float)
+0:57                  component-wise multiply ( temp float)
+0:57                    'height' ( temp float)
+0:57                    Constant:
+0:57                      10.000000
+0:57                Constant:
+0:57                  1.500000
+0:58          Sequence
+0:58            move second child to first child ( temp float)
+0:58              'lineMask' ( temp float)
+0:58              smoothstep ( global float)
+0:58                'thickness' ( temp float)
+0:58                Constant:
+0:58                  0.000000
+0:58                'lines' ( temp float)
+0:61          move second child to first child ( temp 3-component vector of float)
+0:61            'col' ( temp 3-component vector of float)
+0:61            mix ( global 3-component vector of float)
+0:61              Constant:
+0:61                1.000000
+0:61                1.000000
+0:61                1.000000
+0:61              Constant:
+0:61                0.000000
+0:61                0.000000
+0:61                0.000000
+0:61              'lineMask' ( temp float)
+0:64          move second child to first child ( temp 3-component vector of float)
+0:64            'col' ( temp 3-component vector of float)
+0:64            mix ( global 3-component vector of float)
+0:64              'col' ( temp 3-component vector of float)
+0:64              Constant:
+0:64                1.000000
+0:64                1.000000
+0:64                1.000000
+0:64              subtract ( temp float)
+0:64                Constant:
+0:64                  1.000000
+0:64                exp ( global float)
+0:64                  component-wise multiply ( temp float)
+0:64                    Constant:
+0:64                      -0.050000
+0:64                    't' ( temp float)
+0:68      move second child to first child ( temp 4-component vector of float)
+0:68        'fragColor' ( out 4-component vector of float)
+0:68        Construct vec4 ( temp 4-component vector of float)
+0:68          'col' ( temp 3-component vector of float)
+0:68          Constant:
+0:68            1.000000
+0:?   Linker Objects
+0:?     'iResolution' ( uniform 3-component vector of float)
+0:?     'iTime' ( uniform float)
+0:?     'iTimeDelta' ( uniform float)
+0:?     'iFrameRate' ( uniform float)
+0:?     'iFrame' ( uniform int)
+0:?     'iChannelTime' ( uniform 4-element array of float)
+0:?     'iChannelResolution' ( uniform 4-element array of 3-component vector of float)
+0:?     'iMouse' ( uniform 4-component vector of float)
+0:?     'iChannel0' ( uniform sampler2D)
+0:?     'iChannel1' ( uniform sampler2D)
+0:?     'iChannel2' ( uniform sampler2D)
+0:?     'iChannel3' ( uniform sampler2D)
+0:?     'iDate' ( uniform 4-component vector of float)
+0:?     'iSampleRate' ( uniform float)
+

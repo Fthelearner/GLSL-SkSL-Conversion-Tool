@@ -1,0 +1,149 @@
+results/sksltoglsl/test/direction_light_shader_filter__normal-mask/v1/code/direction_light_shader_filter__normal-mask.glsl
+Shader version: 450
+0:? Sequence
+0:6  Function Definition: main( ( global void)
+0:6    Function Parameters: 
+0:7    Sequence
+0:7      Sequence
+0:7        move second child to first child ( temp 2-component vector of float)
+0:7          'fragCoord' ( temp 2-component vector of float)
+0:7          vector swizzle ( temp 2-component vector of float)
+0:7            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:7            Sequence
+0:7              Constant:
+0:7                0 (const int)
+0:7              Constant:
+0:7                1 (const int)
+0:8      Sequence
+0:8        move second child to first child ( temp 2-component vector of float)
+0:8          'offset' ( temp 2-component vector of float)
+0:8          Construct vec2 ( temp 2-component vector of float)
+0:8            Constant:
+0:8              1.000000
+0:8            divide ( temp float)
+0:8              direct index ( temp float)
+0:8                'iResolution' ( uniform 2-component vector of float)
+0:8                Constant:
+0:8                  1 (const int)
+0:8              direct index ( temp float)
+0:8                'iResolution' ( uniform 2-component vector of float)
+0:8                Constant:
+0:8                  0 (const int)
+0:9      Sequence
+0:9        move second child to first child ( temp float)
+0:9          'h1_u' ( temp float)
+0:9          direct index ( temp float)
+0:9            texture ( global 4-component vector of float)
+0:9              'mask' ( uniform sampler2D)
+0:9              divide ( temp 2-component vector of float)
+0:9                subtract ( temp 2-component vector of float)
+0:9                  'fragCoord' ( temp 2-component vector of float)
+0:9                  Construct vec2 ( temp 2-component vector of float)
+0:9                    direct index ( temp float)
+0:9                      'offset' ( temp 2-component vector of float)
+0:9                      Constant:
+0:9                        0 (const int)
+0:9                    Constant:
+0:9                      0.000000
+0:9                'iResolution' ( uniform 2-component vector of float)
+0:9            Constant:
+0:9              3 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp float)
+0:10          'h2_u' ( temp float)
+0:10          direct index ( temp float)
+0:10            texture ( global 4-component vector of float)
+0:10              'mask' ( uniform sampler2D)
+0:10              divide ( temp 2-component vector of float)
+0:10                add ( temp 2-component vector of float)
+0:10                  'fragCoord' ( temp 2-component vector of float)
+0:10                  Construct vec2 ( temp 2-component vector of float)
+0:10                    direct index ( temp float)
+0:10                      'offset' ( temp 2-component vector of float)
+0:10                      Constant:
+0:10                        0 (const int)
+0:10                    Constant:
+0:10                      0.000000
+0:10                'iResolution' ( uniform 2-component vector of float)
+0:10            Constant:
+0:10              3 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp 3-component vector of float)
+0:11          'tangent_u' ( temp 3-component vector of float)
+0:11          Construct vec3 ( temp 3-component vector of float)
+0:11            Constant:
+0:11              2.000000
+0:11            Constant:
+0:11              0.000000
+0:11            component-wise multiply ( temp float)
+0:11              subtract ( temp float)
+0:11                'h2_u' ( temp float)
+0:11                'h1_u' ( temp float)
+0:11              'heightScale' ( uniform float)
+0:12      Sequence
+0:12        move second child to first child ( temp float)
+0:12          'h1_v' ( temp float)
+0:12          direct index ( temp float)
+0:12            texture ( global 4-component vector of float)
+0:12              'mask' ( uniform sampler2D)
+0:12              divide ( temp 2-component vector of float)
+0:12                subtract ( temp 2-component vector of float)
+0:12                  'fragCoord' ( temp 2-component vector of float)
+0:12                  Construct vec2 ( temp 2-component vector of float)
+0:12                    Constant:
+0:12                      0.000000
+0:12                    direct index ( temp float)
+0:12                      'offset' ( temp 2-component vector of float)
+0:12                      Constant:
+0:12                        1 (const int)
+0:12                'iResolution' ( uniform 2-component vector of float)
+0:12            Constant:
+0:12              3 (const int)
+0:13      Sequence
+0:13        move second child to first child ( temp float)
+0:13          'h2_v' ( temp float)
+0:13          direct index ( temp float)
+0:13            texture ( global 4-component vector of float)
+0:13              'mask' ( uniform sampler2D)
+0:13              divide ( temp 2-component vector of float)
+0:13                add ( temp 2-component vector of float)
+0:13                  'fragCoord' ( temp 2-component vector of float)
+0:13                  Construct vec2 ( temp 2-component vector of float)
+0:13                    Constant:
+0:13                      0.000000
+0:13                    direct index ( temp float)
+0:13                      'offset' ( temp 2-component vector of float)
+0:13                      Constant:
+0:13                        1 (const int)
+0:13                'iResolution' ( uniform 2-component vector of float)
+0:13            Constant:
+0:13              3 (const int)
+0:14      Sequence
+0:14        move second child to first child ( temp 3-component vector of float)
+0:14          'tangent_v' ( temp 3-component vector of float)
+0:14          Construct vec3 ( temp 3-component vector of float)
+0:14            Constant:
+0:14              0.000000
+0:14            Constant:
+0:14              2.000000
+0:14            component-wise multiply ( temp float)
+0:14              subtract ( temp float)
+0:14                'h2_v' ( temp float)
+0:14                'h1_v' ( temp float)
+0:14              'heightScale' ( uniform float)
+0:15      move second child to first child ( temp 4-component vector of float)
+0:15        'FragColor' ( out 4-component vector of float)
+0:15        Construct vec4 ( temp 4-component vector of float)
+0:15          normalize ( global 3-component vector of float)
+0:15            cross-product ( global 3-component vector of float)
+0:15              'tangent_u' ( temp 3-component vector of float)
+0:15              'tangent_v' ( temp 3-component vector of float)
+0:15          Constant:
+0:15            1.000000
+0:16      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'mask' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'heightScale' ( uniform float)
+

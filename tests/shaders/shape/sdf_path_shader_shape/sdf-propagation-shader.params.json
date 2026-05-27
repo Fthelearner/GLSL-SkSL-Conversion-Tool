@@ -1,0 +1,17 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "u_sdfTex": "assets/sdf_rrect.png",
+    "u_maskTex": "assets/blur_mask.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "u_step": 1.0
+  }
+}

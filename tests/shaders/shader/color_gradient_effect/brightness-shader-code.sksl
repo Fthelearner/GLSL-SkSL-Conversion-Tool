@@ -1,0 +1,10 @@
+uniform float brightness;
+uniform shader colorGradientShader;
+half4 main(vec2 fragCoord)
+{
+    half4 color = colorGradientShader.eval(fragCoord);
+    color = unpremul(color);
+    color.rgb += brightness;
+    color.rgb *= color.a;
+    return color;
+}

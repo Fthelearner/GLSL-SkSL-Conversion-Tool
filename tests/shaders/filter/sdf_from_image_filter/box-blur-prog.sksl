@@ -1,0 +1,11 @@
+uniform shader image;
+uniform float iScale;
+vec4 main(vec2 fragCoord)
+{
+    float h = iScale * 0.5;
+    float s1 = image.eval(fragCoord + vec2(h, h)).a;
+    float s2 = image.eval(fragCoord - vec2(h, h)).a;
+    float s3 = image.eval(fragCoord + vec2(h, -h)).a;
+    float s4 = image.eval(fragCoord - vec2(h, -h)).a;
+    return vec4(vec3(0.0), (s1 + s2 + s3 + s4) * 0.25);
+}

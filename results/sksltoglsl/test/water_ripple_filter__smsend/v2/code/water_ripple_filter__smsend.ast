@@ -1,0 +1,325 @@
+results/sksltoglsl/test/water_ripple_filter__smsend/v1/code/water_ripple_filter__smsend.glsl
+Shader version: 450
+0:? Sequence
+0:14  Function Definition: calcWave_hh(f1; ( global float)
+0:14    Function Parameters: 
+0:14      'dis' ( in float)
+0:15    Sequence
+0:15      Sequence
+0:15        move second child to first child ( temp float)
+0:15          'preWave' ( temp float)
+0:15          smoothstep ( global float)
+0:15            Constant:
+0:15              0.000000
+0:15            Constant:
+0:15              -0.300000
+0:15            'dis' ( in float)
+0:16      Sequence
+0:16        move second child to first child ( temp float)
+0:16          'waveForm' ( temp float)
+0:16          Test condition and select ( temp float)
+0:16            Condition
+0:16            Compare Equal ( temp bool)
+0:16              'waveCount' ( uniform float)
+0:16              Constant:
+0:16                1.000000
+0:16            true case
+0:16            component-wise multiply ( temp float)
+0:16              smoothstep ( global float)
+0:16                Constant:
+0:16                  -0.400000
+0:16                Constant:
+0:16                  -0.200000
+0:16                'dis' ( in float)
+0:16              smoothstep ( global float)
+0:16                Constant:
+0:16                  0.000000
+0:16                Constant:
+0:16                  -0.200000
+0:16                'dis' ( in float)
+0:16            false case
+0:16            Test condition and select ( temp float)
+0:16              Condition
+0:16              Compare Equal ( temp bool)
+0:16                'waveCount' ( uniform float)
+0:16                Constant:
+0:16                  2.000000
+0:16              true case
+0:16              component-wise multiply ( temp float)
+0:16                smoothstep ( global float)
+0:16                  Constant:
+0:16                    -0.600000
+0:16                  Constant:
+0:16                    -0.300000
+0:16                  'dis' ( in float)
+0:16                'preWave' ( temp float)
+0:16              false case
+0:16              component-wise multiply ( temp float)
+0:16                component-wise multiply ( temp float)
+0:16                  smoothstep ( global float)
+0:16                    Constant:
+0:16                      -0.900000
+0:16                    Constant:
+0:16                      -0.600000
+0:16                    'dis' ( in float)
+0:16                  step ( global float)
+0:16                    Absolute value ( global float)
+0:16                      add ( temp float)
+0:16                        'dis' ( in float)
+0:16                        Constant:
+0:16                          0.450000
+0:16                    Constant:
+0:16                      0.450000
+0:16                'preWave' ( temp float)
+0:17      Branch: Return with expression
+0:17        component-wise multiply ( temp float)
+0:17          Negate value ( temp float)
+0:17            sine ( global float)
+0:17              component-wise multiply ( temp float)
+0:17                Constant:
+0:17                  31.000000
+0:17                'dis' ( in float)
+0:17          'waveForm' ( temp float)
+0:19  Function Definition: main( ( global void)
+0:19    Function Parameters: 
+0:20    Sequence
+0:20      Sequence
+0:20        move second child to first child ( temp 2-component vector of float)
+0:20          'fragCoord' ( temp 2-component vector of float)
+0:20          vector swizzle ( temp 2-component vector of float)
+0:20            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:20            Sequence
+0:20              Constant:
+0:20                0 (const int)
+0:20              Constant:
+0:20                1 (const int)
+0:21      Sequence
+0:21        move second child to first child ( temp float)
+0:21          'shortEdge' ( temp float)
+0:21          min ( global float)
+0:21            direct index ( temp float)
+0:21              'iResolution' ( uniform 2-component vector of float)
+0:21              Constant:
+0:21                0 (const int)
+0:21            direct index ( temp float)
+0:21              'iResolution' ( uniform 2-component vector of float)
+0:21              Constant:
+0:21                1 (const int)
+0:22      Sequence
+0:22        move second child to first child ( temp 2-component vector of float)
+0:22          'uv' ( temp 2-component vector of float)
+0:22          divide ( temp 2-component vector of float)
+0:22            'fragCoord' ( temp 2-component vector of float)
+0:22            'iResolution' ( uniform 2-component vector of float)
+0:23      Sequence
+0:23        move second child to first child ( temp 2-component vector of float)
+0:23          'uvHomo' ( temp 2-component vector of float)
+0:23          divide ( temp 2-component vector of float)
+0:23            'fragCoord' ( temp 2-component vector of float)
+0:23            'shortEdge' ( temp float)
+0:24      Sequence
+0:24        move second child to first child ( temp 2-component vector of float)
+0:24          'resRatio' ( temp 2-component vector of float)
+0:24          divide ( temp 2-component vector of float)
+0:24            'iResolution' ( uniform 2-component vector of float)
+0:24            'shortEdge' ( temp float)
+0:25      Sequence
+0:25        move second child to first child ( temp float)
+0:25          'progSlope' ( temp float)
+0:25          add ( temp float)
+0:25            Constant:
+0:25              0.500000
+0:25            component-wise multiply ( temp float)
+0:25              Constant:
+0:25                0.100000
+0:25              'waveCount' ( uniform float)
+0:26      Sequence
+0:26        move second child to first child ( temp float)
+0:26          't' ( temp float)
+0:26          component-wise multiply ( temp float)
+0:26            'progSlope' ( temp float)
+0:26            'progress' ( uniform float)
+0:27      Sequence
+0:27        move second child to first child ( temp 2-component vector of float)
+0:27          'waveCenter' ( temp 2-component vector of float)
+0:27          component-wise multiply ( temp 2-component vector of float)
+0:27            'rippleCenter' ( uniform 2-component vector of float)
+0:27            'resRatio' ( temp 2-component vector of float)
+0:28      Sequence
+0:28        move second child to first child ( temp float)
+0:28          'propDis' ( temp float)
+0:28          distance ( global float)
+0:28            'uvHomo' ( temp 2-component vector of float)
+0:28            'waveCenter' ( temp 2-component vector of float)
+0:29      Sequence
+0:29        move second child to first child ( temp 2-component vector of float)
+0:29          'v' ( temp 2-component vector of float)
+0:29          subtract ( temp 2-component vector of float)
+0:29            'uvHomo' ( temp 2-component vector of float)
+0:29            'waveCenter' ( temp 2-component vector of float)
+0:30      Sequence
+0:30        move second child to first child ( temp float)
+0:30          'ampDecayByT' ( temp float)
+0:30          Test condition and select ( temp float)
+0:30            Condition
+0:30            Compare Less Than ( temp bool)
+0:30              'propDis' ( temp float)
+0:30              Constant:
+0:30                1.000000
+0:30            true case
+0:30            pow ( global float)
+0:30              subtract ( temp float)
+0:30                Constant:
+0:30                  1.000000
+0:30                'propDis' ( temp float)
+0:30              Constant:
+0:30                4.000000
+0:30            false case
+0:30            Constant:
+0:30              0.000000
+0:31      Sequence
+0:31        move second child to first child ( temp float)
+0:31          'ampSupByDis' ( temp float)
+0:31          smoothstep ( global float)
+0:31            Constant:
+0:31              0.000000
+0:31            Constant:
+0:31              0.450000
+0:31            'propDis' ( temp float)
+0:32      Sequence
+0:32        move second child to first child ( temp float)
+0:32          '_0_dis' ( temp float)
+0:32          subtract ( temp float)
+0:32            'propDis' ( temp float)
+0:32            component-wise multiply ( temp float)
+0:32              Constant:
+0:32                2.000000
+0:32              't' ( temp float)
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          '_2_d1' ( temp float)
+0:34          subtract ( temp float)
+0:34            '_0_dis' ( temp float)
+0:34            Constant:
+0:34              0.001000
+0:35      Sequence
+0:35        move second child to first child ( temp float)
+0:35          '_3_d2' ( temp float)
+0:35          add ( temp float)
+0:35            '_0_dis' ( temp float)
+0:35            Constant:
+0:35              0.001000
+0:36      Sequence
+0:36        move second child to first child ( temp float)
+0:36          'hIntense' ( temp float)
+0:36          component-wise multiply ( temp float)
+0:36            component-wise multiply ( temp float)
+0:36              component-wise multiply ( temp float)
+0:36                component-wise multiply ( temp float)
+0:36                  subtract ( temp float)
+0:36                    Function Call: calcWave_hh(f1; ( global float)
+0:36                      '_3_d2' ( temp float)
+0:36                    Function Call: calcWave_hh(f1; ( global float)
+0:36                      '_2_d1' ( temp float)
+0:36                  Constant:
+0:36                    499.999969
+0:36                'ampDecayByT' ( temp float)
+0:36              'ampSupByDis' ( temp float)
+0:36            Constant:
+0:36              0.012000
+0:37      Sequence
+0:37        move second child to first child ( temp 2-component vector of float)
+0:37          'circles' ( temp 2-component vector of float)
+0:37          vector-scale ( temp 2-component vector of float)
+0:37            normalize ( global 2-component vector of float)
+0:37              'v' ( temp 2-component vector of float)
+0:37            'hIntense' ( temp float)
+0:38      Sequence
+0:38        move second child to first child ( temp 3-component vector of float)
+0:38          'norm' ( temp 3-component vector of float)
+0:38          Construct vec3 ( temp 3-component vector of float)
+0:38            'circles' ( temp 2-component vector of float)
+0:38            'hIntense' ( temp float)
+0:39      Sequence
+0:39        move second child to first child ( temp 2-component vector of float)
+0:39          'expandUV' ( temp 2-component vector of float)
+0:39          component-wise multiply ( temp 2-component vector of float)
+0:39            subtract ( temp 2-component vector of float)
+0:39              'uv' ( temp 2-component vector of float)
+0:39              vector-scale ( temp 2-component vector of float)
+0:39                Constant:
+0:39                  0.150000
+0:39                vector swizzle ( temp 2-component vector of float)
+0:39                  'norm' ( temp 3-component vector of float)
+0:39                  Sequence
+0:39                    Constant:
+0:39                      0 (const int)
+0:39                    Constant:
+0:39                      1 (const int)
+0:39            'iResolution' ( uniform 2-component vector of float)
+0:40      Sequence
+0:40        move second child to first child ( temp 3-component vector of float)
+0:40          'color' ( temp 3-component vector of float)
+0:40          vector swizzle ( temp 3-component vector of float)
+0:40            texture ( global 4-component vector of float)
+0:40              'image' ( uniform sampler2D)
+0:40              divide ( temp 2-component vector of float)
+0:40                'expandUV' ( temp 2-component vector of float)
+0:40                Convert int to float ( temp 2-component vector of float)
+0:40                  textureSize ( global 2-component vector of int)
+0:40                    'image' ( uniform sampler2D)
+0:40                    Constant:
+0:40                      0 (const int)
+0:40            Sequence
+0:40              Constant:
+0:40                0 (const int)
+0:40              Constant:
+0:40                1 (const int)
+0:40              Constant:
+0:40                2 (const int)
+0:41      add second child into first child ( temp 3-component vector of float)
+0:41        'color' ( temp 3-component vector of float)
+0:41        component-wise multiply ( temp float)
+0:41          Constant:
+0:41            150.000000
+0:41          pow ( global float)
+0:41            clamp ( global float)
+0:41              dot-product ( global float)
+0:41                'norm' ( temp 3-component vector of float)
+0:41                Constant:
+0:41                  0.000000
+0:41                  0.992278
+0:41                  -0.124035
+0:41              Constant:
+0:41                0.000000
+0:41              Constant:
+0:41                1.000000
+0:41            Constant:
+0:41              2.500000
+0:42      move second child to first child ( temp 4-component vector of float)
+0:42        'FragColor' ( out 4-component vector of float)
+0:42        Construct vec4 ( temp 4-component vector of float)
+0:42          'color' ( temp 3-component vector of float)
+0:42          Constant:
+0:42            1.000000
+0:43      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'image' ( uniform sampler2D)
+0:?     'iResolution' ( uniform 2-component vector of float)
+0:?     'progress' ( uniform float)
+0:?     'waveCount' ( uniform float)
+0:?     'rippleCenter' ( uniform 2-component vector of float)
+0:?     'basicSlope' ( const float)
+0:?       0.500000
+0:?     'gAmplSupress' ( const float)
+0:?       0.012000
+0:?     'waveFreq' ( const float)
+0:?       31.000000
+0:?     'wavePropRatio' ( const float)
+0:?       2.000000
+0:?     'ampSupArea' ( const float)
+0:?       0.450000
+0:?     'intensity' ( const float)
+0:?       0.150000
+

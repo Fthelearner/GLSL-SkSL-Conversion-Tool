@@ -1,0 +1,46 @@
+uniform shader sdfShape;
+uniform vec2 iResolution;
+uniform vec4 shadowColor;
+uniform vec2 shadowOffset;
+uniform float shadowRadius;
+uniform float isFilled;
+
+// Input data:
+// vec2 coord - coordinates used to calculate SDFMap
+// vec2 shadowOffset - offset of the shadow
+// float d - current SDF shape distance
+// vec4 shadowColor - color of the shadow
+// float shadowRadius - radius of the shadow
+// bool isFilled - should SDFBody be filled with shadow
+vec4 shadowEffect(vec2 coord, vec2 shadowOffset,
+    float d, vec4 shadowColor, float shadowRadius, bool isFilled)
+{
+    vec4 color = vec4(0.0);
+    float alphaFilled = 1.0;
+    if (!isFilled && d < 0.0)
+    {
+        alphaFilled = smoothstep(-1.0, 0.0, d);
+    }
+
+    // Recalculate the distance if there is offset
+    if (any(notEqual(shadowOffset, vec2(0.0))))
+    {
+        d = sdfShape.eval(coord - shadowOffset).a;
+    }
+
+    if (d <= shadowRadius)
+    {
+        float alpha = 1.0 - smoothstep(-shadowRadius, shadowRadius, d);
+        color = shadowColor * alpha * alphaFilled;
+    }
+
+    return color;
+}
+
+half4 main(float2 fragCoord)
+{
+    vec2 coord = fragCoord;
+    float d = sdfShape.eval(coord).a;
+    vec4 color = shadowEffect(coord, shadowOffset, d, shadowColor, shadowRadius, isFilled > 0.5);
+    return half4(color);
+}

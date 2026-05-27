@@ -1,0 +1,28 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png",
+    "mask": "assets/normal_map_stronger.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "lightDirection": [
+      0.6,
+      -0.75,
+      0.3
+    ],
+    "lightColor": [
+      1.0,
+      0.9,
+      0.7,
+      1.0
+    ],
+    "lightIntensity": 6.0
+  }
+}

@@ -1,0 +1,76 @@
+uniform half2 iResolution;
+uniform half3 innerBezierCoeff;
+uniform half3 outerBezierCoeff;
+
+uniform half innerFrameWidth;
+uniform half outerFrameWidth;
+uniform half invInnerFrameWidth;
+uniform half invOuterFrameWidth;
+
+uniform half2 boxHalfSize;
+uniform half clampedCornerRadius;
+uniform half2 rectPos;
+
+uniform half2 localBasis0;
+uniform half2 localBasis1;
+
+uniform half axialFeatherStrength;
+uniform half axialEnable;
+uniform half2 axialCoordWeights;
+uniform half axialInvSpan;
+uniform half axialRiseEnd;
+uniform half axialFallStart;
+
+half sdRoundedBox(half2 p, half2 b, half r)
+{
+    half2 q = abs(p) - b + r;
+    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
+}
+
+half cubicBezierInterpolationFromCoeff(half3 coeff, half t)
+{
+    return ((coeff.x * t + coeff.y) * t + coeff.z) * t;
+}
+
+half AxialEnvelope(half t)
+{
+    half rise = smoothstep(0.0, axialRiseEnd, t);
+    half fall = 1.0 - smoothstep(axialFallStart, 1.0, t);
+    return rise * fall;
+}
+
+half4 main(float2 fragCoord)
+{
+    half2 uv = fragCoord / iResolution.xy;
+    half2 centered = (uv - 0.5) * 2.0 - rectPos;
+
+    // Transform into local box space using the precomputed basis.
+    half2 localPos = half2(dot(centered, localBasis0), dot(centered, localBasis1));
+
+    half sdfrect = sdRoundedBox(localPos, boxHalfSize, clampedCornerRadius);
+
+    // Normalize the inner and outer transition bands separately.
+    half innerGradient = (sdfrect + innerFrameWidth) * invInnerFrameWidth;
+    half outerGradient = (-sdfrect + outerFrameWidth) * invOuterFrameWidth;
+    half gradient = min(innerGradient, outerGradient);
+
+    // Outside both bands: no contribution.
+    if (gradient <= 0.0) {
+        return half4(0.0);
+    }
+
+    // Use different Bezier response curves for inner and outer regions.
+    half3 bezierCoeff = (sdfrect > 0.0) ? outerBezierCoeff : innerBezierCoeff;
+    gradient = cubicBezierInterpolationFromCoeff(bezierCoeff, gradient);
+
+    // Optional axial modulation along a precomputed direction.
+    if (axialEnable > 0.0) {
+        half t = clamp(dot(localPos, axialCoordWeights) * axialInvSpan + 0.5, 0.0, 1.0);
+        half envelope = AxialEnvelope(t);
+
+        // Equivalent to mixing the gradient by the axial envelope strength.
+        gradient *= (1.0 + axialFeatherStrength * (envelope - 1.0));
+    }
+
+    return half4(gradient);
+}

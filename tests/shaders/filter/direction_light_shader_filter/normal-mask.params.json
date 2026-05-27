@@ -1,0 +1,16 @@
+{
+  "dimensions": {
+    "width": 320,
+    "height": 180
+  },
+  "textures": {
+    "mask": "assets/height_map_small.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      320.0,
+      180.0
+    ],
+    "heightScale": 40.0
+  }
+}

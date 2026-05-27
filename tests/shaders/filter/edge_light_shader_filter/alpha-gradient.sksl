@@ -1,0 +1,15 @@
+uniform shader image;
+uniform shader imageBloom;
+uniform vec2 iResolution;
+uniform float alphaProgress;
+vec4 main(vec2 fragCoord)
+{
+    vec4 image_color = image.eval(fragCoord).rgba;
+    vec4 final_color = image_color;
+    vec4 dst = vec4(1.0, 1.0, iResolution.x - 1.0, iResolution.y - 1.0); // Anti-aliasing smoothing
+    if (dst.x < fragCoord.x && fragCoord.x < dst.z &&
+        dst.y < fragCoord.y && fragCoord.y < dst.w) {
+        final_color = vec4(alphaProgress * imageBloom.eval(fragCoord).rgb + image_color.rgb, image_color.a);
+    }
+    return final_color;
+}

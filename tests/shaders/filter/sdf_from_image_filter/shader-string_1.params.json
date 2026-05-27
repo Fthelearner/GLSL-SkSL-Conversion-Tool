@@ -1,0 +1,10 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageInput": "assets/sdfil_seeds_v2.png"
+  },
+  "uniforms": {}
+}

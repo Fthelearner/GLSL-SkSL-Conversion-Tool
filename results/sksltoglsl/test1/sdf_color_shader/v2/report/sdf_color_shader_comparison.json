@@ -1,0 +1,12 @@
+{
+  "mse": 0.0,
+  "psnr": 92.38,
+  "max_pixel_diff": 1,
+  "pixel_diff_percent": 0.01,
+  "total_pixels": 921600,
+  "different_pixels": 64,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test1/sdf_color_shader/v2/report/sdf_color_shader_diffmap.png"
+}

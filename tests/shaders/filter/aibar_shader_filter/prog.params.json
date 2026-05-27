@@ -1,0 +1,17 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageShader": "assets/input.png",
+    "image": "assets/input.png"
+  },
+  "uniforms": {
+    "low": 0.2,
+    "high": 0.8,
+    "threshold": 0.5,
+    "opacity": 1.0,
+    "saturation": 1.0
+  }
+}

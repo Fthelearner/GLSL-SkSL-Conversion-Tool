@@ -1,0 +1,35 @@
+uniform vec2 iResolution;
+uniform shader u_seeds;
+uniform shader pathShader;
+
+vec4 main(vec2 fragCoord) {
+    float centerD = u_seeds.eval(fragCoord).r;
+
+    float mask = pathShader.eval(fragCoord).r;
+    float pixelDFactor = iResolution.y * 2.0;
+    if (mask < 1e-5) {
+        return vec4(0.0, 0.0, 0.0, centerD * pixelDFactor);
+    }
+
+    float L = u_seeds.eval(fragCoord + vec2(-1.0, 0.0)).r;
+    float R = u_seeds.eval(fragCoord + vec2(1.0, 0.0)).r;
+    float T = u_seeds.eval(fragCoord + vec2(0.0, -1.0)).r;
+    float B = u_seeds.eval(fragCoord + vec2(0.0, 1.0)).r;
+
+    vec2 normal = vec2(R - L, T - B) * 0.5;
+
+    float len = length(normal);
+    if (len > 0.00001) {
+        normal /= len;
+    } else {
+        normal = vec2(0.0, 0.0);
+    }
+
+    centerD = (centerD + L + R + T + B) * 0.2 * pixelDFactor;
+
+    float factor = 1.0 - smoothstep(10.0, 0.0, centerD);
+    normal *= factor;
+    float aaMargin = 3.0;
+
+    return vec4(normal, 0.0, -centerD * mask * factor + aaMargin);
+}

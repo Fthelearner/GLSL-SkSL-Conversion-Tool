@@ -1,0 +1,217 @@
+results/sksltoglsl/test/kawase_blur_shader_filter__blur/v1/code/kawase_blur_shader_filter__blur.glsl
+Shader version: 450
+0:? Sequence
+0:6  Function Definition: main( ( global void)
+0:6    Function Parameters: 
+0:7    Sequence
+0:7      Sequence
+0:7        move second child to first child ( temp 2-component vector of float)
+0:7          'xy' ( temp 2-component vector of float)
+0:7          vector swizzle ( temp 2-component vector of float)
+0:7            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:7            Sequence
+0:7              Constant:
+0:7                0 (const int)
+0:7              Constant:
+0:7                1 (const int)
+0:8      Sequence
+0:8        move second child to first child ( temp 4-component vector of float)
+0:8          'c' ( temp 4-component vector of float)
+0:8          texture ( global 4-component vector of float)
+0:8            'imageInput' ( uniform sampler2D)
+0:8            divide ( temp 2-component vector of float)
+0:8              'xy' ( temp 2-component vector of float)
+0:8              Convert int to float ( temp 2-component vector of float)
+0:8                textureSize ( global 2-component vector of int)
+0:8                  'imageInput' ( uniform sampler2D)
+0:8                  Constant:
+0:8                    0 (const int)
+0:9      add second child into first child ( temp 4-component vector of float)
+0:9        'c' ( temp 4-component vector of float)
+0:9        texture ( global 4-component vector of float)
+0:9          'imageInput' ( uniform sampler2D)
+0:9          divide ( temp 2-component vector of float)
+0:9            Construct vec2 ( temp 2-component vector of float)
+0:9              clamp ( global float)
+0:9                add ( temp float)
+0:9                  direct index ( temp float)
+0:9                    'in_blurOffset' ( uniform 2-component vector of float)
+0:9                    Constant:
+0:9                      0 (const int)
+0:9                  direct index ( temp float)
+0:9                    'xy' ( temp 2-component vector of float)
+0:9                    Constant:
+0:9                      0 (const int)
+0:9                Constant:
+0:9                  0.000000
+0:9                direct index ( temp float)
+0:9                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:9                  Constant:
+0:9                    0 (const int)
+0:9              clamp ( global float)
+0:9                add ( temp float)
+0:9                  direct index ( temp float)
+0:9                    'in_blurOffset' ( uniform 2-component vector of float)
+0:9                    Constant:
+0:9                      1 (const int)
+0:9                  direct index ( temp float)
+0:9                    'xy' ( temp 2-component vector of float)
+0:9                    Constant:
+0:9                      1 (const int)
+0:9                Constant:
+0:9                  0.000000
+0:9                direct index ( temp float)
+0:9                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:9                  Constant:
+0:9                    1 (const int)
+0:9            Convert int to float ( temp 2-component vector of float)
+0:9              textureSize ( global 2-component vector of int)
+0:9                'imageInput' ( uniform sampler2D)
+0:9                Constant:
+0:9                  0 (const int)
+0:10      add second child into first child ( temp 4-component vector of float)
+0:10        'c' ( temp 4-component vector of float)
+0:10        texture ( global 4-component vector of float)
+0:10          'imageInput' ( uniform sampler2D)
+0:10          divide ( temp 2-component vector of float)
+0:10            Construct vec2 ( temp 2-component vector of float)
+0:10              clamp ( global float)
+0:10                add ( temp float)
+0:10                  direct index ( temp float)
+0:10                    'in_blurOffset' ( uniform 2-component vector of float)
+0:10                    Constant:
+0:10                      0 (const int)
+0:10                  direct index ( temp float)
+0:10                    'xy' ( temp 2-component vector of float)
+0:10                    Constant:
+0:10                      0 (const int)
+0:10                Constant:
+0:10                  0.000000
+0:10                direct index ( temp float)
+0:10                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:10                  Constant:
+0:10                    0 (const int)
+0:10              clamp ( global float)
+0:10                add ( temp float)
+0:10                  Negate value ( temp float)
+0:10                    direct index ( temp float)
+0:10                      'in_blurOffset' ( uniform 2-component vector of float)
+0:10                      Constant:
+0:10                        1 (const int)
+0:10                  direct index ( temp float)
+0:10                    'xy' ( temp 2-component vector of float)
+0:10                    Constant:
+0:10                      1 (const int)
+0:10                Constant:
+0:10                  0.000000
+0:10                direct index ( temp float)
+0:10                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:10                  Constant:
+0:10                    1 (const int)
+0:10            Convert int to float ( temp 2-component vector of float)
+0:10              textureSize ( global 2-component vector of int)
+0:10                'imageInput' ( uniform sampler2D)
+0:10                Constant:
+0:10                  0 (const int)
+0:11      add second child into first child ( temp 4-component vector of float)
+0:11        'c' ( temp 4-component vector of float)
+0:11        texture ( global 4-component vector of float)
+0:11          'imageInput' ( uniform sampler2D)
+0:11          divide ( temp 2-component vector of float)
+0:11            Construct vec2 ( temp 2-component vector of float)
+0:11              clamp ( global float)
+0:11                add ( temp float)
+0:11                  Negate value ( temp float)
+0:11                    direct index ( temp float)
+0:11                      'in_blurOffset' ( uniform 2-component vector of float)
+0:11                      Constant:
+0:11                        0 (const int)
+0:11                  direct index ( temp float)
+0:11                    'xy' ( temp 2-component vector of float)
+0:11                    Constant:
+0:11                      0 (const int)
+0:11                Constant:
+0:11                  0.000000
+0:11                direct index ( temp float)
+0:11                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:11                  Constant:
+0:11                    0 (const int)
+0:11              clamp ( global float)
+0:11                add ( temp float)
+0:11                  direct index ( temp float)
+0:11                    'in_blurOffset' ( uniform 2-component vector of float)
+0:11                    Constant:
+0:11                      1 (const int)
+0:11                  direct index ( temp float)
+0:11                    'xy' ( temp 2-component vector of float)
+0:11                    Constant:
+0:11                      1 (const int)
+0:11                Constant:
+0:11                  0.000000
+0:11                direct index ( temp float)
+0:11                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:11                  Constant:
+0:11                    1 (const int)
+0:11            Convert int to float ( temp 2-component vector of float)
+0:11              textureSize ( global 2-component vector of int)
+0:11                'imageInput' ( uniform sampler2D)
+0:11                Constant:
+0:11                  0 (const int)
+0:12      add second child into first child ( temp 4-component vector of float)
+0:12        'c' ( temp 4-component vector of float)
+0:12        texture ( global 4-component vector of float)
+0:12          'imageInput' ( uniform sampler2D)
+0:12          divide ( temp 2-component vector of float)
+0:12            Construct vec2 ( temp 2-component vector of float)
+0:12              clamp ( global float)
+0:12                add ( temp float)
+0:12                  Negate value ( temp float)
+0:12                    direct index ( temp float)
+0:12                      'in_blurOffset' ( uniform 2-component vector of float)
+0:12                      Constant:
+0:12                        0 (const int)
+0:12                  direct index ( temp float)
+0:12                    'xy' ( temp 2-component vector of float)
+0:12                    Constant:
+0:12                      0 (const int)
+0:12                Constant:
+0:12                  0.000000
+0:12                direct index ( temp float)
+0:12                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:12                  Constant:
+0:12                    0 (const int)
+0:12              clamp ( global float)
+0:12                add ( temp float)
+0:12                  Negate value ( temp float)
+0:12                    direct index ( temp float)
+0:12                      'in_blurOffset' ( uniform 2-component vector of float)
+0:12                      Constant:
+0:12                        1 (const int)
+0:12                  direct index ( temp float)
+0:12                    'xy' ( temp 2-component vector of float)
+0:12                    Constant:
+0:12                      1 (const int)
+0:12                Constant:
+0:12                  0.000000
+0:12                direct index ( temp float)
+0:12                  'in_maxSizeXY' ( uniform 2-component vector of float)
+0:12                  Constant:
+0:12                    1 (const int)
+0:12            Convert int to float ( temp 2-component vector of float)
+0:12              textureSize ( global 2-component vector of int)
+0:12                'imageInput' ( uniform sampler2D)
+0:12                Constant:
+0:12                  0 (const int)
+0:13      move second child to first child ( temp 4-component vector of float)
+0:13        'FragColor' ( out 4-component vector of float)
+0:13        vector-scale ( temp 4-component vector of float)
+0:13          'c' ( temp 4-component vector of float)
+0:13          Constant:
+0:13            0.200000
+0:14      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'imageInput' ( uniform sampler2D)
+0:?     'in_blurOffset' ( uniform 2-component vector of float)
+0:?     'in_maxSizeXY' ( uniform 2-component vector of float)
+

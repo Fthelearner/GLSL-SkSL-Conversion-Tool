@@ -1,0 +1,393 @@
+uniform shader loopImage;
+uniform vec2 iResolution;
+uniform float count;
+const int capacity = 48; // 48 control points for 16 Bezier curves
+uniform vec2 controlPoints[capacity];
+uniform float segmentIndex[16]; // 16: maximum 16 segments per grid
+// ===== Constant =====
+const float INF = 1e10; // infinity, i.e., 1.0 / 0.0
+const float SQRT3 = 1.7320508;
+
+// ===== Vector Math Utilities =====
+float Cross2(vec2 a, vec2 b) { return a.x * b.y - a.y * b.x; }
+float SaturateFloat(float a) { return clamp(a, 0.0, 1.0); }
+vec3 SaturateVec3(vec3 a) { return clamp(a, 0.0, 1.0); }
+float AbsMin(float a, float b) { return abs(a) < abs(b) ? a : b; }
+
+vec2 GetElement(vec2 arr[capacity], int index)
+{
+    for (int i = 0; i < capacity; ++i) {
+        if (i == index) return arr[i];
+    }
+    return vec2(0.0);
+}
+
+vec2 Bezier(vec2 pointA, vec2 pointB, vec2 pointC, float t)
+{
+    return pointA + t * (-2.0 * pointA + 2.0 * pointB) + t * t * (pointA - 2.0 * pointB + pointC);
+}
+
+float SdfLine(vec2 p, vec2 a, vec2 b)
+{
+    float h = SaturateFloat(dot(p - a, b - a) / dot(b - a, b - a));
+    return length(p - a - h * (b - a));
+}
+
+float SdfLinePartition(vec2 p, vec2 a, vec2 b, inout vec2 closestPoint, inout float bestTLocal)
+{
+    vec2 ba = b - a;
+    vec2 pa = p - a;
+    float h = SaturateFloat(dot(pa, ba) / dot(ba, ba));
+    closestPoint = a + h * ba;
+    bestTLocal = h;
+    vec2 k = pa - h * ba;
+    vec2 n = vec2(ba.y, -ba.x);
+    return (dot(k, n) >= 0.0) ? length(k) : -length(k);
+}
+
+float SdfBezier(vec2 pos, vec2 pointA, vec2 pointB, vec2 pointC,
+    inout vec2 closestPoint, inout float bestTLocal)
+{
+    const float EPSILON = 1e-3;
+    const float ONE_THIRD = 1.0 / 3.0;
+    bool abEqual = all(lessThan(abs(pointA - pointB), vec2(EPSILON)));
+    bool bcEqual = all(lessThan(abs(pointB - pointC), vec2(EPSILON)));
+    bool acEqual = all(lessThan(abs(pointA - pointC), vec2(EPSILON)));
+    if (abEqual && bcEqual) {
+        closestPoint = pointA;
+        return distance(pos, pointA);
+    }
+    if (abEqual || acEqual) return SdfLinePartition(pos, pointB, pointC, closestPoint, bestTLocal);
+    if (bcEqual) return SdfLinePartition(pos, pointA, pointC, closestPoint, bestTLocal);
+    if (abs(dot(normalize(pointB - pointA), normalize(pointC - pointB)) - 1.0) < EPSILON)
+        return SdfLinePartition(pos, pointA, pointC, closestPoint, bestTLocal);
+    vec2 a = pointB - pointA;
+    vec2 b = pointA - 2.0 * pointB + pointC;
+    vec2 c = a * 2.0;
+    vec2 d = pointA - pos;
+    float kk = 1.0 / dot(b, b);
+    float kx = kk * dot(a, b);
+    float ky = kk * (2.0 * dot(a, a) + dot(d, b)) * ONE_THIRD;
+    float kz = kk * dot(d, a);
+    float res = 0.0;
+    float sgn = 0.0;
+    float p = ky - kx * kx;
+    float q = kx * (2.0 * kx * kx - 3.0 * ky) + kz;
+    float h = q * q + 4.0 * p * p * p;
+    if (h >= 0.0) {
+        h = sqrt(h);
+        vec2 x = 0.5 * (vec2(h, -h) - q);
+        vec2 uv = vec2((x.x > 0.0 ? 1.0 : -1.0) * pow(abs(x.x), ONE_THIRD),
+                    (x.y > 0.0 ? 1.0 : -1.0) * pow(abs(x.y), ONE_THIRD));
+        float t = SaturateFloat(uv.x + uv.y - kx) + EPSILON;
+        closestPoint = Bezier(pointA, pointB, pointC, t);
+        bestTLocal = t;
+        vec2 qv = d + (c + b * t) * t;
+        res = dot(qv, qv);
+        sgn = Cross2(c + 2.0 * b * t, qv);
+        return (sgn > 0.0 ? 1.0 : -1.0) * sqrt(res);
+    }
+    float z = sqrt(-p);
+    float v = acos(q / (p * z * 2.0)) * ONE_THIRD;
+    float m = cos(v);
+    float n = sin(v) * SQRT3;
+    vec3 t = SaturateVec3(vec3(m + m, -n - m, n - m) * z - kx) + EPSILON;
+    vec2 qx = d + (c + b * t.x) * t.x;
+    float dx = dot(qx, qx);
+    float sx = Cross2(c + 2.0 * b * t.x, qx);
+    vec2 qy = d + (c + b * t.y) * t.y;
+    float dy = dot(qy, qy);
+    float sy = Cross2(c + 2.0 * b * t.y, qy);
+    res = (dx < dy) ? dx : dy;
+    sgn = (dx < dy) ? sx : sy;
+    float bestT = (dx < dy) ? t.x : t.y;
+    closestPoint = Bezier(pointA, pointB, pointC, bestT);
+    bestTLocal = bestT;
+    return (sgn > 0.0 ? 1.0 : -1.0) * sqrt(res);
+}
+
+// ================= SDF Polygon =================
+float SdfControlSegment(vec2 p, vec2 pointA, vec2 pointB, vec2 pointC)
+{
+    return AbsMin(SdfLine(p, pointA, pointB), SdfLine(p, pointB, pointC));
+}
+
+float SdfControlPolygon(vec2 p, vec2 controlPoly[capacity], int size,
+    inout vec2 closest[3], inout float closestSegmentIndex)
+{
+    float minDist = INF;
+    int segmentCount = size / 2;
+
+    // i = 0
+    vec2 pointA = controlPoly[0];
+    vec2 pointB = controlPoly[1];
+    vec2 pointC = controlPoly[2];
+    float d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[0];
+    }
+
+    // i = 1
+    pointA = controlPoly[3]; // iMidPrev = i - 1
+    pointB = controlPoly[4]; // i
+    pointC = controlPoly[5]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[1];
+    }
+
+    // i = 2
+    pointA = controlPoly[6]; // iMidPrev = i - 1
+    pointB = controlPoly[7]; // i
+    pointC = controlPoly[8]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[2];
+    }
+
+    // i = 3
+    if (size < 9) return minDist; // 9: next i beyond legal size
+    pointA = controlPoly[9]; // iMidPrev = i - 1
+    pointB = controlPoly[10]; // i
+    pointC = controlPoly[11]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[3];
+    }
+
+    // i = 4
+    if (size < 12) return minDist; // 12: next i beyond legal size
+    pointA = controlPoly[12]; // iMidPrev = i - 1
+    pointB = controlPoly[13]; // i
+    pointC = controlPoly[14]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[4];
+    }
+
+    // i = 5
+    if (size < 15) return minDist; // 15: next i beyond legal size
+    pointA = controlPoly[15]; // iMidPrev = i - 1
+    pointB = controlPoly[16]; // i
+    pointC = controlPoly[17]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[5];
+    }
+
+    // i = 6
+    if (size < 18) return minDist; // 18: next i beyond legal size
+    pointA = controlPoly[18]; // iMidPrev = i - 1
+    pointB = controlPoly[19]; // i
+    pointC = controlPoly[20]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[6];
+    }
+
+    // i = 7
+    if (size < 21) return minDist; // 21: next i beyond legal size
+    pointA = controlPoly[21]; // iMidPrev = i - 1
+    pointB = controlPoly[22]; // i
+    pointC = controlPoly[23]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[7];
+    }
+
+    // i = 8
+    if (size < 24) return minDist; // 24: next i beyond legal size
+    pointA = controlPoly[24]; // iMidPrev = i - 1
+    pointB = controlPoly[25]; // i
+    pointC = controlPoly[26]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[8];
+    }
+
+    // i = 9
+    if (size < 27) return minDist; // 27: next i beyond legal size
+    pointA = controlPoly[27]; // iMidPrev = i - 1
+    pointB = controlPoly[28]; // i
+    pointC = controlPoly[29]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[9];
+    }
+
+    // i = 10
+    if (size < 30) return minDist; // 30: next i beyond legal size
+    pointA = controlPoly[30]; // iMidPrev = i - 1
+    pointB = controlPoly[31]; // i
+    pointC = controlPoly[32]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[10];
+    }
+
+    // i = 11
+    if (size < 33) return minDist; // 33: next i beyond legal size
+    pointA = controlPoly[33]; // iMidPrev = i - 1
+    pointB = controlPoly[34]; // i
+    pointC = controlPoly[35]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[11];
+    }
+
+    // i = 12
+    if (size < 36) return minDist; // 36: next i beyond legal size
+    pointA = controlPoly[36]; // iMidPrev = i - 1
+    pointB = controlPoly[37]; // i
+    pointC = controlPoly[38]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[12];
+    }
+
+    // i = 13
+    if (size < 39) return minDist; // 39: next i beyond legal size
+    pointA = controlPoly[39]; // iMidPrev = i - 1
+    pointB = controlPoly[40]; // i
+    pointC = controlPoly[41]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[13];
+    }
+
+    // i = 14
+    if (size < 42) return minDist; // 42: next i beyond legal size
+    pointA = controlPoly[42]; // iMidPrev = i - 1
+    pointB = controlPoly[43]; // i
+    pointC = controlPoly[44]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[14];
+    }
+
+    // i = 15
+    if (size < 45) return minDist; // 45: next i beyond legal size
+    pointA = controlPoly[45]; // iMidPrev = i - 1
+    pointB = controlPoly[46]; // i
+    pointC = controlPoly[47]; // iMid = i + 1
+    d = SdfControlSegment(p, pointA, pointB, pointC);
+    if (abs(d) < abs(minDist)) {
+        minDist = d;
+        closest[0] = pointA;
+        closest[1] = pointB;
+        closest[2] = pointC;
+        closestSegmentIndex = segmentIndex[15];
+    }
+    return minDist;
+}
+
+float SdfBezierShape(vec2 p, vec2 controlPoly[capacity], int controlPolySize,
+    inout vec2 closestPoint, inout float bestTLocal, inout float closestSegmentIndex)
+{
+    vec2 closest[3];
+    SdfControlPolygon(p, controlPoly, controlPolySize, closest, closestSegmentIndex);
+    return SdfBezier(p, closest[0], closest[1], closest[2], closestPoint, bestTLocal);
+}
+
+vec4 SampleLoopImage(vec2 coord)
+{
+    return loopImage.eval(coord);
+}
+
+vec2 EncodeFloat(float x)
+{
+    x = clamp(x, 0.0, 1.0);
+    float hi = floor(x * 255.0) / 255.0; // 255.0 = maximum value representable in 8-bit channel
+    float lo = fract(x * 255.0); // 255.0 = maximum value representable in 8-bit channel
+    return vec2(hi, lo);
+}
+
+float DecodeFloat(vec2 rg)
+{
+    return rg.x + rg.y / 255.0; // 255.0 = maximum value representable in 8-bit channel
+}
+
+vec4 main(vec2 fragCoord)
+{
+    int size = int(count);
+    vec2 p = (2.0 * fragCoord - iResolution.xy) / iResolution.y; // 2.0: normalized screen coordinates
+
+    vec4 precalculationData = SampleLoopImage(fragCoord);
+    float formerSdf = DecodeFloat(precalculationData.rg) * 3.0; // 3.0: decode the former sdf
+    float formerSegmentIndex = precalculationData.b;
+    float formerLocalT = precalculationData.a;
+
+    vec2 closestPoint = vec2(0.0);
+    float tLocal = 0.0;
+    float closestSegmentIndex = 0.0;
+    float sdf = SdfBezierShape(p, controlPoints, size, closestPoint, tLocal, closestSegmentIndex);
+    closestSegmentIndex = closestSegmentIndex * 0.005; // 0.005: encode the segmentIndex
+    float absSdf = abs(sdf);
+    if (formerSdf < absSdf) {
+        absSdf = formerSdf;
+        closestSegmentIndex = formerSegmentIndex;
+        tLocal = formerLocalT;
+    }
+    vec2 encodedSdf = EncodeFloat(absSdf / 3.0); // 3.0: compress sdf to [0,1]
+    return vec4(encodedSdf, closestSegmentIndex, tLocal);
+}

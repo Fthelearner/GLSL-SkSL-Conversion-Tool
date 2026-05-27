@@ -1,0 +1,25 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/input.png"
+  },
+  "uniforms": {
+    "edgeThreshold": 0.3,
+    "edgeIntensity": 0.8,
+    "edgeSoftThreshold": 0.3,
+    "edgeDetectColor": [
+      0.2126729,
+      0.7151522,
+      0.072175
+    ],
+    "edgeColor": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "ifRawColor": 0.0
+  }
+}

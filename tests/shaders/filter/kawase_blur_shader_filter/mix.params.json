@@ -1,0 +1,14 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "blurredInput": "assets/blur_level2.png",
+    "originalInput": "assets/input.png"
+  },
+  "uniforms": {
+    "mixFactor": 0.5,
+    "inColorFactor": 0.5
+  }
+}

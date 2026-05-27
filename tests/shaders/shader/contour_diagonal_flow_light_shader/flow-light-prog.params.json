@@ -1,0 +1,30 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "precalculationImage": "assets/sdf_rrect.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "line1Start": 0.1,
+    "line1Length": 0.3,
+    "line1Color": [
+      1.0,
+      0.5,
+      0.2
+    ],
+    "line2Start": 0.5,
+    "line2Length": 0.3,
+    "line2Color": [
+      0.2,
+      0.5,
+      1.0
+    ],
+    "lineThickness": 0.02
+  }
+}

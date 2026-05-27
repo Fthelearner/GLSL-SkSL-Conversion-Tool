@@ -1,0 +1,16 @@
+uniform shader imageBlur0;
+uniform shader imageBlur1;
+uniform shader imageBlur2;
+uniform shader imageBlur3;
+uniform shader imageBlur4;
+vec4 main(vec2 fragCoord)
+{
+    vec3 composited_color = imageBlur0.eval(fragCoord).rgb;
+    float weight = 0.25;
+    composited_color += weight * (imageBlur1.eval(fragCoord).rgb
+        + imageBlur2.eval(fragCoord).rgb
+        + imageBlur3.eval(fragCoord).rgb
+        + imageBlur4.eval(fragCoord).rgb
+    );
+    return vec4(composited_color.rgb, 1.0);
+}

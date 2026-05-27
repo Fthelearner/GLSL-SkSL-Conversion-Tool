@@ -1,0 +1,23 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "shapeShader": "assets/sdf_rrect.png"
+  },
+  "uniforms": {
+    "transformMatrix": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "_note": "float3x3 uniforms not supported by current render pipeline"
+}

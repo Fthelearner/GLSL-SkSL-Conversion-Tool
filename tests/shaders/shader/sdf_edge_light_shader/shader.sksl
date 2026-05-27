@@ -1,0 +1,51 @@
+uniform shader sdfShader;
+uniform shader lightMaskShader;
+
+uniform vec3 lightColor;
+uniform float bloomIntensityCutoff;
+uniform float maxIntensity;
+uniform float maxBloomIntensity;
+uniform float bloomFalloffPow;
+
+uniform float minBorderWidth;
+uniform float borderWidthDelta;
+
+uniform float innerBorderBloomWidth;
+uniform float outerBorderBloomWidth;
+
+uniform float invInnerBorderBloomWidth;
+uniform float invOuterBorderBloomWidth;
+uniform float enableBloom;
+
+float BloomMultiplierFromDist(float d)
+{
+    float dNorm = (d > 0.0) ? (d * invOuterBorderBloomWidth) : (-d * invInnerBorderBloomWidth);
+    float falloff = max((1.0 - dNorm) / pow(1.0 + dNorm, bloomFalloffPow), 0.0);
+    return maxBloomIntensity * falloff;
+}
+
+float EdgeLightFakeBloom(float intensity, float d)
+{
+    float bloomBorder = 1.0 - step(outerBorderBloomWidth, d);
+    bloomBorder *= step(-innerBorderBloomWidth, d);
+
+    float edgeThickness = smoothstep(0.0, 1.0, intensity) * borderWidthDelta + minBorderWidth;
+    float thinBorder = 1.0 - smoothstep(0.0, edgeThickness, abs(d));
+
+    float bloomGate = smoothstep(bloomIntensityCutoff, 1.0, intensity);
+    float bloomPart = 0.0;
+    if (enableBloom > 0.0 && bloomGate > 0.0 && bloomBorder > 0.0) {
+        bloomPart = bloomGate * bloomBorder * BloomMultiplierFromDist(d);
+    }
+
+    float b = intensity * maxIntensity * (thinBorder + bloomPart);
+    return b;
+}
+
+half4 main(vec2 fragCoord)
+{
+    float lightMaskValue = lightMaskShader.eval(fragCoord).r;
+    vec4 sdfSample = sdfShader.eval(fragCoord);
+    float alpha = EdgeLightFakeBloom(lightMaskValue, sdfSample.a);
+    return half4(lightColor * alpha, alpha);
+}

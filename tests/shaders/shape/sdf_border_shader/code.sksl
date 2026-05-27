@@ -1,0 +1,29 @@
+uniform shader sdfShape;
+uniform vec4 u_borderColor;
+uniform float u_borderWidth;
+
+// Input data:
+// float d - current SDF shape distance
+// vec4 color - color of the background
+// vec4 borderColor - color of the border
+// float borderWidth - width of the border
+vec4 borderEffect(float d, vec4 color, vec4 borderColor, float borderWidth)
+{
+    if (d < 0.0 && d >= -borderWidth) {
+        color = borderColor * (1.0 - smoothstep(-1.0, 0.0, d));
+    }
+
+    if (d < -borderWidth && d >= (-borderWidth - 1.0)) {
+        color = borderColor * smoothstep(-borderWidth - 1.0, -borderWidth, d);
+    }
+
+    return color;
+}
+
+half4 main(float2 fragCoord)
+{
+    vec4 color = vec4(0.0);
+    float d = sdfShape.eval(fragCoord).a;
+    color = borderEffect(d, color, u_borderColor, u_borderWidth);
+    return half4(color);
+}

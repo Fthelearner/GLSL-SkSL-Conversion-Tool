@@ -1,0 +1,21 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "uniforms": {
+    "vertex0": [
+      0.5,
+      0.2
+    ],
+    "vertex1": [
+      0.2,
+      0.8
+    ],
+    "vertex2": [
+      0.8,
+      0.8
+    ],
+    "radius": 0.3
+  }
+}

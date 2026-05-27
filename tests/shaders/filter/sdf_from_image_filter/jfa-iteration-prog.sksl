@@ -1,0 +1,46 @@
+uniform vec2 iResolution;
+uniform float jfaRadius;
+uniform float spreadFactor;
+uniform shader imageInput;
+
+vec4 SafeFetch(vec2 fragCoord) {
+    if (fragCoord.x < 0 || fragCoord.x > iResolution.x || fragCoord.y < 0 || fragCoord.y > iResolution.y) {
+        return vec4(1e6);
+    }
+    return imageInput.eval(fragCoord);
+}
+
+vec2 EncodeCoords(vec2 coordsToEncode, vec2 fragCoord) {
+    return clamp(((coordsToEncode - fragCoord) / spreadFactor + 1) / 2.0, 0, 1);
+}
+
+vec2 DecodeCoords(vec2 coordsToDecode, vec2 fragCoord) {
+    return (coordsToDecode * 2 - 1) * spreadFactor + fragCoord;
+}
+
+void SearchNeighbors(inout vec4 O, vec2 fragCoord, vec2 sampleCoord)
+{
+    vec4 imgSample = SafeFetch(sampleCoord);
+    vec4 a = vec4(DecodeCoords(imgSample.xy, sampleCoord), DecodeCoords(imgSample.zw, sampleCoord));
+    if (imgSample.x < 1.0 && imgSample.y < 1.0 && imgSample.x > 0.0 && imgSample.y > 0.0) {
+        vec2 diffA = fragCoord - a.xy;
+        vec2 diffO = O.xy - fragCoord;
+        O.xy = dot(diffA, diffA) < dot(diffO, diffO) ? a.xy : O.xy;
+    }
+    if (imgSample.z < 1.0 && imgSample.w < 1.0 && imgSample.z > 0.0 && imgSample.w > 0.0) {
+        vec2 diffA = fragCoord - a.zw;
+        vec2 diffO = O.zw - fragCoord;
+        O.zw = dot(diffA, diffA) < dot(diffO, diffO) ? a.zw : O.zw;
+    }
+}
+
+half4 main(vec2 fragCoord) {
+    vec4 O = imageInput.eval(fragCoord);
+    O = vec4(DecodeCoords(O.xy, fragCoord), DecodeCoords(O.zw, fragCoord));
+    SearchNeighbors(O, fragCoord, fragCoord + jfaRadius * vec2(0.0, -1.0));
+    SearchNeighbors(O, fragCoord, fragCoord + jfaRadius * vec2(0.0, 1.0));
+    SearchNeighbors(O, fragCoord, fragCoord + jfaRadius * vec2(-1.0, 0.0));
+    SearchNeighbors(O, fragCoord, fragCoord + jfaRadius * vec2(1.0, 0.0));
+    O = vec4(EncodeCoords(O.xy, fragCoord), EncodeCoords(O.zw, fragCoord));
+    return O;
+}

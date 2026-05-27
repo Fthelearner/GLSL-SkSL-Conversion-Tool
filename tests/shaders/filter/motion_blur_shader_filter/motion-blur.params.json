@@ -1,0 +1,14 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "srcImageShader": "assets/input.png",
+    "image": "assets/input.png"
+  },
+  "uniforms": {
+    "radius": 0.3,
+    "sampleCount": 20.0
+  }
+}

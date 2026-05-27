@@ -1,0 +1,78 @@
+uniform half2 iResolution;
+uniform shader singleParticleHalo;
+const half2 rotationCenter = half2(0.5);
+const half DOWN_SAMPLE_SCALE = 4.0;
+
+vec4 fragColor;
+const int NUMBER_OF_SAMPLES = 11;  // Number of samples used for blur effects
+const float NUMBER_OF_SAMPLES_F = 11.;
+const float PI = 3.14159;
+const float PI2 = 6.28318;
+
+const half2 RAND2_A = half2(127.1, 1.7);
+const half2 RAND2_B = half2(269.5, 183.3);
+const float RAND2_MUL = 4258.5453123;
+
+const float COS_ROT1 = 0.993482;
+const float SIN_ROT1 = 0.113991;
+
+// ****************************** Sub-functions ******************************
+float BlendScreen(float a, float b)
+{
+    return a + b - a * b;
+}
+
+half2 UV2PixelParticle(half2 rotatedDir, float DOWN_SAMPLE_SCALE, float screenRatio, half radius,
+    half2 rotationCenter, half2 iRes)
+{
+    half lenRotDir = length(rotatedDir);
+    half cosBeta = rotatedDir.x / lenRotDir;
+    half sinBeta = rotatedDir.y / lenRotDir;
+    rotatedDir = half2(cosBeta, sinBeta) * lenRotDir / radius / DOWN_SAMPLE_SCALE;
+
+    rotatedDir /= 2.0;
+    rotatedDir.x /= screenRatio;
+    rotatedDir += rotationCenter;
+    return  rotatedDir * iRes;
+}
+
+// ****************************** Main Functions ******************************
+vec4 main(vec2 fragCoord)
+{
+    float radius = 0.5 / DOWN_SAMPLE_SCALE * 2.0;
+    float innerRadiusEdge = 0.5 * radius;
+    float outerRadiusEdge = 1.5 * radius;
+    float haloColor = 0.;
+    half4 glowColor = half4(0.0);
+
+    half2 uv = fragCoord.xy / iResolution.xy;
+    uv -= rotationCenter;
+    float screenRatio = iResolution.x / iResolution.y;
+    half2 centeredUVs = uv * 2.0 ;
+    centeredUVs.x *= screenRatio;
+    half2 directionVector = centeredUVs;
+    float lenDirVec = length(directionVector);
+    if (lenDirVec >= innerRadiusEdge && lenDirVec <= outerRadiusEdge) {
+        float particleHaloColor = 0.;
+
+        half2 rotatedDir = directionVector;
+      	half2 samplePixel = UV2PixelParticle(rotatedDir, DOWN_SAMPLE_SCALE, screenRatio, radius,
+            rotationCenter, iResolution.xy);
+        half4 samplerColor = singleParticleHalo.eval(samplePixel);
+        particleHaloColor += samplerColor.x;
+
+        for (int i = 1; i < NUMBER_OF_SAMPLES; i++) {
+            rotatedDir = mat2(COS_ROT1, SIN_ROT1, -SIN_ROT1, COS_ROT1) * rotatedDir;
+            samplePixel = UV2PixelParticle(rotatedDir, DOWN_SAMPLE_SCALE, screenRatio, radius,
+                rotationCenter, iResolution.xy);
+            samplerColor = singleParticleHalo.eval(samplePixel);
+            particleHaloColor += samplerColor.x;
+        }
+
+        particleHaloColor /= NUMBER_OF_SAMPLES_F;
+
+        haloColor = BlendScreen(haloColor, particleHaloColor);
+    }
+    fragColor = half4(haloColor);
+    return fragColor;
+}

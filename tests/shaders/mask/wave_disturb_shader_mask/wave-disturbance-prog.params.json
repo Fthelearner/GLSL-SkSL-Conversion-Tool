@@ -1,0 +1,18 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "uniforms": {
+    "clickPos": [
+      0.5,
+      0.5
+    ],
+    "processTime": 0.5,
+    "waveLength": 0.15,
+    "reflectRatio": 0.5,
+    "waveWidth": 0.05,
+    "waveHeight": 0.1,
+    "waveDown": 0.3
+  }
+}

@@ -1,0 +1,131 @@
+results/sksltoglsl/test/edge_light_shader_filter__composite-frag/v1/code/edge_light_shader_filter__composite-frag.glsl
+Shader version: 450
+0:? Sequence
+0:8  Function Definition: main( ( global void)
+0:8    Function Parameters: 
+0:9    Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp 2-component vector of float)
+0:9          'fragCoord' ( temp 2-component vector of float)
+0:9          vector swizzle ( temp 2-component vector of float)
+0:9            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:9            Sequence
+0:9              Constant:
+0:9                0 (const int)
+0:9              Constant:
+0:9                1 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp 3-component vector of float)
+0:10          'composited_color' ( temp 3-component vector of float)
+0:10          vector swizzle ( temp 3-component vector of float)
+0:10            texture ( global 4-component vector of float)
+0:10              'imageBlur0' ( uniform sampler2D)
+0:10              divide ( temp 2-component vector of float)
+0:10                'fragCoord' ( temp 2-component vector of float)
+0:10                Convert int to float ( temp 2-component vector of float)
+0:10                  textureSize ( global 2-component vector of int)
+0:10                    'imageBlur0' ( uniform sampler2D)
+0:10                    Constant:
+0:10                      0 (const int)
+0:10            Sequence
+0:10              Constant:
+0:10                0 (const int)
+0:10              Constant:
+0:10                1 (const int)
+0:10              Constant:
+0:10                2 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp float)
+0:11          'weight' ( temp float)
+0:11          Constant:
+0:11            0.250000
+0:12      add second child into first child ( temp 3-component vector of float)
+0:12        'composited_color' ( temp 3-component vector of float)
+0:12        vector-scale ( temp 3-component vector of float)
+0:12          'weight' ( temp float)
+0:12          add ( temp 3-component vector of float)
+0:12            add ( temp 3-component vector of float)
+0:12              add ( temp 3-component vector of float)
+0:12                vector swizzle ( temp 3-component vector of float)
+0:12                  texture ( global 4-component vector of float)
+0:12                    'imageBlur1' ( uniform sampler2D)
+0:12                    divide ( temp 2-component vector of float)
+0:12                      'fragCoord' ( temp 2-component vector of float)
+0:12                      Convert int to float ( temp 2-component vector of float)
+0:12                        textureSize ( global 2-component vector of int)
+0:12                          'imageBlur1' ( uniform sampler2D)
+0:12                          Constant:
+0:12                            0 (const int)
+0:12                  Sequence
+0:12                    Constant:
+0:12                      0 (const int)
+0:12                    Constant:
+0:12                      1 (const int)
+0:12                    Constant:
+0:12                      2 (const int)
+0:12                vector swizzle ( temp 3-component vector of float)
+0:12                  texture ( global 4-component vector of float)
+0:12                    'imageBlur2' ( uniform sampler2D)
+0:12                    divide ( temp 2-component vector of float)
+0:12                      'fragCoord' ( temp 2-component vector of float)
+0:12                      Convert int to float ( temp 2-component vector of float)
+0:12                        textureSize ( global 2-component vector of int)
+0:12                          'imageBlur2' ( uniform sampler2D)
+0:12                          Constant:
+0:12                            0 (const int)
+0:12                  Sequence
+0:12                    Constant:
+0:12                      0 (const int)
+0:12                    Constant:
+0:12                      1 (const int)
+0:12                    Constant:
+0:12                      2 (const int)
+0:12              vector swizzle ( temp 3-component vector of float)
+0:12                texture ( global 4-component vector of float)
+0:12                  'imageBlur3' ( uniform sampler2D)
+0:12                  divide ( temp 2-component vector of float)
+0:12                    'fragCoord' ( temp 2-component vector of float)
+0:12                    Convert int to float ( temp 2-component vector of float)
+0:12                      textureSize ( global 2-component vector of int)
+0:12                        'imageBlur3' ( uniform sampler2D)
+0:12                        Constant:
+0:12                          0 (const int)
+0:12                Sequence
+0:12                  Constant:
+0:12                    0 (const int)
+0:12                  Constant:
+0:12                    1 (const int)
+0:12                  Constant:
+0:12                    2 (const int)
+0:12            vector swizzle ( temp 3-component vector of float)
+0:12              texture ( global 4-component vector of float)
+0:12                'imageBlur4' ( uniform sampler2D)
+0:12                divide ( temp 2-component vector of float)
+0:12                  'fragCoord' ( temp 2-component vector of float)
+0:12                  Convert int to float ( temp 2-component vector of float)
+0:12                    textureSize ( global 2-component vector of int)
+0:12                      'imageBlur4' ( uniform sampler2D)
+0:12                      Constant:
+0:12                        0 (const int)
+0:12              Sequence
+0:12                Constant:
+0:12                  0 (const int)
+0:12                Constant:
+0:12                  1 (const int)
+0:12                Constant:
+0:12                  2 (const int)
+0:13      move second child to first child ( temp 4-component vector of float)
+0:13        'FragColor' ( out 4-component vector of float)
+0:13        Construct vec4 ( temp 4-component vector of float)
+0:13          'composited_color' ( temp 3-component vector of float)
+0:13          Constant:
+0:13            1.000000
+0:14      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'imageBlur0' ( uniform sampler2D)
+0:?     'imageBlur1' ( uniform sampler2D)
+0:?     'imageBlur2' ( uniform sampler2D)
+0:?     'imageBlur3' ( uniform sampler2D)
+0:?     'imageBlur4' ( uniform sampler2D)
+

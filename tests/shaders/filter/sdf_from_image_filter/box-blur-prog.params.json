@@ -1,0 +1,12 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "image": "assets/sdfil_mask_v2.png"
+  },
+  "uniforms": {
+    "iScale": 6.0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "colorGradientShader": "assets/input.png"
+  },
+  "uniforms": {
+    "brightness": 0.1
+  }
+}

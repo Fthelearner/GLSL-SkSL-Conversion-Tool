@@ -1,0 +1,27 @@
+uniform half r;
+uniform shader imageShader;
+uniform shader gradientShader;
+half4 boxFilter(float2 coord, half radius)
+{
+    half4 sum = vec4(0.0);
+    half div = 0;
+    for (half x = -30.0; x < 30.0; x += 1.0) {
+        if (x > radius) {
+            break;
+        }
+        if (abs(x) < radius) {
+            div += 1;
+            sum += imageShader.eval(coord + float2(x, 0));
+        }
+    }
+    return half4(sum.xyz / div, 1.0);
+}
+half4 main(float2 coord)
+{
+    float radius = r * gradientShader.eval(coord).a;
+    if (radius < 1.0) {
+        return imageShader.eval(coord);
+    }
+    radius = clamp(radius, 1.0, r);
+    return boxFilter(coord, radius);
+}

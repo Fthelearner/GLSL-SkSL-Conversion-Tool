@@ -1,0 +1,68 @@
+uniform half2 iResolution;
+uniform half2 waveCenter;
+uniform half waveWidth;
+uniform half turbulenceStrength;
+uniform half blurRadius;
+uniform half propagationRadius;
+
+vec2 random2(vec2 st)
+{
+    // Magic constants for dot products: chosen to avoid grid artifacts and ensure good distribution
+    return fract(sin(vec2(dot(st, vec2(127.1, 311.7)),
+        dot(st, vec2(269.5, 183.3)))) * 43758.5453) * 2.0 - 1.0;
+}
+
+float noise(vec2 st)
+{
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(
+        mix(dot(random2(i), f),
+            dot(random2(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
+        mix(dot(random2(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)),
+            dot(random2(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), u.x),
+        u.y);
+}
+
+float fbm(vec2 st)
+{
+    float value = 0.0;
+    float amp = 0.5;
+    value += amp * noise(st);
+    st *= 2.0;
+    amp = 0.25; // half of origin value
+    value += amp * noise(st);
+    return value;
+}
+
+half4 main(vec2 fragCoord)
+{
+    vec2 uv = fragCoord.xy / iResolution.xy;
+
+    float aspect = iResolution.x / iResolution.y;
+    vec2 center = vec2(waveCenter.x * aspect, waveCenter.y);
+    float currentRadius = propagationRadius;
+
+    float turbulenceTime = currentRadius * 5.0 + sin(currentRadius * 6.28) * 2.0;
+    float n1 = fbm(uv * 3.0 + vec2(turbulenceTime, 0.0));
+    float n2 = fbm(uv * 3.0 + vec2(0.0, turbulenceTime));
+    vec2 turbulenceOffset = vec2(n1, n2) * turbulenceStrength;
+
+    vec2 uvWarped = uv + turbulenceOffset;
+    vec2 uvCorrectedWarped = vec2(uvWarped.x * aspect, uvWarped.y);
+    vec2 dirWarped = uvCorrectedWarped - center;
+    float distWarped = length(dirWarped);
+
+    float mask;
+    if (waveWidth < 0.0001) {
+        float outer = currentRadius + blurRadius;
+        mask = 1.0 - smoothstep(currentRadius - blurRadius, outer, distWarped);
+    } else {
+        float inner = currentRadius - waveWidth - blurRadius;
+        float outer = currentRadius + waveWidth + blurRadius;
+        mask = smoothstep(inner, inner + blurRadius, distWarped)
+            - smoothstep(outer - blurRadius, outer, distWarped);
+    }
+    return half4(mask);
+}

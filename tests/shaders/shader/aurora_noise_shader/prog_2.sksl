@@ -1,0 +1,9 @@
+uniform shader verticalBlurTexture;
+uniform vec2 iResolution;
+
+const float downSampleFactor = 8.0;
+
+vec4 main(vec2 fragCoord)
+{
+    return verticalBlurTexture.eval(fragCoord / downSampleFactor);
+}

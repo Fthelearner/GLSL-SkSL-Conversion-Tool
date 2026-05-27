@@ -1,0 +1,13 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageShader": "assets/input.png"
+  },
+  "uniforms": {
+    "coefficient1": 150.0,
+    "coefficient2": 130.0
+  }
+}

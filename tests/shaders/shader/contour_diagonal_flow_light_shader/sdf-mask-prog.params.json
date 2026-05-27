@@ -1,0 +1,9 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "precalculationImage": "assets/sdf_rrect.png"
+  }
+}

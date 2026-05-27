@@ -1,0 +1,7 @@
+uniform shader image;
+uniform shader composeImage;
+vec4 main(vec2 fragCoord) {
+    vec4 imageColor = image.eval(fragCoord);
+    vec4 composeImageColor = composeImage.eval(fragCoord);
+    return vec4(imageColor.rgb + composeImageColor.rgb, imageColor.a);
+}

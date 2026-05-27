@@ -1,0 +1,31 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "lightPosition": [
+      0.0,
+      0.0,
+      5.0
+    ],
+    "lightColor": [
+      1.0,
+      0.8,
+      0.3,
+      0.8
+    ],
+    "lightIntensity": 1.0,
+    "lightWidth": 100.0,
+    "borderLightRotationAngle": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "cornerRadius": 80.0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "mse": 0.0,
+  "psnr": Infinity,
+  "max_pixel_diff": 0,
+  "pixel_diff_percent": 0.0,
+  "total_pixels": 921600,
+  "different_pixels": 0,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test1/passthrough/report/passthrough_roundtrip_diffmap.png"
+}

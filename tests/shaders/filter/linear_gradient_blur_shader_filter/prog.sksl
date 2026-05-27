@@ -1,0 +1,13 @@
+uniform shader srcImageShader;
+uniform shader blurImageShader;
+uniform shader gradientShader;
+
+half4 main(float2 coord)
+{
+    vec3 srcColor = srcImageShader.eval(coord).rgb;
+    vec3 blurColor = blurImageShader.eval(coord).rgb;
+    float gradient = gradientShader.eval(coord).a;
+
+    vec3 color = blurColor * gradient + srcColor * (1.0 - gradient);
+    return vec4(color, 1.0);
+}

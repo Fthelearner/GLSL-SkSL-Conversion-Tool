@@ -1,0 +1,32 @@
+uniform shader imageInput;
+uniform shader blurredSDFInput;
+const float width = 64.0;
+
+vec4 main(vec2 fragCoord) {
+    float alpha = imageInput.eval(fragCoord).a;
+    float sdfRaw = blurredSDFInput.eval(fragCoord).a;
+
+    float d0 = sdfRaw * 2.0 - 1.0;
+    float dist = abs(d0) * width;
+
+    float h = 2.0 + clamp(dist * 0.2, 0.0, 8.0);
+
+    float vR = blurredSDFInput.eval(fragCoord + vec2(h, 0)).a;
+    float vL = blurredSDFInput.eval(fragCoord - vec2(h, 0)).a;
+    float vB = blurredSDFInput.eval(fragCoord + vec2(0, h)).a;
+    float vT = blurredSDFInput.eval(fragCoord - vec2(0, h)).a;
+
+    vec2 grad = vec2(vR - vL, vB - vT);
+
+    bool isInvalid = (sdfRaw > 0.95 || sdfRaw < 0.05) && (dot(grad, grad) < 0.0001);
+
+    float spineSmooth = smoothstep(width, width * 0.2, dist);
+
+    vec2 dir = isInvalid ? vec2(0.0) : (grad + 0.0001) * spineSmooth;
+
+    vec4 O = vec4(0.0);
+    O.x = clamp((dir.x + 1.0) / 2.0, 0.0, 1.0);
+    O.y = clamp((dir.y + 1.0) / 2.0, 0.0, 1.0);
+    O.w = clamp(alpha, 0.0, 1.0);
+    return O;
+}

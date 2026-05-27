@@ -1,0 +1,13 @@
+uniform shader image;
+uniform vec4 dst;
+uniform vec4 fillPixel;
+
+vec4 main(float2 fragCoord)
+{
+    if (dst.x < fragCoord.x && fragCoord.x < dst.z &&
+        dst.y < fragCoord.y && fragCoord.y < dst.w) {
+        return image.eval(fragCoord);
+    }
+
+    return fillPixel;
+}

@@ -1,0 +1,12 @@
+{
+  "mse": 0.0,
+  "psnr": 100.24,
+  "max_pixel_diff": 1,
+  "pixel_diff_percent": 0.0,
+  "total_pixels": 921600,
+  "different_pixels": 12,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test/heat_distortion_filter__heat-distortion/v2/report/heat_distortion_filter__heat-distortion_diffmap.png"
+}

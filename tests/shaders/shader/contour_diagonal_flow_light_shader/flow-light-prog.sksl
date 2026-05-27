@@ -1,0 +1,79 @@
+uniform shader precalculationImage;
+uniform vec2 iResolution;
+uniform float line1Start;
+uniform float line1Length;
+uniform vec3 line1Color;
+uniform float line2Start;
+uniform float line2Length;
+uniform vec3 line2Color;
+uniform float lineThickness;
+// ===== Constant =====
+const float thickness = 0.04;
+const float glowBellSigma = 0.28;
+const float distMin = 1e-4;
+const float intensity = 1.75;
+const float glowRadius = 0.004;
+const float intensityFactor = 0.0045;
+
+// Gaussian bell-shaped profile centered at t = 0.5
+float BellShape(float t, float sigma)
+{
+    float x = (t - 0.5) / sigma;
+    return exp(-x * x);
+}
+
+// Compute glowing intensity based on SDF and local t on segment
+float GetSegmentGlowIntensity(float sdfData, float weight, float tLocal)
+{
+    float w = BellShape(tLocal, glowBellSigma); // tLocal: [0,1]
+    float th = thickness * w * lineThickness;
+    return log(1.0 + weight * pow(glowRadius / max(sdfData - th, distMin), intensity) * intensityFactor);
+}
+
+void ComputeArcWindow(float tGlobal, float tStart, float windowLen, float sigma,
+    inout float tLocal, inout float weight)
+{
+    float shiftedT = mod(tGlobal - tStart + 1.0, 1.0);
+    tLocal = shiftedT / windowLen;
+    float inWindow = step(0.0, shiftedT) * step(shiftedT, windowLen);
+    weight = inWindow * BellShape(tLocal, sigma);
+}
+
+vec3 SamplePrecalculationImage(vec2 coord)
+{
+    return precalculationImage.eval(coord).rgb;
+}
+
+float DecodeFloat(vec2 rg)
+{
+    return rg.x + rg.y / 255.0; // 255.0 = maximum value representable in 8-bit channel
+}
+
+vec4 main(vec2 fragCoord)
+{
+    vec2 p = (2.0 * fragCoord - iResolution.xy) / iResolution.y; // 2.0: map uv to [-1, 1]
+    vec3 precalculationData = SamplePrecalculationImage(fragCoord);
+    float sdf = DecodeFloat(precalculationData.rg) * 3.0; // 3.0:decode the sdf
+    float tGlobal = precalculationData.b;
+    if (precalculationImage.eval(fragCoord).a < 0.5) { // 0.5: discard transparent pixels
+        return vec4(0.0, 0.0, 0.0, 0.0);
+    }
+
+    // === Sliding window for glow arcs ===
+    float weight1 = 0.0;
+    float tLocal1 = 0.0;
+    float weight2 = 0.0;
+    float tLocal2 = 0.0;
+    ComputeArcWindow(tGlobal, line1Start, line1Length, glowBellSigma, tLocal1, weight1);
+    ComputeArcWindow(tGlobal, line2Start, line2Length, glowBellSigma, tLocal2, weight2);
+
+    // === Glow color composition ===
+    float line1Intensity = GetSegmentGlowIntensity(sdf, weight1, tLocal1);
+    float line2Intensity = GetSegmentGlowIntensity(sdf, weight2, tLocal2);
+    vec3 glowCol1 = line1Color * line1Intensity;
+    vec3 glowCol2 = line2Color * line2Intensity;
+    vec3 glow = glowCol1 + glowCol2;
+    glow *= exp(-sdf * 50.0); // 50.0: the greater, the thinner core
+    float alpha = max(max(glow.r, glow.g), glow.b);
+    return vec4(glow, alpha);
+}

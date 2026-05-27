@@ -1,0 +1,19 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageInput": "assets/input.png"
+  },
+  "uniforms": {
+    "in_blurOffset": [
+      30.0,
+      0.0
+    ],
+    "in_maxSizeXY": [
+      1279.0,
+      719.0
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "uniforms": {
+    "centerPos": [
+      0.5,
+      0.5
+    ],
+    "halfSize": [
+      0.3,
+      0.2
+    ],
+    "radius": 0.3
+  }
+}

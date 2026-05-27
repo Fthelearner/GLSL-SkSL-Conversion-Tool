@@ -10,22 +10,24 @@ uniform float invert;
 uniform float blurMix;
 void main() {
     vec2 fragCoord = gl_FragCoord.xy;
-    vec2 start_coord = startPoint * iResolution;
-    vec2 end_coord = endPoint * iResolution;
-    vec2 axis = end_coord - start_coord;
-    float axis_length_squared = max(dot(axis, axis), 1e-05);
-    float projected = dot(fragCoord - start_coord, axis) / axis_length_squared;
+    vec4 outColor;
+    vec2 startCoord = startPoint * iResolution;
+    vec2 endCoord = endPoint * iResolution;
+    vec2 axis = endCoord - startCoord;
+    float axisLengthSquared = max(dot(axis, axis), 1e-05);
+    float projected = dot(fragCoord - startCoord, axis) / axisLengthSquared;
     float edge0 = -softness;
     float edge1 = 1.0 + softness;
     float gradient = smoothstep(edge0, edge1, projected);
     if (invert > 0.5) {
         gradient = 1.0 - gradient;
     }
-    float mix_amount = clamp(gradient * blurMix, 0.0, 1.0);
-    vec4 source_color = texture(image, (fragCoord) / iResolution);
-    source_color.rgb *= source_color.a;
-    vec4 blur_color = texture(preblurImage, (fragCoord) / iResolution);
-    blur_color.rgb *= blur_color.a;
-    FragColor = mix(source_color, blur_color, vec4(mix_amount));
+    float mixAmount = clamp(gradient * blurMix, 0.0, 1.0);
+    vec4 sourceColor = texture(image, (fragCoord) / iResolution);
+    sourceColor.rgb *= sourceColor.a;
+    vec4 blurColor = texture(preblurImage, (fragCoord) / iResolution);
+    blurColor.rgb *= blurColor.a;
+    outColor = mix(sourceColor, blurColor, vec4(mixAmount));
+    FragColor = vec4(outColor.xyz, 1.0);
     return;
 }

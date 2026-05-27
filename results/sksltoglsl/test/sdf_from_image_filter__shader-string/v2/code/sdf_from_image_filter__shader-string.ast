@@ -1,0 +1,205 @@
+results/sksltoglsl/test/sdf_from_image_filter__shader-string/v1/code/sdf_from_image_filter__shader-string.glsl
+Shader version: 450
+0:? Sequence
+0:6  Function Definition: main( ( global void)
+0:6    Function Parameters: 
+0:7    Sequence
+0:7      Sequence
+0:7        move second child to first child ( temp 2-component vector of float)
+0:7          'fragCoord' ( temp 2-component vector of float)
+0:7          vector swizzle ( temp 2-component vector of float)
+0:7            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:7            Sequence
+0:7              Constant:
+0:7                0 (const int)
+0:7              Constant:
+0:7                1 (const int)
+0:8      Sequence
+0:8        move second child to first child ( temp 2-component vector of float)
+0:8          'centerFragCoord' ( temp 2-component vector of float)
+0:8          add ( temp 2-component vector of float)
+0:8            'fragCoord' ( temp 2-component vector of float)
+0:8            Constant:
+0:8              0.500000
+0:8              0.500000
+0:9      Sequence
+0:9        move second child to first child ( temp float)
+0:9          'imageSample' ( temp float)
+0:9          direct index ( temp float)
+0:9            texture ( global 4-component vector of float)
+0:9              'imageInput' ( uniform sampler2D)
+0:9              divide ( temp 2-component vector of float)
+0:9                'centerFragCoord' ( temp 2-component vector of float)
+0:9                Convert int to float ( temp 2-component vector of float)
+0:9                  textureSize ( global 2-component vector of int)
+0:9                    'imageInput' ( uniform sampler2D)
+0:9                    Constant:
+0:9                      0 (const int)
+0:9            Constant:
+0:9              3 (const int)
+0:10      Test condition and select ( temp void)
+0:10        Condition
+0:10        Compare Less Than or Equal ( temp bool)
+0:10          'imageSample' ( temp float)
+0:10          Constant:
+0:10            0.000000
+0:10        true case
+0:11        Sequence
+0:11          move second child to first child ( temp 4-component vector of float)
+0:11            'FragColor' ( out 4-component vector of float)
+0:11            Constant:
+0:11              1.000000
+0:11              1.000000
+0:11              0.500000
+0:11              0.500000
+0:12          Branch: Return
+0:14      Test condition and select ( temp void)
+0:14        Condition
+0:14        Compare Greater Than or Equal ( temp bool)
+0:14          'imageSample' ( temp float)
+0:14          Constant:
+0:14            1.000000
+0:14        true case
+0:15        Sequence
+0:15          move second child to first child ( temp 4-component vector of float)
+0:15            'FragColor' ( out 4-component vector of float)
+0:15            Constant:
+0:15              0.500000
+0:15              0.500000
+0:15              1.000000
+0:15              1.000000
+0:16          Branch: Return
+0:19      Sequence
+0:19        move second child to first child ( temp 2-component vector of float)
+0:19          'grad' ( temp 2-component vector of float)
+0:19          Construct vec2 ( temp 2-component vector of float)
+0:19            subtract ( temp float)
+0:19              direct index ( temp float)
+0:19                texture ( global 4-component vector of float)
+0:19                  'imageInput' ( uniform sampler2D)
+0:19                  divide ( temp 2-component vector of float)
+0:19                    add ( temp 2-component vector of float)
+0:19                      'centerFragCoord' ( temp 2-component vector of float)
+0:19                      Constant:
+0:19                        0.500000
+0:19                        0.000000
+0:19                    Convert int to float ( temp 2-component vector of float)
+0:19                      textureSize ( global 2-component vector of int)
+0:19                        'imageInput' ( uniform sampler2D)
+0:19                        Constant:
+0:19                          0 (const int)
+0:19                Constant:
+0:19                  3 (const int)
+0:19              direct index ( temp float)
+0:19                texture ( global 4-component vector of float)
+0:19                  'imageInput' ( uniform sampler2D)
+0:19                  divide ( temp 2-component vector of float)
+0:19                    subtract ( temp 2-component vector of float)
+0:19                      'centerFragCoord' ( temp 2-component vector of float)
+0:19                      Constant:
+0:19                        0.500000
+0:19                        0.000000
+0:19                    Convert int to float ( temp 2-component vector of float)
+0:19                      textureSize ( global 2-component vector of int)
+0:19                        'imageInput' ( uniform sampler2D)
+0:19                        Constant:
+0:19                          0 (const int)
+0:19                Constant:
+0:19                  3 (const int)
+0:19            subtract ( temp float)
+0:19              direct index ( temp float)
+0:19                texture ( global 4-component vector of float)
+0:19                  'imageInput' ( uniform sampler2D)
+0:19                  divide ( temp 2-component vector of float)
+0:19                    add ( temp 2-component vector of float)
+0:19                      'centerFragCoord' ( temp 2-component vector of float)
+0:19                      Constant:
+0:19                        0.000000
+0:19                        0.500000
+0:19                    Convert int to float ( temp 2-component vector of float)
+0:19                      textureSize ( global 2-component vector of int)
+0:19                        'imageInput' ( uniform sampler2D)
+0:19                        Constant:
+0:19                          0 (const int)
+0:19                Constant:
+0:19                  3 (const int)
+0:19              direct index ( temp float)
+0:19                texture ( global 4-component vector of float)
+0:19                  'imageInput' ( uniform sampler2D)
+0:19                  divide ( temp 2-component vector of float)
+0:19                    subtract ( temp 2-component vector of float)
+0:19                      'centerFragCoord' ( temp 2-component vector of float)
+0:19                      Constant:
+0:19                        0.000000
+0:19                        0.500000
+0:19                    Convert int to float ( temp 2-component vector of float)
+0:19                      textureSize ( global 2-component vector of int)
+0:19                        'imageInput' ( uniform sampler2D)
+0:19                        Constant:
+0:19                          0 (const int)
+0:19                Constant:
+0:19                  3 (const int)
+0:20      Sequence
+0:20        move second child to first child ( temp 2-component vector of float)
+0:20          'normGrad' ( temp 2-component vector of float)
+0:20          normalize ( global 2-component vector of float)
+0:20            'grad' ( temp 2-component vector of float)
+0:21      Sequence
+0:21        move second child to first child ( temp 2-component vector of float)
+0:21          'edgeCoords' ( temp 2-component vector of float)
+0:21          Constant:
+0:21            0.500000
+0:21            0.500000
+0:22      Sequence
+0:22        move second child to first child ( temp float)
+0:22          'borderCoeff' ( temp float)
+0:22          component-wise multiply ( temp float)
+0:22            subtract ( temp float)
+0:22              'imageSample' ( temp float)
+0:22              Constant:
+0:22                0.500000
+0:22            Constant:
+0:22              1.414214
+0:23      subtract second child into first child ( temp 2-component vector of float)
+0:23        'edgeCoords' ( temp 2-component vector of float)
+0:23        divide ( temp 2-component vector of float)
+0:23          vector-scale ( temp 2-component vector of float)
+0:23            'normGrad' ( temp 2-component vector of float)
+0:23            'borderCoeff' ( temp float)
+0:23          component-wise multiply ( temp float)
+0:23            Constant:
+0:23              2.000000
+0:23            'spreadFactor' ( uniform float)
+0:24      Test condition and select ( temp void)
+0:24        Condition
+0:24        Compare Less Than ( temp bool)
+0:24          'borderCoeff' ( temp float)
+0:24          Constant:
+0:24            0.000000
+0:24        true case
+0:25        Sequence
+0:25          move second child to first child ( temp 4-component vector of float)
+0:25            'FragColor' ( out 4-component vector of float)
+0:25            Construct vec4 ( temp 4-component vector of float)
+0:25              'edgeCoords' ( temp 2-component vector of float)
+0:25              Constant:
+0:25                0.500000
+0:25              Constant:
+0:25                0.500000
+0:26          Branch: Return
+0:28      move second child to first child ( temp 4-component vector of float)
+0:28        'FragColor' ( out 4-component vector of float)
+0:28        Construct vec4 ( temp 4-component vector of float)
+0:28          Constant:
+0:28            0.500000
+0:28          Constant:
+0:28            0.500000
+0:28          'edgeCoords' ( temp 2-component vector of float)
+0:29      Branch: Return
+0:?   Linker Objects
+0:?     'FragColor' ( out 4-component vector of float)
+0:?     'imageInput' ( uniform sampler2D)
+0:?     'spreadFactor' ( uniform float)
+0:?     'SQRT_2' ( const float)
+0:?       1.414214
+

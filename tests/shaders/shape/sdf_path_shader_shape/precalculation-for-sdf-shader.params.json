@@ -1,0 +1,17 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "u_prevD": "assets/sdf_rrect.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "u_curveCount": 4.0,
+    "u_isFirstBatch": 1.0
+  }
+}

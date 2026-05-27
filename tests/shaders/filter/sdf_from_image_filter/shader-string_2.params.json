@@ -1,0 +1,11 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "imageInput": "assets/sdfil_mask_v2.png",
+    "blurredSDFInput": "assets/sdfil_sdf_direct.png"
+  },
+  "uniforms": {}
+}

@@ -1,0 +1,10 @@
+uniform shader left;
+uniform shader right;
+half4 main(vec2 fragCoord)
+{
+    vec4 leftShape = left.eval(fragCoord);
+    vec4 rightShape = right.eval(fragCoord);
+
+    // It is required for input SDF to be in this format: vec4(any, any, any, SDF)
+    return leftShape.a < rightShape.a ? leftShape : rightShape;
+}

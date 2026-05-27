@@ -1,0 +1,55 @@
+uniform vec2 iResolution;
+
+uniform shader sdfImageShader;
+uniform shader blurredSdfImageShader;
+uniform shader lightMaskShader;
+
+uniform float spreadFactor;
+
+uniform vec3 lightColor;
+uniform float bloomIntensityCutoff; // at what intensity is bloom supposed to disappear
+uniform float maxIntensity;
+uniform float maxBloomIntensity;
+uniform float bloomFalloffPow;
+
+uniform float minBorderWidth;
+uniform float maxBorderWidth;
+
+uniform float innerBorderBloomWidth;
+uniform float outerBorderBloomWidth;
+
+float bloomMultiplierFromDist(float d) {
+    float dNorm = abs(d) / (d > 0 ? outerBorderBloomWidth : innerBorderBloomWidth);
+    float falloff = max((1 - dNorm) / pow(1 + dNorm, bloomFalloffPow), 0);
+    return maxBloomIntensity * falloff;
+}
+
+float edgeLightFakeBloom(float intensity, float d, float smoothD) {
+    float bloomBorder = 1 - step(outerBorderBloomWidth, d);
+    bloomBorder *= step(-innerBorderBloomWidth, d);
+
+    float edgeThickness = smoothstep(0, 1, intensity) *
+                          (maxBorderWidth - minBorderWidth) + minBorderWidth;
+    float thinBorder = (1 - smoothstep(0, edgeThickness, d)) * smoothstep(-edgeThickness, 0, d);
+
+    float b = intensity * maxIntensity * (thinBorder + smoothstep(bloomIntensityCutoff, 1, intensity) *
+              bloomBorder * bloomMultiplierFromDist(smoothD));
+    return b;
+}
+
+vec4 decodeSdfMap(vec4 inputSdfMap) {
+    return vec4(inputSdfMap * 2.0 - vec4(1.0)) * spreadFactor;
+}
+
+half4 main(vec2 fragCoord)
+{
+    float lightMaskValue = lightMaskShader.eval(fragCoord).r;
+
+    vec4 sdfMapSample = decodeSdfMap(sdfImageShader.eval(fragCoord));
+    vec4 blurredSdfMapSample = decodeSdfMap(blurredSdfImageShader.eval(fragCoord));
+
+    half3 rgb = lightColor * edgeLightFakeBloom(lightMaskValue, sdfMapSample.a, blurredSdfMapSample.a);
+    // Boost alpha for standalone PNG rendering (original relies on compositing)
+    float alpha = clamp(length(rgb) * 3.0, 0.0, 1.0);
+    return half4(rgb, alpha);
+}

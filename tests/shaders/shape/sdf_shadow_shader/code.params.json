@@ -1,0 +1,27 @@
+{
+  "dimensions": {
+    "width": 1280,
+    "height": 720
+  },
+  "textures": {
+    "sdfShape": "assets/sdf_rrect.png"
+  },
+  "uniforms": {
+    "iResolution": [
+      1280.0,
+      720.0
+    ],
+    "shadowColor": [
+      0.0,
+      0.0,
+      0.0,
+      0.5
+    ],
+    "shadowOffset": [
+      4.0,
+      4.0
+    ],
+    "shadowRadius": 8.0,
+    "isFilled": 0.0
+  }
+}

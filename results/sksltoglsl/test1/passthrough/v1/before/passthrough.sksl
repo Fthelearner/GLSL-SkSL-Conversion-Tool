@@ -1,0 +1,6 @@
+uniform shader image;
+
+half4 main(float2 coord)
+{
+    return image.eval(coord);
+}

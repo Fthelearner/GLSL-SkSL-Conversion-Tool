@@ -1,0 +1,12 @@
+{
+  "mse": 7692.0161,
+  "psnr": 9.27,
+  "max_pixel_diff": 221,
+  "pixel_diff_percent": 24.18,
+  "total_pixels": 921600,
+  "different_pixels": 222837,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/sksltoglsl/test/mesa_blur_shader_filter__grey-x/report/mesa_blur_shader_filter__grey-x_roundtrip_diffmap.png"
+}

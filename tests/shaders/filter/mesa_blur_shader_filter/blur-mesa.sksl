@@ -1,0 +1,10 @@
+uniform shader imageInput;
+uniform float2 in_blurOffset;
+
+half4 main(float2 xy) {
+    half4 c = imageInput.eval(float2(in_blurOffset.x + xy.x, in_blurOffset.y + xy.y));
+    c += imageInput.eval(float2(-in_blurOffset.y + xy.x, in_blurOffset.x + xy.y));
+    c += imageInput.eval(float2(-in_blurOffset.x + xy.x, -in_blurOffset.y + xy.y));
+    c += imageInput.eval(float2(in_blurOffset.y + xy.x, -in_blurOffset.x + xy.y));
+    return half4(c.rgba * 0.25);
+}
