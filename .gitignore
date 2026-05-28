@@ -1,0 +1,20 @@
+# Build artifacts
+skia/out/
+glslang/build/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Results
+results/
+
+# IDE
+.vscode/
+.idea/
+
+# Temp files
+*.tmp
+*.swp
+*~

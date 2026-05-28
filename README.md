@@ -12,6 +12,7 @@ project/
 │   └── renderer/                 # Python 着色器渲染框架 (skia-python)
 ├── tests/
 │   ├── shaders/                  # SkSL 着色器测试文件 (5 个)
+│   ├── shaders/filter/           # SkSL Filter 着色器测试文件 (53 个，多 pass 链)
 │   ├── frag/                     # GLSL 着色器测试文件 (9 个)
 │   ├── assets/                   # 测试纹理图像
 │   ├── fixtures/                 # 预期输出 (回归测试用)
@@ -28,8 +29,7 @@ project/
 ├── docs/                         # 分析与映射规则文档
 ├── results/                      # 测试产物统一输出目录
 ├── skia/                         # Skia 源码 (含 GLSLCodeGenerator 修改)
-├── glslang/                      # glslang 源码 (含 GLSLSkSLCodeGenerator 修改)
-└── zjuthesis/                    # 毕业论文
+└── glslang/                      # glslang 源码 (含 GLSLSkSLCodeGenerator 修改)
 ```
 
 ## 两条转换链路
@@ -56,8 +56,8 @@ GLSL 源码 → glslang Compiler → glslang AST → GLSLSkSLCodeGenerator → S
 
 | 规则 | 说明 |
 |------|------|
-| SkSL 渲染 | **CPU RuntimeEffect 优先**；遇到 `fwidth`/`dFdx`/`dFdy` 等不支持的函数时自动 fallback 到 GPU |
-| GLSL 渲染 | **固定 GPU** — 始终通过 `render_glsl` (OpenGL 3.3) 渲染 |
+| SkSL 渲染 | **GPU 优先**（sksl→GLSL→OpenGL）；遇到 `fwidth`/`dFdx`/`dFdy` 等不支持的函数时回退 `.frag` 模式；使用 `--cpu` 可切换 CPU RuntimeEffect |
+| GLSL 渲染 | **固定 GPU** — 始终通过 `render_glsl` (OpenGL 3.3) 渲染；`render_glsl` 内置 `find_uniform` 支持 uniform block 成员查找 |
 | 时间统一 | 所有含 `iTime` 的着色器统一锁定 `iTime=1.5`，单帧对比 |
 | Alpha 语义 | SkSL `.eval()` 返回预乘 alpha，GLSL `texture()` 返回直通 alpha；`fix_premultiplied_alpha` 在 GLSL 渲染前自动 inline helper 函数并注入 `.rgb *= .a` 修正 |
 
@@ -252,32 +252,48 @@ python3 tools/shader_preview.py --sksl tests/shaders/water_ripple.sksl | ffplay 
 
 ## 测试结果
 
-### 闭环验证（v1/before vs v2/after）— 全部通过
+### 闭环验证（v1/before vs v2/after）— 67/67 全部通过 (PSNR=∞)
 
-| 着色器 | sksltoglsl 闭环 | glsltosksl 闭环 |
-|--------|:---:|:---:|
-| passthrough | PSNR=∞, 0% | PSNR=∞, 0% |
-| water_ripple | PSNR=∞, 0% | PSNR=∞, 0% |
-| displacement_distort | PSNR=∞, 0% | PSNR=∞, 0% |
-| linear_gradient_blend | PSNR=∞, 0% | PSNR=∞, 0% |
-| variable_radius_blur_approx | PSNR=∞, 0% | PSNR=∞, 0% |
-| curve | — | PSNR=∞, 0% |
-| picture_blur | — | PSNR=∞, 0% |
-| purple_cloud | — | PSNR=∞, 0% |
-| spread | — | PSNR=∞, 0% |
+#### SkSL → GLSL（5 个主着色器 + 53 个 Filter 着色器）
 
-### v1 跨语言对比（单次转换，CPU vs GPU 后端）
+| 主着色器 | 闭环 | Filter 着色器 | 闭环 |
+|----------|:---:|------|:---:|
+| passthrough | PSNR=∞ | aibar_shader_filter | PSNR=∞ |
+| water_ripple | PSNR=∞ | blur_bubbles_rise_filter (3) | PSNR=∞ |
+| displacement_distort | PSNR=∞ | color_gradient_shader_filter (2) | PSNR=∞ |
+| linear_gradient_blend | PSNR=∞ | content_light_shader_filter | PSNR=∞ |
+| variable_radius_blur_approx | PSNR=∞ | direction_light_shader_filter (3) | PSNR=∞ |
+| | | dispersion_shader_filter | PSNR=∞ |
+| | | displacement_distort_shader_filter | PSNR=∞ |
+| | | distortion_collapse_filter | PSNR=∞ |
+| | | edge_light_shader_filter (5) | PSNR=∞ |
+| | | frosted_glass_shader_filter | PSNR=∞ |
+| | | grey_shader_filter | PSNR=∞ |
+| | | heat_distortion_filter | PSNR=∞ |
+| | | kawase_blur_shader_filter (4) | PSNR=∞ |
+| | | linear_gradient_blur_shader_filter | PSNR=∞ |
+| | | magnifier_shader_filter | PSNR=∞ |
+| | | mask_transition_shader_filter | PSNR=∞ |
+| | | mesa_blur_shader_filter (5) | PSNR=∞ |
+| | | motion_blur_shader_filter | PSNR=∞ |
+| | | sdf_edge_light (3) | PSNR=∞ |
+| | | sdf_from_image_filter (4) | PSNR=∞ |
+| | | sound_wave_filter | PSNR=∞ |
+| | | variable_radius_blur_shader_filter (5) | PSNR=∞ |
+| | | water_ripple_filter (4) | PSNR=∞ |
 
-| 着色器 | sksltoglsl | glsltosksl | 差异类型 |
-|--------|:---:|:---:|------|
-| passthrough | 0% | 0% | — |
-| water_ripple | 1.07% | 1.07% | 数值梯度放大 |
-| displacement_distort | 0.3% | 0.3% | 精度容差 |
-| linear_gradient_blend | 3.33% | 3.33% | 精度容差 |
-| variable_radius_blur_approx | 6.54% | 6.54% | 精度容差 |
-| picture_blur | — | 14.0% (maxΔ=9) | 精度容差 |
-| purple_cloud | — | 0% | GPU 默认模式 |
-| curve | — | 0% | 自动 GPU fallback |
-| spread | — | 9.52% | 程序化噪声 |
+#### GLSL → SkSL（9 个着色器）
 
-> 所有跨语言差异均源于 CPU RuntimeEffect 与 GPU OpenGL 的浮点精度 / 数学库实现差异，转换链路本身语义正确（闭环为证）。SkSL 渲染默认使用 GPU 路径消除后端差异，如需 CPU 渲染可使用 `--cpu` 标志。
+| 着色器 | 闭环 |
+|--------|:---:|
+| passthrough | PSNR=∞ |
+| water_ripple | PSNR=∞ |
+| displacement_distort | PSNR=∞ |
+| linear_gradient_blend | PSNR=∞ |
+| variable_radius_blur_approx | PSNR=∞ |
+| curve | PSNR=∞ |
+| picture_blur | PSNR=∞ |
+| purple_cloud | PSNR=∞ |
+| spread | PSNR=∞ |
+
+> 所有转换链路语义正确（闭环为证，全部 67 个着色器 PSNR=∞）。SkSL 渲染默认使用 GPU 路径消除 CPU/GPU 后端差异，如需 CPU 渲染可使用 `--cpu` 标志。

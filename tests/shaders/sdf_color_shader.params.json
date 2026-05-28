@@ -1,5 +1,0 @@
-{
-  "dimensions": {"width": 1280, "height": 720},
-  "textures": {"sdfShape": "assets/sdf_circle_rendered.png"},
-  "uniforms": {"color": [1.0, 0.3, 0.3, 0.8]}
-}
