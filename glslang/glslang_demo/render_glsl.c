@@ -58,6 +58,27 @@ static int was_uniform_set(const char* name, UniformArg* uniforms, int nuniforms
     return 0;
 }
 
+// Find a uniform location, trying multiple name patterns to handle
+// uniform block members (e.g. "u.iResolution", "iResolution").
+static GLint find_uniform(GLuint prog, const char* name) {
+    // Try the name exactly as given
+    GLint loc = glGetUniformLocation(prog, name);
+    if (loc >= 0) return loc;
+
+    // Try common uniform block instance prefixes (e.g. "u.name", "params.name")
+    static const char* prefixes[] = {"u.", "params.", "p.", "ub.", NULL};
+    char buf[128];
+    for (int i = 0; prefixes[i]; i++) {
+        int n = snprintf(buf, sizeof(buf), "%s%s", prefixes[i], name);
+        if (n > 0 && n < (int)sizeof(buf)) {
+            loc = glGetUniformLocation(prog, buf);
+            if (loc >= 0) return loc;
+        }
+    }
+
+    return -1;
+}
+
 static char* read_file(const char* path) {
     FILE* f = fopen(path, "rb");
     if (!f) return NULL;
@@ -491,7 +512,7 @@ int main(int argc, char** argv) {
             fprintf(stderr, "WARNING: failed to load texture '%s'\n", textures[t].name);
             continue;
         }
-        GLint loc = glGetUniformLocation(prog, textures[t].name);
+        GLint loc = find_uniform(prog, textures[t].name);
         if (loc >= 0) {
             glUniform1i(loc, tex_unit);
         } else {
@@ -506,7 +527,7 @@ int main(int argc, char** argv) {
             fprintf(stderr, "WARNING: failed to load RGBA texture '%s'\n", rgba_textures[t].name);
             continue;
         }
-        GLint loc = glGetUniformLocation(prog, rgba_textures[t].name);
+        GLint loc = find_uniform(prog, rgba_textures[t].name);
         if (loc >= 0) {
             glUniform1i(loc, tex_unit);
         } else {
@@ -517,7 +538,7 @@ int main(int argc, char** argv) {
 
     // Set uniforms
     for (int u = 0; u < nuniforms; u++) {
-        GLint loc = glGetUniformLocation(prog, uniforms[u].name);
+        GLint loc = find_uniform(prog, uniforms[u].name);
         if (loc < 0) {
             fprintf(stderr, "WARNING: uniform '%s' not found in shader\n", uniforms[u].name);
             continue;
@@ -534,11 +555,11 @@ int main(int argc, char** argv) {
     {
         GLint loc;
         if (!was_uniform_set("iResolution", uniforms, nuniforms, 0)) {
-            loc = glGetUniformLocation(prog, "iResolution");
+            loc = find_uniform(prog, "iResolution");
             if (loc >= 0) glUniform3f(loc, (float)w, (float)h, 1.0f);
         }
         if (!was_uniform_set("iTime", uniforms, nuniforms, cmdline_itime_set)) {
-            loc = glGetUniformLocation(prog, "iTime");
+            loc = find_uniform(prog, "iTime");
             if (loc >= 0) {
                 if (cmdline_itime_set)
                     glUniform1f(loc, cmdline_iTime);
@@ -548,27 +569,27 @@ int main(int argc, char** argv) {
         } else if (cmdline_itime_set) {
             // User set --itime; apply even if uniform was also set via --uniform
             // (--uniform takes precedence, so only apply if no --uniform iTime)
-            loc = glGetUniformLocation(prog, "iTime");
+            loc = find_uniform(prog, "iTime");
             if (loc >= 0) glUniform1f(loc, cmdline_iTime);
         }
         if (!was_uniform_set("iTimeDelta", uniforms, nuniforms, 0)) {
-            loc = glGetUniformLocation(prog, "iTimeDelta");
+            loc = find_uniform(prog, "iTimeDelta");
             if (loc >= 0) glUniform1f(loc, 1.0f / 30.0f);
         }
         if (!was_uniform_set("iFrameRate", uniforms, nuniforms, 0)) {
-            loc = glGetUniformLocation(prog, "iFrameRate");
+            loc = find_uniform(prog, "iFrameRate");
             if (loc >= 0) glUniform1f(loc, 30.0f);
         }
         if (!was_uniform_set("iFrame", uniforms, nuniforms, 0)) {
-            loc = glGetUniformLocation(prog, "iFrame");
+            loc = find_uniform(prog, "iFrame");
             if (loc >= 0) glUniform1i(loc, 45);
         }
         if (!was_uniform_set("iMouse", uniforms, nuniforms, 0)) {
-            loc = glGetUniformLocation(prog, "iMouse");
+            loc = find_uniform(prog, "iMouse");
             if (loc >= 0) glUniform4f(loc, 0.0f, 0.0f, 0.0f, 0.0f);
         }
         if (!was_uniform_set("iDate", uniforms, nuniforms, 0)) {
-            loc = glGetUniformLocation(prog, "iDate");
+            loc = find_uniform(prog, "iDate");
             if (loc >= 0) glUniform4f(loc, 2026.0f, 4.0f, 29.0f, 0.0f);
         }
     }

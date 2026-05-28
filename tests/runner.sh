@@ -904,26 +904,25 @@ render_single_frame_glsl() {
     local frag_path="$1" out_path="$2" width="$3" height="$4" config_json="$5"
     local out_ppm="${out_path%.png}.ppm"
 
-    # Flatten uniform blocks: render_glsl can't access block members by name.
-    # Extract "vec2 iResolution;" from "uniform Params { vec2 iResolution; } u;"
-    # and replace "u.iResolution" references with "iResolution".
+    # Flatten uniform blocks so render_glsl can set member values via glUniform*.
+    # Also expands block members as individual uniforms and replaces instance-qualified
+    # references (e.g. u.iResolution → iResolution) using the actual block instance name.
     local flat_glsl="$TMP/$(basename "${frag_path%.*}")_flat.glsl"
     cp "$frag_path" "$flat_glsl"
     python3 -c "
 import re
 with open('$flat_glsl', 'r') as f: src = f.read()
-# Flatten: 'layout(...) uniform Name { type member; } inst;' → 'uniform type member;'
-# Find the block instance name BEFORE flattening
+# Find the uniform block instance name BEFORE flattening
 block_m = re.search(r'layout\([^)]*\)\s*uniform\s+\w+\s*\{([^}]*)\}\s*(\w+)\s*;', src)
 block_inst = block_m.group(2) if block_m else None
-
+# Flatten: 'layout(...) uniform Name { type member; } inst;' → 'uniform type member;'
 def flatten_block(m):
     body = m.group(1).strip()
     members = [s.strip() for s in body.split(';') if s.strip()]
-    return '\\n'.join('uniform ' + s + ';' for s in members)
+    return '\n'.join('uniform ' + s + ';' for s in members)
 src = re.sub(r'layout\([^)]*\)\s*uniform\s+\w+\s*\{([^}]*)\}\s*\w+\s*;',
              flatten_block, src)
-# Replace block instance member access, only when a block was actually found
+# Replace block instance member access only for the actual block instance name
 if block_inst:
     src = re.sub(rf'\b{re.escape(block_inst)}\.(\w+)\b', r'\1', src)
 with open('$flat_glsl', 'w') as f: f.write(src)

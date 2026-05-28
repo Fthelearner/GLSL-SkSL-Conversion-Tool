@@ -1,0 +1,12 @@
+{
+  "mse": 0.0038,
+  "psnr": 72.3,
+  "max_pixel_diff": 1,
+  "pixel_diff_percent": 1.13,
+  "total_pixels": 921600,
+  "different_pixels": 10407,
+  "passed": true,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/glsltosksl/test_cpu/variable_radius_blur_approx/v1/report/variable_radius_blur_approx_diffmap.png"
+}

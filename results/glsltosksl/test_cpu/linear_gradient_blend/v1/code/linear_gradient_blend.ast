@@ -1,0 +1,169 @@
+tests/frag/linear_gradient_blend.frag
+Shader version: 450
+0:? Sequence
+0:17  Function Definition: sampleImage(vf2; ( global 4-component vector of float)
+0:17    Function Parameters: 
+0:17      'coord' ( in 2-component vector of float)
+0:19    Sequence
+0:19      Branch: Return with expression
+0:19        texture ( global 4-component vector of float)
+0:19          'image' (layout( binding=0) uniform sampler2D)
+0:19          divide ( temp 2-component vector of float)
+0:19            'coord' ( in 2-component vector of float)
+0:19            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform 2-component vector of float)
+0:19              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:19              Constant:
+0:19                0 (const int)
+0:22  Function Definition: samplePreblurImage(vf2; ( global 4-component vector of float)
+0:22    Function Parameters: 
+0:22      'coord' ( in 2-component vector of float)
+0:24    Sequence
+0:24      Branch: Return with expression
+0:24        texture ( global 4-component vector of float)
+0:24          'preblurImage' (layout( binding=1) uniform sampler2D)
+0:24          divide ( temp 2-component vector of float)
+0:24            'coord' ( in 2-component vector of float)
+0:24            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform 2-component vector of float)
+0:24              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:24              Constant:
+0:24                0 (const int)
+0:27  Function Definition: main( ( global void)
+0:27    Function Parameters: 
+0:29    Sequence
+0:29      Sequence
+0:29        move second child to first child ( temp 2-component vector of float)
+0:29          'fragCoord' ( temp 2-component vector of float)
+0:29          vector swizzle ( temp 2-component vector of float)
+0:29            'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
+0:29            Sequence
+0:29              Constant:
+0:29                0 (const int)
+0:29              Constant:
+0:29                1 (const int)
+0:30      Sequence
+0:30        move second child to first child ( temp 2-component vector of float)
+0:30          'startCoord' ( temp 2-component vector of float)
+0:30          component-wise multiply ( temp 2-component vector of float)
+0:30            startPoint: direct index for structure (layout( column_major std140 offset=8) uniform 2-component vector of float)
+0:30              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:30              Constant:
+0:30                1 (const int)
+0:30            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform 2-component vector of float)
+0:30              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:30              Constant:
+0:30                0 (const int)
+0:31      Sequence
+0:31        move second child to first child ( temp 2-component vector of float)
+0:31          'endCoord' ( temp 2-component vector of float)
+0:31          component-wise multiply ( temp 2-component vector of float)
+0:31            endPoint: direct index for structure (layout( column_major std140 offset=16) uniform 2-component vector of float)
+0:31              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:31              Constant:
+0:31                2 (const int)
+0:31            iResolution: direct index for structure (layout( column_major std140 offset=0) uniform 2-component vector of float)
+0:31              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:31              Constant:
+0:31                0 (const int)
+0:32      Sequence
+0:32        move second child to first child ( temp 2-component vector of float)
+0:32          'axis' ( temp 2-component vector of float)
+0:32          subtract ( temp 2-component vector of float)
+0:32            'endCoord' ( temp 2-component vector of float)
+0:32            'startCoord' ( temp 2-component vector of float)
+0:33      Sequence
+0:33        move second child to first child ( temp float)
+0:33          'axisLengthSquared' ( temp float)
+0:33          max ( global float)
+0:33            dot-product ( global float)
+0:33              'axis' ( temp 2-component vector of float)
+0:33              'axis' ( temp 2-component vector of float)
+0:33            Constant:
+0:33              0.000010
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          'projected' ( temp float)
+0:34          divide ( temp float)
+0:34            dot-product ( global float)
+0:34              subtract ( temp 2-component vector of float)
+0:34                'fragCoord' ( temp 2-component vector of float)
+0:34                'startCoord' ( temp 2-component vector of float)
+0:34              'axis' ( temp 2-component vector of float)
+0:34            'axisLengthSquared' ( temp float)
+0:36      Sequence
+0:36        move second child to first child ( temp float)
+0:36          'edge0' ( temp float)
+0:36          Negate value ( temp float)
+0:36            softness: direct index for structure (layout( column_major std140 offset=24) uniform float)
+0:36              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:36              Constant:
+0:36                3 (const int)
+0:37      Sequence
+0:37        move second child to first child ( temp float)
+0:37          'edge1' ( temp float)
+0:37          add ( temp float)
+0:37            Constant:
+0:37              1.000000
+0:37            softness: direct index for structure (layout( column_major std140 offset=24) uniform float)
+0:37              'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:37              Constant:
+0:37                3 (const int)
+0:38      Sequence
+0:38        move second child to first child ( temp float)
+0:38          'gradient' ( temp float)
+0:38          smoothstep ( global float)
+0:38            'edge0' ( temp float)
+0:38            'edge1' ( temp float)
+0:38            'projected' ( temp float)
+0:39      Test condition and select ( temp void)
+0:39        Condition
+0:39        Compare Greater Than ( temp bool)
+0:39          invert: direct index for structure (layout( column_major std140 offset=28) uniform float)
+0:39            'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:39            Constant:
+0:39              4 (const int)
+0:39          Constant:
+0:39            0.500000
+0:39        true case
+0:40        Sequence
+0:40          move second child to first child ( temp float)
+0:40            'gradient' ( temp float)
+0:40            subtract ( temp float)
+0:40              Constant:
+0:40                1.000000
+0:40              'gradient' ( temp float)
+0:43      Sequence
+0:43        move second child to first child ( temp float)
+0:43          'mixAmount' ( temp float)
+0:43          clamp ( global float)
+0:43            component-wise multiply ( temp float)
+0:43              'gradient' ( temp float)
+0:43              blurMix: direct index for structure (layout( column_major std140 offset=32) uniform float)
+0:43                'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+0:43                Constant:
+0:43                  5 (const int)
+0:43            Constant:
+0:43              0.000000
+0:43            Constant:
+0:43              1.000000
+0:44      Sequence
+0:44        move second child to first child ( temp 4-component vector of float)
+0:44          'sourceColor' ( temp 4-component vector of float)
+0:44          Function Call: sampleImage(vf2; ( global 4-component vector of float)
+0:44            'fragCoord' ( temp 2-component vector of float)
+0:45      Sequence
+0:45        move second child to first child ( temp 4-component vector of float)
+0:45          'blurColor' ( temp 4-component vector of float)
+0:45          Function Call: samplePreblurImage(vf2; ( global 4-component vector of float)
+0:45            'fragCoord' ( temp 2-component vector of float)
+0:46      move second child to first child ( temp 4-component vector of float)
+0:46        'outColor' (layout( location=0) out 4-component vector of float)
+0:46        mix ( global 4-component vector of float)
+0:46          'sourceColor' ( temp 4-component vector of float)
+0:46          'blurColor' ( temp 4-component vector of float)
+0:46          'mixAmount' ( temp float)
+0:?   Linker Objects
+0:?     'outColor' (layout( location=0) out 4-component vector of float)
+0:?     'image' (layout( binding=0) uniform sampler2D)
+0:?     'preblurImage' (layout( binding=1) uniform sampler2D)
+0:?     'u' (layout( binding=2 column_major std140) uniform block{layout( column_major std140 offset=0) uniform 2-component vector of float iResolution, layout( column_major std140 offset=8) uniform 2-component vector of float startPoint, layout( column_major std140 offset=16) uniform 2-component vector of float endPoint, layout( column_major std140 offset=24) uniform float softness, layout( column_major std140 offset=28) uniform float invert, layout( column_major std140 offset=32) uniform float blurMix})
+

@@ -1,0 +1,12 @@
+{
+  "mse": 14669.6709,
+  "psnr": 6.47,
+  "max_pixel_diff": 255,
+  "pixel_diff_percent": 97.5,
+  "total_pixels": 921600,
+  "different_pixels": 898547,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/glsltosksl/test_cpu/purple_cloud/v2/report/purple_cloud_diffmap.png"
+}

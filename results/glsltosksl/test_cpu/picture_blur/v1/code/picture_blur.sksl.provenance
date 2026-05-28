@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "metadata": {
+    "source_program_kind": "kFragment",
+    "shader_stage": "kFragment",
+    "glsl_dialect": "kOpenGLCore",
+    "glsl_version": 450,
+    "runtime_effect_mode": false,
+    "use_rt_flip": false,
+    "use_fragcoord_workaround": false
+  },
+  "entries": [
+    {
+      "kind": "builtin_variable",
+      "helper_key": "entry_point_transform",
+      "sksl_name": "fragColor",
+      "glsl_name": "out vec4 fragColor"
+    },
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "iChannel0",
+      "sksl_method": "eval",
+      "glsl_function": "texture"
+    },
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "iChannel0",
+      "sksl_method": "eval",
+      "glsl_function": "texture"
+    },
+    {
+      "kind": "function_call",
+      "helper_key": "runtime_effect_child_eval",
+      "callee_name": "iChannel0",
+      "sksl_method": "eval",
+      "glsl_function": "texture"
+    }
+  ]
+}

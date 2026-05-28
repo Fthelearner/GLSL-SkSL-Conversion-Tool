@@ -1,0 +1,12 @@
+{
+  "mse": 124.0693,
+  "psnr": 27.19,
+  "max_pixel_diff": 182,
+  "pixel_diff_percent": 10.0,
+  "total_pixels": 921600,
+  "different_pixels": 92120,
+  "passed": false,
+  "threshold_psnr": 30.0,
+  "threshold_diff_percent": 5.0,
+  "diffmap": "results/glsltosksl/test_cpu/linear_gradient_blend/v2/report/linear_gradient_blend_diffmap.png"
+}

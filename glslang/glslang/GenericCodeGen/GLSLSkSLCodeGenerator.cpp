@@ -143,7 +143,7 @@ public:
     std::string getUnaryOperatorSymbol(TOperator op);
 
     // Qualifier conversion
-    std::string getQualifierString(const TQualifier& qualifier, bool isGlobal);
+    std::string getQualifierString(const TQualifier& qualifier, bool isGlobal, const TType* type = nullptr);
     std::string getLayoutString(const TQualifier& qualifier);
 
     // Expression writers
@@ -210,6 +210,11 @@ protected:
     // Names declared at global scope (uniforms, globals). The pre-scan
     // must not redeclare these inside function bodies.
     std::unordered_set<std::string> globalNames;
+
+    // Names of global variables that have initialization values (EOpAssign).
+    // Populated by a pre-scan of EOpLinkerObjects; writeGlobalDeclaration uses
+    // this to emit "float x = value;" instead of separate "float x;" + "x = value;".
+    std::unordered_set<std::string> globalInitNames;
 
     // Name of the uniform that carries the rendering resolution (e.g. iResolution).
     // Detected during global-declaration processing and used to adjust coordinates
@@ -1111,6 +1116,12 @@ bool GLSLSkSLCodeGenerator::isBuiltInFunction(TOperator op) {
         case EOpFwidth:
         case EOpAny:
         case EOpAll:
+        case EOpLessThan:
+        case EOpGreaterThan:
+        case EOpLessThanEqual:
+        case EOpGreaterThanEqual:
+        case EOpVectorEqual:
+        case EOpVectorNotEqual:
         case EOpFloatBitsToInt:
         case EOpFloatBitsToUint:
         case EOpIntBitsToFloat:
@@ -1166,7 +1177,8 @@ bool GLSLSkSLCodeGenerator::isBuiltInFunction(TOperator op) {
 // Qualifier conversion
 // ============================================================================
 
-std::string GLSLSkSLCodeGenerator::getQualifierString(const TQualifier& qualifier, bool isGlobal) {
+std::string GLSLSkSLCodeGenerator::getQualifierString(const TQualifier& qualifier, bool isGlobal,
+                                                       const TType* type) {
     std::string result;
 
     // Storage qualifiers
@@ -1461,6 +1473,10 @@ void GLSLSkSLCodeGenerator::writeBinaryExpression(TIntermBinary* node) {
     if (auto* leftBin = node->getLeft()->getAsBinaryNode()) {
         int leftPrec = getOperatorPrecedence(leftBin->getOp());
         if (leftPrec < parentPrec) needLeftParen = true;
+    } else if (node->getLeft()->getAsSelectionNode()) {
+        // Ternary (?:) has lower precedence than all binary operators;
+        // when used as a binary operand it must be parenthesized.
+        needLeftParen = true;
     }
     if (needLeftParen) write("(");
     writeExpression(node->getLeft());
@@ -1473,6 +1489,8 @@ void GLSLSkSLCodeGenerator::writeBinaryExpression(TIntermBinary* node) {
     if (auto* rightBin = node->getRight()->getAsBinaryNode()) {
         int rightPrec = getOperatorPrecedence(rightBin->getOp());
         if (rightPrec <= parentPrec) needRightParen = true;
+    } else if (node->getRight()->getAsSelectionNode()) {
+        needRightParen = true;
     }
     if (needRightParen) write("(");
     writeExpression(node->getRight());
@@ -1865,6 +1883,15 @@ void GLSLSkSLCodeGenerator::writeSymbol(TIntermSymbol* node) {
         return;
     }
 
+    // Inside mainImage/main body, redirect the GLSL output variable name
+    // (e.g. "FragColor" or "outColor") to "_skOut" to avoid naming
+    // collisions when this SkSL is converted back to GLSL by sksl_export_glsl_custom.
+    if (inMainImageBody && !fragColorParamName.empty() &&
+        nameStr == std::string_view(fragColorParamName.c_str())) {
+        write("_skOut");
+        return;
+    }
+
     // Check if this is a GLSL builtin (starts with "gl_")
     if (nameStr.substr(0, 3) == "gl_") {
         const binding::BuiltinBinding* builtin = getBuiltinBindingByGlslName(nameStr);
@@ -1890,12 +1917,22 @@ void GLSLSkSLCodeGenerator::writeSymbol(TIntermSymbol* node) {
 void GLSLSkSLCodeGenerator::writeSelection(TIntermSelection* node) {
     // Ternary operator or if-else
     if (node->getBasicType() != EbtVoid) {
-        // Ternary expression
+        // Ternary expression: condition ? true : false
+        // The ternary has very low precedence (only above assignment/comma).
+        // Sub-expressions that are ternary or binary with lower precedence need parens.
         writeExpression(node->getCondition());
         write(" ? ");
-        writeExpression(node->getTrueBlock()->getAsTyped());
+        auto* trueExpr = node->getTrueBlock()->getAsTyped();
+        bool trueNeedsParen = trueExpr && trueExpr->getAsBinaryNode();
+        if (trueNeedsParen) write("(");
+        writeExpression(trueExpr);
+        if (trueNeedsParen) write(")");
         write(" : ");
-        writeExpression(node->getFalseBlock()->getAsTyped());
+        auto* falseExpr = node->getFalseBlock()->getAsTyped();
+        bool falseNeedsParen = falseExpr && falseExpr->getAsBinaryNode();
+        if (falseNeedsParen) write("(");
+        writeExpression(falseExpr);
+        if (falseNeedsParen) write(")");
     } else {
         // If-else statement
         writeIndent();
@@ -2108,12 +2145,18 @@ void GLSLSkSLCodeGenerator::writeStatement(TIntermNode* node) {
     else if (auto* symbol = node->getAsSymbolNode()) {
         // Standalone symbol: variable declaration without initializer
         // (e.g. "float s;" from multi-declaration "float s, i;")
-        const TType& varType = symbol->getType();
-        writeIndent();
-        write(getTypeName(varType));
-        write(" ");
-        write(symbol->getName().c_str());
-        writeLine(";");
+        // Skip if this is a global variable — globals are declared separately.
+        std::string symName = symbol->getName().c_str();
+        if (globalNames.find(symName) != globalNames.end()) {
+            // Already declared as a global; skip the local re-declaration.
+        } else {
+            const TType& varType = symbol->getType();
+            writeIndent();
+            write(getTypeName(varType));
+            write(" ");
+            write(symName);
+            writeLine(";");
+        }
     }
     else if (auto* binary = node->getAsBinaryNode()) {
         // Multi-declaration initializer: "float d = ..., i = ...;" splits into
@@ -2122,7 +2165,10 @@ void GLSLSkSLCodeGenerator::writeStatement(TIntermNode* node) {
             if (auto* left = binary->getLeft()->getAsSymbolNode()) {
                 long long varId = left->getId();
                 std::string varName = left->getName().c_str();
-                if (declaredVariables.find(varId) == declaredVariables.end() &&
+                // Don't emit "float x = ..." if x is a global — emit just "x = ..."
+                bool isGlobal = globalNames.find(varName) != globalNames.end();
+                if (!isGlobal &&
+                    declaredVariables.find(varId) == declaredVariables.end() &&
                     declaredLocalNames.find(varName) == declaredLocalNames.end()) {
                     declaredVariables.insert(varId);
                     declaredLocalNames.insert(varName);
@@ -2474,14 +2520,19 @@ void GLSLSkSLCodeGenerator::writeFunction(TIntermAggregate* node) {
         writeLine(") {");
         indentDepth++;
         // Synthesize the local variable that the body writes into.
+        // Use "_skOut" to avoid name collision with the GLSL output variable
+        // when this SkSL is later converted back to GLSL (where "out vec4 FragColor"
+        // would be shadowed by a local "vec4 FragColor").
         writeIndent();
-        write("float4 ");
-        write(fragColorParamName);
-        writeLine(";");
-        // Track synthesized locals so body EOpAssign nodes don't re-emit the type
+        writeLine("float4 _skOut;");
+        // Track BOTH the new name and the original AST name so that body
+        // assignments to the original name (e.g. "fragColor = ...") won't be
+        // re-emitted as new local declarations.
+        declaredLocalNames.insert("_skOut");
         declaredLocalNames.insert(fragColorParamName);
         declaredLocalNames.insert(fragCoordParamName);
         inMainImageBody = true;
+        // Keep fragColorParamName for AST-level detection of the original output variable
         mainImageFragColorName = fragColorParamName;
         mainImageFragCoordName = fragCoordParamName;
     } else {
@@ -2629,11 +2680,7 @@ void GLSLSkSLCodeGenerator::writeFunction(TIntermAggregate* node) {
 
     if (isShaderToyEntry) {
         writeIndent();
-        write("return half4(");
-        write(fragColorParamName);
-        // Shadertoy ignores alpha; force 1.0 so the output matches GLSL renderer
-        // (which writes RGB-only PPM and discards alpha).
-        writeLine(".rgb, 1.0);");
+        writeLine("return half4(_skOut);");
         inMainImageBody = false;
         mainImageFragColorName.clear();
         mainImageFragCoordName.clear();
@@ -2697,6 +2744,12 @@ void GLSLSkSLCodeGenerator::writeFunctionParameters(TIntermAggregate* node) {
 void GLSLSkSLCodeGenerator::writeGlobalDeclaration(TIntermAggregate* node) {
     for (auto* child : node->getSequence()) {
         if (auto* symbol = child->getAsSymbolNode()) {
+            // Skip bare declarations for globals that have initialization values
+            // (e.g. "float waveFreq;" when "waveFreq = 25.0" follows).
+            if (globalInitNames.count(symbol->getName().c_str())) {
+                globalNames.insert(symbol->getName().c_str());
+                continue;
+            }
             // Track global names so the pre-scan doesn't shadow them
             globalNames.insert(symbol->getName().c_str());
             const TType& varType = symbol->getType();
@@ -2767,7 +2820,7 @@ void GLSLSkSLCodeGenerator::writeGlobalDeclaration(TIntermAggregate* node) {
                     write(layoutStr);
                 }
             }
-            write(getQualifierString(qualifier, true));
+            write(getQualifierString(qualifier, true, &varType));
             write(getTypeName(varType));
             write(" ");
             write(symbol->getName().c_str());
@@ -2783,6 +2836,33 @@ void GLSLSkSLCodeGenerator::writeGlobalDeclaration(TIntermAggregate* node) {
                 write("]");
             }
             writeLine(";");
+        }
+        else if (auto* binary = child->getAsBinaryNode()) {
+            // Global initialization: "float waveFreq = 25.0;" is decomposed into
+            // a symbol ("float waveFreq;") and a binary ("waveFreq = 25.0").
+            // The symbol was handled above (or skipped if in initializedNames);
+            // emit the full declaration with initializer here.
+            if (binary->getOp() == EOpAssign) {
+                if (auto* left = binary->getLeft()->getAsSymbolNode()) {
+                    std::string varName = left->getName().c_str();
+                    if (globalInitNames.count(varName)) {
+                        const TType& varType = left->getType();
+                        const TQualifier& qualifier = varType.getQualifier();
+                        writeIndent();
+                        if (qualifier.storage != EvqConst) {
+                            std::string layoutStr = getLayoutString(qualifier);
+                            if (!layoutStr.empty()) write(layoutStr);
+                        }
+                        write(getQualifierString(qualifier, true, &varType));
+                        write(getTypeName(varType));
+                        write(" ");
+                        write(varName);
+                        write(" = ");
+                        writeExpression(binary->getRight());
+                        writeLine(";");
+                    }
+                }
+            }
         }
     }
 }
@@ -2984,12 +3064,69 @@ bool GLSLSkSLCodeGenerator::generateCode(TIntermNode* root, std::string_view /*g
             if (auto* agg = child->getAsAggregate()) {
                 TOperator op = agg->getOp();
                 switch (op) {
-                    case EOpLinkerObjects:
+                    case EOpLinkerObjects: {
                         // Global declarations (uniforms, inputs, outputs)
+                        // Two-pass approach: first collect all initialized variable names
+                        // across the entire sequence, then emit declarations.
+                        // This handles the case where glslang decomposes
+                        // "float x = value;" into separate AST nodes that may span
+                        // different aggregates.
+                        std::unordered_set<std::string> allInitialized;
+                        for (auto* obj : agg->getSequence()) {
+                            if (auto* objAgg = obj->getAsAggregate()) {
+                                for (auto* gc : objAgg->getSequence()) {
+                                    if (auto* bin = gc->getAsBinaryNode()) {
+                                        if (bin->getOp() == EOpAssign) {
+                                            if (auto* left = bin->getLeft()->getAsSymbolNode()) {
+                                                allInitialized.insert(left->getName().c_str());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Also check standalone binary nodes (assignments not wrapped in an aggregate)
+                            if (auto* bin = obj->getAsBinaryNode()) {
+                                if (bin->getOp() == EOpAssign) {
+                                    if (auto* left = bin->getLeft()->getAsSymbolNode()) {
+                                        allInitialized.insert(left->getName().c_str());
+                                    }
+                                }
+                            }
+                        }
+                        // Store for writeGlobalDeclaration to use
+                        std::swap(globalInitNames, allInitialized);
+
                         for (auto* obj : agg->getSequence()) {
                             if (auto* objAgg = obj->getAsAggregate()) {
                                 writeGlobalDeclaration(objAgg);
-                            } else if (auto* symbol = obj->getAsSymbolNode()) {
+                            }
+                            // Handle standalone binary nodes (global initializations like "x = 25.0")
+                            // that glslang split from their declaration symbols.
+                            else if (auto* bin = obj->getAsBinaryNode()) {
+                                if (bin->getOp() == EOpAssign) {
+                                    if (auto* left = bin->getLeft()->getAsSymbolNode()) {
+                                        std::string varName = left->getName().c_str();
+                                        if (globalInitNames.count(varName)) {
+                                            const TType& varType = left->getType();
+                                            const TQualifier& qualifier = varType.getQualifier();
+                                            writeIndent();
+                                            if (qualifier.storage != EvqConst) {
+                                                std::string layoutStr = getLayoutString(qualifier);
+                                                if (!layoutStr.empty()) write(layoutStr);
+                                            }
+                                            write(getQualifierString(qualifier, true, &varType));
+                                            write(getTypeName(varType));
+                                            write(" ");
+                                            write(varName);
+                                            write(" = ");
+                                            writeExpression(bin->getRight());
+                                            writeLine(";");
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+                            else if (auto* symbol = obj->getAsSymbolNode()) {
                                 globalNames.insert(symbol->getName().c_str());
                                 const TType& varType = symbol->getType();
                                 const TQualifier& qualifier = varType.getQualifier();
@@ -3070,7 +3207,7 @@ bool GLSLSkSLCodeGenerator::generateCode(TIntermNode* root, std::string_view /*g
                                     }
                                 }
                                 // Storage qualifiers (uniform, in, out, const)
-                                write(getQualifierString(qualifier, true));
+                                write(getQualifierString(qualifier, true, &varType));
                                 // Type
                                 write(getTypeName(varType));
                                 write(" ");
@@ -3124,6 +3261,7 @@ bool GLSLSkSLCodeGenerator::generateCode(TIntermNode* root, std::string_view /*g
                             }
                         }
                         break;
+                    } // end of EOpLinkerObjects case block
                     default:
                         break;
                     }
@@ -3163,6 +3301,79 @@ bool GLSLSkSLCodeGenerator::generateCode(TIntermNode* root, std::string_view /*g
     } else {
         // Single node traversal
         root->traverse(this);
+    }
+
+    // Post-processing: merge orphan global initializations with their declarations.
+    // glslang decomposes "float x = 25.0;" into separate AST nodes for the declaration
+    // symbol and the assignment. When these land in different aggregates within
+    // EOpLinkerObjects, we end up with a bare "float x;" followed by an illegal
+    // standalone "x = 25.0;" at global scope. This pass merges them.
+    {
+        std::string out = infoSink.debug.c_str();
+        std::istringstream iss(out);
+        std::vector<std::string> lines;
+        std::string line;
+        while (std::getline(iss, line)) {
+            lines.push_back(line);
+        }
+
+        // Pass 1: find assignments at global scope (before any function definition)
+        // pattern: "name = value;"
+        std::unordered_map<std::string, std::string> initValues; // name -> "value"
+        bool inFunction = false;
+        for (size_t i = 0; i < lines.size(); ++i) {
+            const std::string& l = lines[i];
+            if (l.find('(') != std::string::npos && l.find('{') != std::string::npos) {
+                inFunction = true;
+            }
+            if (inFunction) break;
+
+            // Match: "name = expr;" (standalone assignment at global scope)
+            size_t eq = l.find(" = ");
+            if (eq != std::string::npos && l.back() == ';') {
+                std::string name = l.substr(0, eq);
+                // Trim leading whitespace
+                size_t start = name.find_first_not_of(" \t");
+                if (start != std::string::npos) name = name.substr(start);
+                // Ensure it looks like a simple variable name (no spaces, no dots)
+                if (!name.empty() && name.find(' ') == std::string::npos &&
+                    name.find('.') == std::string::npos) {
+                    std::string value = l.substr(eq + 3, l.size() - eq - 4); // strip " = " and ";"
+                    initValues[name] = value;
+                    lines[i] = ""; // mark for removal
+                }
+            }
+        }
+
+        // Pass 2: replace bare declarations with initialized versions
+        if (!initValues.empty()) {
+            for (size_t i = 0; i < lines.size(); ++i) {
+                // Match bare global declaration: "type name;"
+                // type is a word (possibly multi-word like "uniform float")
+                std::string l = lines[i];
+                size_t semi = l.rfind(';');
+                if (semi == std::string::npos || semi != l.size() - 1) continue;
+                std::string beforeSemi = l.substr(0, semi);
+                // Find the last space to split type from name
+                size_t lastSpace = beforeSemi.find_last_of(" \t");
+                if (lastSpace == std::string::npos) continue;
+                std::string name = beforeSemi.substr(lastSpace + 1);
+                // Check if this name needs an initializer
+                auto it = initValues.find(name);
+                if (it != initValues.end()) {
+                    lines[i] = beforeSemi + " = " + it->second + ";";
+                    initValues.erase(it); // consumed
+                }
+            }
+        }
+
+        // Write back
+        infoSink.debug.erase();
+        for (const auto& l : lines) {
+            if (!l.empty()) {
+                infoSink.debug << l << "\n";
+            }
+        }
     }
 
     return true;
