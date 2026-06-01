@@ -617,10 +617,11 @@ int main(int argc, char** argv) {
     }
     if (out) {
         if (raw_out) {
-            // Raw RGBA: [4B width][4B height][RGBA top-to-bottom]
+            // Raw RGBA: [4B width][4B height][RGBA]
+            // Match PPM row order: y=0 (bottom of framebuffer) first.
             int32_t wh[2] = {w, h};
             fwrite(wh, 4, 2, out);
-            for (int y = h - 1; y >= 0; y--) {
+            for (int y = 0; y < h; y++) {
                 fwrite(pixels + y * w * 4, 1, w * 4, out);
             }
         } else {

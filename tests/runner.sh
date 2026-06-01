@@ -902,7 +902,7 @@ PIPELINE_OUTPUT_ROOT="$PROJECT_ROOT/results/glsltosksl/v1"
 
 render_single_frame_glsl() {
     local frag_path="$1" out_path="$2" width="$3" height="$4" config_json="$5"
-    local out_ppm="${out_path%.png}.ppm"
+    local out_raw="${out_path%.png}.raw"
 
     # Flatten uniform blocks so render_glsl can set member values via glUniform*.
     # Also expands block members as individual uniforms and replaces instance-qualified
@@ -933,7 +933,8 @@ with open('$flat_glsl', 'w') as f: f.write(src)
     if grep -qE 'vec3\s+iResolution|float3\s+iResolution' "$flat_glsl" 2>/dev/null; then
         ires_vals="$width $height 1"
     fi
-    local render_cmd=("$RENDER_GLSL" "$flat_glsl" "$out_ppm" "$width" "$height"
+    local render_cmd=("$RENDER_GLSL" "$flat_glsl" "$out_raw" "$width" "$height"
+        "--raw"
         "--uniform" "iResolution" $ires_vals)
 
     # Add textures from config (process substitution avoids subshell)
@@ -974,8 +975,31 @@ for name, val in cfg.get('uniforms', {}).items():
         echo "ERROR: GLSL render failed — see $err_log" >&2
         return 1
     fi
-    convert "$out_ppm" "$out_path" 2>/dev/null || return 1
-    rm -f "$out_ppm"
+    # Convert raw RGBA → PNG.  render_glsl --raw writes in the same row
+    # order as PPM (producing correct images).  Un-premultiply alpha to
+    # match Skia's PNG encoder behaviour.
+    python3 -c "
+import struct
+from PIL import Image
+with open('$out_raw', 'rb') as f:
+    w = struct.unpack('<i', f.read(4))[0]
+    h = struct.unpack('<i', f.read(4))[0]
+    data = f.read()
+img = Image.frombytes('RGBA', (w, h), data)
+px = list(img.getdata())
+out_px = []
+for r, g, b, a in px:
+    if a > 0:
+        out_px.append((min(255, int(r * 255 / a)),
+                       min(255, int(g * 255 / a)),
+                       min(255, int(b * 255 / a)), a))
+    else:
+        out_px.append((0, 0, 0, 0))
+out_img = Image.new('RGBA', (w, h))
+out_img.putdata(out_px)
+out_img.save('$out_path')
+" 2>/dev/null || return 1
+    rm -f "$out_raw"
 }
 
 render_single_frame_sksl() {
